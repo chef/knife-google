@@ -36,7 +36,7 @@ class Chef
 
       def run 
         unless Chef::Config[:knife][:project]
-          ui.error("Project ID is a compulsary parameter")
+          ui.error("Project ID is a compulsory parameter")
           exit 1
         end
 

@@ -176,17 +176,17 @@ class Chef
 
       def run
 	    unless Chef::Config[:knife][:server_name]
-          ui.error("Server Name cannot be empty")
+          ui.error("Server Name is a compulsory parameter")
           exit 1
         end
 
 	    unless Chef::Config[:knife][:public_key_file]
-          ui.error("SSH Identity File cannot be empty")
+          ui.error("SSH public key file is a compulsory parameter")
           exit 1
         end
 
         unless Chef::Config[:knife][:project]
-          ui.error("Project ID is a compulsary parameter")
+          ui.error("Project ID is a compulsory parameter")
           exit 1
         end
         $stdout.sync = true
