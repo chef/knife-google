@@ -13,12 +13,13 @@ Gem::Specification.new do |s|
   s.email = "chiragj@websym.com"
   s.homepage = "http://wiki.opscode.com/display/chef"
 
-  s.add_dependency "chef", ">= 0.9.14"
+  s.add_dependency "chef", ">= 0.10.0"
   s.add_dependency "net-ssh", ">= 2.0.3"
   s.add_dependency "net-ssh-multi", ">= 1.0.1"
   s.add_dependency "net-scp", "~> 1.0.4"
   s.add_dependency "highline"
-  s.add_dependency "json"
+  s.add_dependency "yajl"
+  s.add_dependency "stringio"
   s.require_path = 'lib'
   s.files = %w(LICENSE README.rdoc) + Dir.glob("lib/**/*")
 end

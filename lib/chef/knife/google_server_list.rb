@@ -16,11 +16,9 @@
 # limitations under the License.
 #
 
-require 'fog'
-require 'rubygems'
-require 'json'
+require 'stringio'
+require 'yajl'
 require 'highline'
-require 'open3'
 require 'chef/knife'
 require 'chef/json_compat'
 require 'tempfile'
@@ -51,16 +49,17 @@ class Chef
           exit 1
         end
         $stdout.sync = true
+
         project_id = Chef::Config[:knife][:project]
         validate_project(project_id)
-        stdin, stdout, stderr = Open3.popen3("gcompute listinstances --print_json --project_id=#{project_id}")
-        error = stderr.read
+        list_instances = exec_shell_cmd("gcompute listinstances --print_json --project_id=#{project_id}")
+        list_instances.run_command
 
-        if not error.downcase.scan("error").empty?
+        if not list_instances.stderr.downcase.scan("error").empty?
           ui.error("Failed to list instances. Error: #{error}")
           exit 1
         end
-        instances_json = JSON.parse(stdout.read)
+        instances_json = to_json(list_instances.stdout)
 
         server_list = [
             h.color('ID', :bold), 

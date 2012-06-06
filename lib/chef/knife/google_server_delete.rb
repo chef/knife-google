@@ -15,10 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'open3'
 
 require 'chef/knife'
 require 'chef/json_compat'
+
 require 'chef/knife/google_base'
 
 class Chef
@@ -46,16 +46,15 @@ class Chef
 
       @name_args.each do |server| 
         confirm("Do you really want to delete the server - #{server} ?")
-        stdin, stdout, stderr = Open3.popen3("gcompute deleteinstance #{server} --print_json --project_id=#{project_id} -f")
-        error = stderr.read
-        if not error.downcase.scan("error").empty?
+        del_instance = exec_shell_cmd("gcompute deleteinstance #{server} --print_json --project_id=#{project_id} -f")
+        
+        if not del_instance.stderr.downcase.scan("error").empty?
           ui.error("Failed to delete server. Error: #{error}")
           exit 1
         end
  
-        stdin, stdout, stderr = Open3.popen3("gcompute deletefirewall #{server} --print_json --project_id=#{project_id} -f")
-        error = stderr.read
-        if not error.downcase.scan("error").empty?
+        del_fw = exec_shell_cmd("gcompute deletefirewall #{server} --print_json --project_id=#{project_id} -f")
+        if not del_fw.stderr.downcase.scan("error").empty?
           ui.error("Failed to delete firewall. Error: #{error}")
           exit 1
         end

@@ -16,24 +16,43 @@
 # limitations under the License.
 #
 
-require 'open3'
+require 'stringio'
+require 'yajl'
+require 'mixlib/shellout'
 
 class Chef
   class Knife
     module GoogleBase
 
-     def validate_project(project_id)
-        stdin, stdout, stderr = Open3.popen3("gcompute getproject --project_id=#{project_id}")
-        stdin.puts("\n")
-        error = stderr.read
-        if not error.downcase.scan("error").empty?
-          ui.error("#{error}")
-          if not error.scan("Authentication has failed").empty?
+      @parser = Yajl::Parser.new
+
+      def parser
+        if @parser.nil?
+          @parser = Yajl::Parser.new
+        end
+      end
+      
+      def to_json(data)
+        data_s = StringIO::new(data)
+        parser.parse(data_s)
+      end
+
+      def exec_shell_cmd(cmd)
+        shell_cmd = Mixlib::ShellOut.new(cmd)
+        shell_cmd.run_command
+      end
+
+      def validate_project(project_id)
+        getprj = exec_shell_cmd("gcompute getproject --project_id=#{project_id}")
+        if getprj.status.to_i > 0
+          if not getprj.stdout.scan("Enter verification code").empty?
             ui.error("If not authenticated, please Authenticate gcompute to access the Google Compute Cloud")
             ui.error("Authenticate by executing gcompute auth --project_id=<project_id>")
+            exit 1
           end
+          ui.error("#{getprj.stderr}")
           exit 1
-        end 
+        end
       end
     end
   end

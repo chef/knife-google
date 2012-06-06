@@ -16,8 +16,6 @@
 # limitations under the License.
 #
 
-require 'json'
-require 'open3'
 require 'highline'
 require 'net/ssh/multi'
 require 'net/scp'
@@ -31,7 +29,6 @@ class Chef
     class GoogleServerCreate < Knife
 
       deps do
-        require 'fog'
         require 'readline'
         require 'chef/json_compat'
         require 'chef/knife/bootstrap'
@@ -190,6 +187,7 @@ class Chef
           exit 1
         end
         $stdout.sync = true
+
         project_id = Chef::Config[:knife][:project]
         validate_project(project_id)
 
@@ -207,16 +205,14 @@ class Chef
                              --authorized_ssh_keys #{user}:#{key_file} --network #{network} --print_json
                             DATA
         puts "Creating Server #{h.color(server_name, :bold)}"
-        stdin, stdout, stderr = Open3.popen3(cmd_add_instance)
-        error = stderr.read
-        output = stdout.read
+        create_server = exec_shell_cmd(cmd_add_instance)
 
-        if error.downcase.scan("error").size > 0
+        if create_server.error.downcase.scan("error").size > 0
           ui.error("\nFailed to create server: #{error}")
           exit 1
         end
-        if output.downcase.scan("error").size > 0
-          output = JSON.load(output)
+        if create_server.output.downcase.scan("error").size > 0
+          output = to_json(create_server.output)
           ui.error("\nFailed to create server: #{output["error"]}")
           exit 1
         end
@@ -238,16 +234,14 @@ class Chef
                           gcompute addfirewall #{server_name} --allowed #{firewall_rule} --network #{network} --project_id #{project_id}
                         DATA
         
-        stdin, stdout, stderr = Open3.popen3(cmd_add_firewall)
-        error = stderr.read
-        output = stdout.read
+        add_fw = exec_shell_cmd(cmd_add_firewall)
 
-        if error.downcase.scan("error").size > 0
+        if add_fw.error.downcase.scan("error").size > 0
           ui.error("\nFailed to add firewall: #{error}")
           exit 1
         end
-        if output.downcase.scan("error").size > 0
-          output = JSON.load(output)
+        if add_fw.output.downcase.scan("error").size > 0
+          output = to_json(add_fw.output)
           ui.error("\nFailed to add firewall: #{output["error"]}")
           exit 1
         end
@@ -257,13 +251,13 @@ class Chef
         cmd_get_instance  = <<-DATA
                           gcompute getinstance #{server_name} --project_id #{project_id} --print_json
                         DATA
-        stdin, stdout, stderr = Open3.popen3(cmd_get_instance)
-        error = stderr.read
-        if not error.downcase.scan("error").empty?
+        get_instance = exec_shell_cmd(cmd_get_instance)
+
+        if not get_instance.error.downcase.scan("error").empty?
           ui.error("Failed to fetch server details.")
           exit 1
         end
-        server = JSON.load(stdout)
+        server = to_json(get_instance.stdout)
 
         private_ip = []
         public_ip = []
