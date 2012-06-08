@@ -18,8 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency "net-ssh-multi", ">= 1.0.1"
   s.add_dependency "net-scp", "~> 1.0.4"
   s.add_dependency "highline"
-  s.add_dependency "yajl"
-  s.add_dependency "stringio"
+  s.add_dependency "yajl-ruby"
   s.require_path = 'lib'
   s.files = %w(LICENSE README.rdoc) + Dir.glob("lib/**/*")
 end

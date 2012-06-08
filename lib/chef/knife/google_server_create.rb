@@ -201,18 +201,18 @@ class Chef
 
         cmd_add_instance = <<-DATA
                             gcompute addinstance #{server_name} --machine_type #{flavor} \\
-                             --zone #{zone} --project_id #{project_id} \\
+                             --zone #{zone} --project_id #{project_id} --tags #{server_name}\\
                              --authorized_ssh_keys #{user}:#{key_file} --network #{network} --print_json
                             DATA
         puts "Creating Server #{h.color(server_name, :bold)}"
         create_server = exec_shell_cmd(cmd_add_instance)
 
-        if create_server.error.downcase.scan("error").size > 0
-          ui.error("\nFailed to create server: #{error}")
+        if create_server.stderr.downcase.scan("error").size > 0
+          ui.error("\nFailed to create server: #{create_server.stderr}")
           exit 1
         end
-        if create_server.output.downcase.scan("error").size > 0
-          output = to_json(create_server.output)
+        if create_server.stdout.downcase.scan("error").size > 0
+          output = to_json(create_server.stdout)
           ui.error("\nFailed to create server: #{output["error"]}")
           exit 1
         end
@@ -231,16 +231,17 @@ class Chef
         firewall_rule = firewall_rule[0..-2] #eliminate last comma
         
         cmd_add_firewall = <<-DATA
-                          gcompute addfirewall #{server_name} --allowed #{firewall_rule} --network #{network} --project_id #{project_id}
+                          gcompute addfirewall #{server_name} --allowed #{firewall_rule} --network #{network} \\
+                           --project_id #{project_id} --print_json
                         DATA
         
         add_fw = exec_shell_cmd(cmd_add_firewall)
 
-        if add_fw.error.downcase.scan("error").size > 0
-          ui.error("\nFailed to add firewall: #{error}")
+        if add_fw.stderr.downcase.scan("error").size > 0
+          ui.error("\nFailed to add firewall: #{add_fw.error}")
           exit 1
         end
-        if add_fw.output.downcase.scan("error").size > 0
+        if add_fw.stdout.downcase.scan("error").size > 0
           output = to_json(add_fw.output)
           ui.error("\nFailed to add firewall: #{output["error"]}")
           exit 1
@@ -253,7 +254,7 @@ class Chef
                         DATA
         get_instance = exec_shell_cmd(cmd_get_instance)
 
-        if not get_instance.error.downcase.scan("error").empty?
+        if not get_instance.stderr.downcase.scan("error").empty?
           ui.error("Failed to fetch server details.")
           exit 1
         end
