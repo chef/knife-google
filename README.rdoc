@@ -24,14 +24,15 @@ Alternatively, the rake utility installs the gcompute CLI utility as part of ins
 = INSTALLATION (WINDOWS):
 Be sure you are running the latest version Chef. Versions earlier than 0.10.0 don't support plugins:
 
-    Follow these instructions to install {Chef-Workstation on Windows}[http://wiki.opscode.com/display/chef/Workstation+Setup+for+Windows]
+    Follow these instructions to install Chef-Workstation on Windows: http://wiki.opscode.com/display/chef/Workstation+Setup+for+Windows
 
 The gcompute tool can be installed on Windows, via Cygwin. Install Cygwin with Python Environment:
 
-    Follow these instructions to install {Cygwin}[http://www.cygwin.com/install.html]
-    Setup Python, easy_install and pip {Python for Cygwin}[http://anythingsimple.blogspot.in/2010/04/using-pip-virtualenv-and.html]
+    Follow these instructions to install Cygwin: http://www.cygwin.com/install.html
+    Setup Python, easy_install and pip: http://anythingsimple.blogspot.in/2010/04/using-pip-virtualenv-and.html
 
 In Windows, set CYGWINPATH environment variable to point the Cygwin Installation and add %CYGWINPATH%\bin to the PATH environment variable 
+
     set CYGWINPATH=<CYGWIN INSTALLATION PATH>
     set PATH=%CYGWINPATH%;%PATH%
 

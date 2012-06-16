@@ -44,12 +44,12 @@ class Chef
         project_id = Chef::Config[:knife][:project]
         validate_project(project_id) 
 
-      @name_args.each do |server| 
-        confirm("Do you really want to delete the server - #{server} ?")
-        del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project_id=#{project_id} -f")
+        @name_args.each do |server| 
+          confirm("Do you really want to delete the server - #{server} ?")
+          del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project_id=#{project_id} -f")
         
-        if not del_instance.stderr.downcase.scan("error").empty?
-          ui.error("Failed to delete server. Error: #{error}")
+          if not del_instance.stderr.downcase.scan("error").empty?
+            ui.error("Failed to delete server. Error: #{error}")
           exit 1
         end
  

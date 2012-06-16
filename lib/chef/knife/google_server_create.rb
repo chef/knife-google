@@ -1,4 +1,3 @@
-#
 # Author:: Chirag Jog (<chiragj@websym.com>)
 # Copyright:: Copyright (c) 2012 Opscode, Inc.
 # License:: Apache License, Version 2.0
@@ -14,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 require 'highline'
 require 'net/ssh/multi'
@@ -170,14 +168,13 @@ class Chef
         tcp_socket && tcp_socket.close
       end
 
-
       def run
-	    unless Chef::Config[:knife][:server_name]
+        unless Chef::Config[:knife][:server_name]
           ui.error("Server Name is a compulsory parameter")
           exit 1
         end
 
-	    unless Chef::Config[:knife][:public_key_file]
+        unless Chef::Config[:knife][:public_key_file]
           ui.error("SSH public key file is a compulsory parameter")
           exit 1
         end
@@ -186,6 +183,7 @@ class Chef
           ui.error("Project ID is a compulsory parameter")
           exit 1
         end
+
         $stdout.sync = true
 
         project_id = Chef::Config[:knife][:project]
@@ -199,6 +197,7 @@ class Chef
         zone = locate_config_value(:availability_zone)
         user = locate_config_value(:ssh_user)
 
+        puts "\n#{ui.color("Waiting for the server to be Instantiated", :magenta)}"
         cmd_add_instance = "#{@gcompute} addinstance #{server_name} --machine_type #{flavor} " +
                              "--zone #{zone} --project_id #{project_id} --tags #{server_name} " +
                              "--authorized_ssh_keys #{user}:#{key_file} --network #{network} --print_json"
@@ -215,11 +214,7 @@ class Chef
           exit 1
         end
                     
-        puts "\n#{ui.color("Waiting for server to be Instantiated", :magenta)}"
-        puts("\n")
-
         puts "\n#{ui.color("Creating Firewall for SSH and other services", :magenta)}"
-        puts("\n")
         tcp_ports = config[:tcp_ports] # Ensure we always open the SSH Port
         udp_ports = config[:udp_ports]
 
@@ -228,8 +223,8 @@ class Chef
         udp_ports.select { |port| firewall_rule << "udp:#{port}," }
         firewall_rule = firewall_rule[0..-2] #eliminate last comma
         
-        cmd_add_firewall = "#{@gcompute} addfirewall #{server_name} --allowed #{firewall_rule} --network #{network} " +
-                           "--project_id #{project_id} --print_json"
+        cmd_add_firewall = "#{@gcompute} addfirewall #{server_name} --allowed #{firewall_rule} " +
+                           "--network #{network} --project_id #{project_id} --print_json"
         
         add_fw = exec_shell_cmd(cmd_add_firewall)
 
@@ -237,6 +232,7 @@ class Chef
           ui.error("\nFailed to add firewall: #{add_fw.error}")
           exit 1
         end
+
         if add_fw.stdout.downcase.scan("error").size > 0
           output = to_json(add_fw.output)
           ui.error("\nFailed to add firewall: #{output["error"]}")
@@ -251,14 +247,14 @@ class Chef
           ui.error("Failed to fetch server details.")
           exit 1
         end
-        server = to_json(get_instance.stdout)
 
+        server = to_json(get_instance.stdout)
         private_ip = []
         public_ip = []
         server["networkInterfaces"].each do  |interface| 
           private_ip << interface["networkIP"]
           interface["accessConfigs"].select { |cfg| public_ip << cfg["natIP"] }
-          end
+        end
 
         puts "#{ui.color("Public IP Address", :cyan)}: #{public_ip[0]}"
         puts "#{ui.color("Private IP Address", :cyan)}: #{private_ip[0]}"

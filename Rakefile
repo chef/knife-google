@@ -1,4 +1,3 @@
-#
 # Author:: Chirag Jog (<chiragj@websym.com>)
 # Copyright:: Copyright (c) 2012 Opscode, Inc.
 # License:: Apache License, Version 2.0
@@ -14,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 require 'rubygems'
 require 'rake/gempackagetask'
@@ -80,7 +78,6 @@ task :install => :package do
   end
 
   #Install the gcompute library on which the knife plugin depends on
-  puts("PIP CMD: #{cmd}")
   shell_cmd = Mixlib::ShellOut.new(cmd)
   shell_cmd.run_command
   puts shell_cmd.stdout
