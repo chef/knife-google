@@ -70,7 +70,7 @@ class Chef
         
         ]
 
-        if not instances_json["items"]
+        if not instances_json
           exit 0
         end
 
