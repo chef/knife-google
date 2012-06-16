@@ -25,6 +25,33 @@ class Chef
     module GoogleBase
 
       @parser = Yajl::Parser.new
+      @gcompute = nil
+      @cygwin_path = nil
+
+      def is_platform_windows?
+        return RUBY_PLATFORM.scan('w32').size > 0
+      end
+
+      def is_cygwin_installed?
+          ENV['CYGWINPATH'] != nil
+      end
+
+      def gcompute
+        return if @gcompute
+        if is_platform_windows?
+          if is_cygwin_installed?
+	  #Remove extra quotes
+	  @cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
+          @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\gcompute"
+	  else
+            puts "Cannot Find Cygwin Installation !!! Please set CYGWINPATH to point to the Cygwin installation"
+            exit 1
+          end
+
+        else
+          @gcompute="gcompute"
+        end
+      end
 
       def parser
         if @parser.nil?
@@ -33,18 +60,23 @@ class Chef
       end
       
       def to_json(data)
-        data_s = StringIO::new(data)
-        parser.parse(data_s)
+        data_s = StringIO::new(data.strip)
+        parser.parse(data_s) {|obj| return obj}
       end
 
       def exec_shell_cmd(cmd)
+        if is_platform_windows? and is_cygwin_installed?
+          #Change the HOME PATH From Windows to Cygwin
+          ENV['HOME'] = "#{@cygwin_path}\\home\\#{ENV['USER']}"
+        end
         shell_cmd = Mixlib::ShellOut.new(cmd)
         shell_cmd.run_command
       end
 
       def validate_project(project_id)
-        getprj = exec_shell_cmd("gcompute getproject --project_id=#{project_id}")
-        if getprj.status.to_i > 0
+        cmd = "#{gcompute} getproject --project_id=#{project_id}"
+        getprj = exec_shell_cmd(cmd)
+        if getprj.status.exitstatus > 0
           if not getprj.stdout.scan("Enter verification code").empty?
             ui.error("If not authenticated, please Authenticate gcompute to access the Google Compute Cloud")
             ui.error("Authenticate by executing gcompute auth --project_id=<project_id>")

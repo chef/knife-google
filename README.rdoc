@@ -4,7 +4,7 @@
 
 This is the official Opscode Knife plugin for Google. This plugin gives knife the ability to create, bootstrap, and manage servers on the Google Cloud.
 
-= INSTALLATION:
+= INSTALLATION (LINUX/OSX):
 Be sure you are running the latest version Chef. Versions earlier than 0.10.0 don't support plugins:
 
     gem install chef
@@ -18,6 +18,24 @@ This plugin is distributed as a Ruby Gem. To build and install it, run:
     gem install knife-google
 
 Alternatively, the rake utility installs the gcompute CLI utility as part of installation
+
+    rake install
+
+= INSTALLATION (WINDOWS):
+Be sure you are running the latest version Chef. Versions earlier than 0.10.0 don't support plugins:
+
+    Follow these instructions to install {Chef-Workstation on Windows}[http://wiki.opscode.com/display/chef/Workstation+Setup+for+Windows]
+
+The gcompute tool can be installed on Windows, via Cygwin. Install Cygwin with Python Environment:
+
+    Follow these instructions to install {Cygwin}[http://www.cygwin.com/install.html]
+    Setup Python, easy_install and pip {Python for Cygwin}[http://anythingsimple.blogspot.in/2010/04/using-pip-virtualenv-and.html]
+
+In Windows, set CYGWINPATH environment variable to point the Cygwin Installation and add %CYGWINPATH%\bin to the PATH environment variable 
+    set CYGWINPATH=<CYGWIN INSTALLATION PATH>
+    set PATH=%CYGWINPATH%;%PATH%
+
+Use the rake utility to install gcompute CLI utility and the knife plugin
 
     rake install
 

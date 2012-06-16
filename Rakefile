@@ -19,9 +19,11 @@
 require 'rubygems'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
-require 'open3'
+require 'mixlib/shellout'
 
 GEM_NAME = "knife-google"
+GCOMPUTE_PACKAGE="gcompute.tar.gz"
+GCOMPUTE_PACKAGE_LOCATION="external"
 
 spec = eval(File.read("knife-google.gemspec"))
 
@@ -44,16 +46,45 @@ rescue LoadError
   puts "sdoc is not available. (sudo) gem install sdoc to generate rdoc documentation."
 end
 
+
 task :install => :package do
-  #Install the gcompute library on which the knife plugin depends on
-  stdin, stdout, stderr = Open3.popen3("which pip")
-  if stdout.read.size == 0
-    puts ("gcompute is a python package. Pip - install for Python packages is not installed. Please Install it")
+
+  def is_python_pip_installed?
+    shell_cmd = Mixlib::ShellOut.new("which pip")
+    shell_cmd.run_command
+    return shell_cmd.status.exitstatus == 0
+  end
+
+  def is_platform_windows?
+    return RUBY_PLATFORM.scan('w32').size > 0
+  end
+
+  def is_cygwin_installed?
+    ENV['CYGWINPATH'] != nil and ENV['PATH'].scan('cygwin').size > 0
+  end
+
+  if is_platform_windows?
+    if is_cygwin_installed?
+      cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
+      cmd = "#{cygwin_path}\\bin\\python2.6.exe #{cygwin_path}\\bin\\pip install #{GCOMPUTE_PACKAGE_LOCATION}//#{GCOMPUTE_PACKAGE}"
+    else
+      puts "Cannot Find Cygwin Installation !!! Please set environment variables CYGWINPATH and PATH correctly"
+      exit 1
+    end
+  else #Platform is Linux/OSX
+    cmd = "pip install #{GCOMPUTE_PACKAGE_LOCATION}/#{GCOMPUTE_PACKAGE}"
+  end
+  if not is_python_pip_installed?
+    puts ("gcompute is a python package. Pip - the installer for Python packages is not installed. Please Install it")
     exit 1
   end
-  stdin, stdout, stderr = Open3.popen3("pip install external/gcompute.tar.gz")
-  puts stdout.read
-  err = stderr.read
+
+  #Install the gcompute library on which the knife plugin depends on
+  puts("PIP CMD: #{cmd}")
+  shell_cmd = Mixlib::ShellOut.new(cmd)
+  shell_cmd.run_command
+  puts shell_cmd.stdout
+  err = shell_cmd.stderr
   if err.size > 0
     puts ("Failed to install gcompute. Error: #{err}")
     exit 1

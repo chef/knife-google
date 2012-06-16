@@ -199,12 +199,10 @@ class Chef
         zone = locate_config_value(:availability_zone)
         user = locate_config_value(:ssh_user)
 
-        cmd_add_instance = <<-DATA
-                            gcompute addinstance #{server_name} --machine_type #{flavor} \\
-                             --zone #{zone} --project_id #{project_id} --tags #{server_name}\\
-                             --authorized_ssh_keys #{user}:#{key_file} --network #{network} --print_json
-                            DATA
-        puts "Creating Server #{h.color(server_name, :bold)}"
+        cmd_add_instance = "#{@gcompute} addinstance #{server_name} --machine_type #{flavor} " +
+                             "--zone #{zone} --project_id #{project_id} --tags #{server_name} " +
+                             "--authorized_ssh_keys #{user}:#{key_file} --network #{network} --print_json"
+
         create_server = exec_shell_cmd(cmd_add_instance)
 
         if create_server.stderr.downcase.scan("error").size > 0
@@ -217,10 +215,10 @@ class Chef
           exit 1
         end
                     
-        print "\n#{ui.color("Waiting for server to be Instantiated", :magenta)}"
+        puts "\n#{ui.color("Waiting for server to be Instantiated", :magenta)}"
         puts("\n")
 
-        print "\n#{ui.color("Creating Firewall for SSH and other services", :magenta)}"
+        puts "\n#{ui.color("Creating Firewall for SSH and other services", :magenta)}"
         puts("\n")
         tcp_ports = config[:tcp_ports] # Ensure we always open the SSH Port
         udp_ports = config[:udp_ports]
@@ -230,10 +228,8 @@ class Chef
         udp_ports.select { |port| firewall_rule << "udp:#{port}," }
         firewall_rule = firewall_rule[0..-2] #eliminate last comma
         
-        cmd_add_firewall = <<-DATA
-                          gcompute addfirewall #{server_name} --allowed #{firewall_rule} --network #{network} \\
-                           --project_id #{project_id} --print_json
-                        DATA
+        cmd_add_firewall = "#{@gcompute} addfirewall #{server_name} --allowed #{firewall_rule} --network #{network} " +
+                           "--project_id #{project_id} --print_json"
         
         add_fw = exec_shell_cmd(cmd_add_firewall)
 
@@ -248,10 +244,7 @@ class Chef
         end
  
         #Fetch server information
-        #
-        cmd_get_instance  = <<-DATA
-                          gcompute getinstance #{server_name} --project_id #{project_id} --print_json
-                        DATA
+        cmd_get_instance  = "#{@gcompute} getinstance #{server_name} --project_id #{project_id} --print_json "
         get_instance = exec_shell_cmd(cmd_get_instance)
 
         if not get_instance.stderr.downcase.scan("error").empty?
@@ -269,9 +262,9 @@ class Chef
 
         puts "#{ui.color("Public IP Address", :cyan)}: #{public_ip[0]}"
         puts "#{ui.color("Private IP Address", :cyan)}: #{private_ip[0]}"
-        print "\n#{ui.color("Waiting for sshd.", :magenta)}"
+        puts "\n#{ui.color("Waiting for sshd.", :magenta)}"
         puts("\n")
-        print(".") until tcp_test_ssh(public_ip[0], "22") { sleep @initial_sleep_delay ||= 10; puts("done") }
+        puts(".") until tcp_test_ssh(public_ip[0], "22") { sleep @initial_sleep_delay ||= 10; puts("done") }
         puts "\nBootstrapping #{h.color(server_name, :bold)}..."
         bootstrap_for_node(server_name, public_ip[0]).run
       end

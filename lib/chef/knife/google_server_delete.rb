@@ -46,14 +46,14 @@ class Chef
 
       @name_args.each do |server| 
         confirm("Do you really want to delete the server - #{server} ?")
-        del_instance = exec_shell_cmd("gcompute deleteinstance #{server} --print_json --project_id=#{project_id} -f")
+        del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project_id=#{project_id} -f")
         
         if not del_instance.stderr.downcase.scan("error").empty?
           ui.error("Failed to delete server. Error: #{error}")
           exit 1
         end
  
-        del_fw = exec_shell_cmd("gcompute deletefirewall #{server} --print_json --project_id=#{project_id} -f")
+        del_fw = exec_shell_cmd("#{@gcompute} deletefirewall #{server} --print_json --project_id=#{project_id} -f")
         if not del_fw.stderr.downcase.scan("error").empty?
           ui.error("Failed to delete firewall. Error: #{error}")
           exit 1

@@ -52,7 +52,7 @@ class Chef
 
         project_id = Chef::Config[:knife][:project]
         validate_project(project_id)
-        list_instances = exec_shell_cmd("gcompute listinstances --print_json --project_id=#{project_id}")
+        list_instances = exec_shell_cmd("#{@gcompute} listinstances --print_json --project_id=#{project_id}")
         list_instances.run_command
 
         if not list_instances.stderr.downcase.scan("error").empty?
