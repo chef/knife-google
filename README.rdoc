@@ -31,10 +31,10 @@ The gcompute tool can be installed on Windows, via Cygwin. Install Cygwin with P
     Follow these instructions to install Cygwin: http://www.cygwin.com/install.html
     Setup Python, easy_install and pip: http://anythingsimple.blogspot.in/2010/04/using-pip-virtualenv-and.html
 
-In Windows, set CYGWINPATH environment variable to point the Cygwin Installation and add %CYGWINPATH%\bin to the PATH environment variable 
+In Windows, set CYGWINPATH environment variable to point the Cygwin Installation and add %CYGWINPATH%\\bin to the PATH environment variable 
 
     set CYGWINPATH=<CYGWIN INSTALLATION PATH>
-    set PATH=%CYGWINPATH%;%PATH%
+    set PATH=%CYGWINPATH%\\bin;%PATH%
 
 Use the rake utility to install gcompute CLI utility and the knife plugin
 
