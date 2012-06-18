@@ -76,7 +76,6 @@ class Chef
             ENV['HOME'] = cygwin_home
 	  end
         end
-	puts "Final HOME : #{ENV['HOME']}"
         shell_cmd = Mixlib::ShellOut.new(cmd)
         shell_cmd.run_command
       end
