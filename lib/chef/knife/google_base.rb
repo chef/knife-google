@@ -42,7 +42,7 @@ class Chef
           if is_cygwin_installed?
 	  #Remove extra quotes
 	  @cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
-          @gcompute="bash -c python #{@cygwin_path}\\bin\\gcompute"
+          @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\gcompute"
 	  else
             puts "Cannot Find Cygwin Installation !!! Please set CYGWINPATH to point to the Cygwin installation"
             exit 1

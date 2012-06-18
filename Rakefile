@@ -64,7 +64,7 @@ task :install => :package do
   if is_platform_windows?
     if is_cygwin_installed?
       cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
-      cmd = "bash -c python #{cygwin_path}\\bin\\pip install #{GCOMPUTE_PACKAGE_LOCATION}//#{GCOMPUTE_PACKAGE}"
+      cmd = "#{cygwin_path}\\bin\\python2.6.exe #{cygwin_path}\\bin\\pip install #{GCOMPUTE_PACKAGE_LOCATION}//#{GCOMPUTE_PACKAGE}"
     else
       puts "Cannot Find Cygwin Installation !!! Please set environment variables CYGWINPATH and PATH correctly"
       exit 1
