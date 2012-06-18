@@ -40,10 +40,11 @@ class Chef
         return if @gcompute
         if is_platform_windows?
           if is_cygwin_installed?
-	  #Remove extra quotes
-	  @cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
-          @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\gcompute"
-	  else
+	        #Remove extra quotes
+	        @cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
+            #FIXME Generalize the python binary 
+            @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\gcompute"
+	      else
             puts "Cannot Find Cygwin Installation !!! Please set CYGWINPATH to point to the Cygwin installation"
             exit 1
           end
@@ -67,8 +68,15 @@ class Chef
       def exec_shell_cmd(cmd)
         if is_platform_windows? and is_cygwin_installed?
           #Change the HOME PATH From Windows to Cygwin
-          ENV['HOME'] = "#{@cygwin_path}\\home\\#{ENV['USER']}"
+          cygwin_home = "#{@cygwin_path}\\home\\#{ENV['USER']}"
+  
+          #Auth token should exist in either ENV['HOME'] or cygwin_home
+          #XXX Find a way to remove the hard-coded file name
+	  if not File.file?("#{ENV['HOME']}\\.gcompute_auth")
+            ENV['HOME'] = cygwin_home
+	  end
         end
+	puts "Final HOME : #{ENV['HOME']}"
         shell_cmd = Mixlib::ShellOut.new(cmd)
         shell_cmd.run_command
       end
