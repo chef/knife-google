@@ -70,20 +70,6 @@ class Chef
         :description => "The Chef node name for your new node",
         :proc => Proc.new { |t| Chef::Config[:knife][:chef_node_name] = t }
 
-      option :tcp_ports,
-        :short => "-T X,Y,Z",
-        :long => "--tcp X,Y,Z",
-        :description => "TCP ports to be made accessible for this server",
-        :proc => Proc.new { |tcp| tcp.split(',') },
-        :default => [22]
-
-      option :udp_ports,
-        :short => "-U X,Y,Z",
-        :long => "--udp X,Y,Z",
-        :description => "UDP ports to be made accessible for this server",
-        :proc => Proc.new { |udp| udp.split(',') },
-        :default => []
-
       option :ssh_user,
         :short => "-x USERNAME",
         :long => "--ssh-user USERNAME",
@@ -214,31 +200,6 @@ class Chef
           exit 1
         end
                     
-        puts "\n#{ui.color("Creating Firewall for SSH and other services", :magenta)}"
-        tcp_ports = config[:tcp_ports] # Ensure we always open the SSH Port
-        udp_ports = config[:udp_ports]
-
-        firewall_rule = ""
-        tcp_ports.select { |port| firewall_rule << "tcp:#{port}," }
-        udp_ports.select { |port| firewall_rule << "udp:#{port}," }
-        firewall_rule = firewall_rule[0..-2] #eliminate last comma
-        
-        cmd_add_firewall = "#{@gcompute} addfirewall #{server_name} --allowed #{firewall_rule} " +
-                           "--network #{network} --project_id #{project_id} --print_json"
-        
-        add_fw = exec_shell_cmd(cmd_add_firewall)
-
-        if add_fw.stderr.downcase.scan("error").size > 0
-          ui.error("\nFailed to add firewall: #{add_fw.error}")
-          exit 1
-        end
-
-        if add_fw.stdout.downcase.scan("error").size > 0
-          output = to_json(add_fw.output)
-          ui.error("\nFailed to add firewall: #{output["error"]}")
-          exit 1
-        end
- 
         #Fetch server information
         cmd_get_instance  = "#{@gcompute} getinstance #{server_name} --project_id #{project_id} --print_json "
         get_instance = exec_shell_cmd(cmd_get_instance)

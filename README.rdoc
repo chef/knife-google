@@ -78,11 +78,6 @@ Deletes an existing server in the currently configured Google Cloud account by t
 
 Outputs a list of all servers in the currently configured Google Cloud account. Please note - this shows all instances associated with the account, some of which may not be currently managed by the Chef server.
 
-== knife google image list
-
-Outputs a list of all available images available to the currently configured Google Cloud account. An image is a collection of files used to create or rebu
-ild a server. Google provides a number of pre-built OS images by default. This data can be useful when choosing an image id to pass to the <tt>knife google server create</tt> subcommand.
-
 = LICENSE:
 
 Author:: Chirag Jog (<chiragj@websym.com>)

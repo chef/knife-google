@@ -50,14 +50,8 @@ class Chef
         
           if not del_instance.stderr.downcase.scan("error").empty?
             ui.error("Failed to delete server. Error: #{error}")
-          exit 1
-        end
- 
-        del_fw = exec_shell_cmd("#{@gcompute} deletefirewall #{server} --print_json --project_id=#{project_id} -f")
-        if not del_fw.stderr.downcase.scan("error").empty?
-          ui.error("Failed to delete firewall. Error: #{error}")
-          exit 1
-        end
+            exit 1
+          end
           ui.warn("Deleted server #{server}")
         end
       end
