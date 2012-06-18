@@ -35,20 +35,20 @@ class Chef
         :short => "-p PROJECTNAME",
         :long => "--project_id PROJECTNAME",
         :description => "Your Google Compute Project Name",
-        :proc => Proc.new { |project| Chef::Config[:knife][:project] = project } 
+        :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project } 
 
       def h
         @highline ||= HighLine.new
       end
 
       def run
-        unless Chef::Config[:knife][:project]
+        unless Chef::Config[:knife][:google_project]
           ui.error("Project ID is a compulsory parameter")
           exit 1
         end
         $stdout.sync = true
 
-        project_id = Chef::Config[:knife][:project]
+        project_id = Chef::Config[:knife][:google_project]
         validate_project(project_id)
         list_instances = exec_shell_cmd("#{@gcompute} listinstances --print_json --project_id=#{project_id}")
         list_instances.run_command
@@ -68,7 +68,7 @@ class Chef
         
         ]
 
-        if not instances_json
+        if not instances_json.has_key?("items")
           exit 0
         end
 

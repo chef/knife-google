@@ -119,7 +119,7 @@ class Chef
         :short => "-p PROJECT",
         :long => "--project_id PROJECT",
         :description => "Google Compute Project",
-        :proc => Proc.new { |project| Chef::Config[:knife][:project] = project}
+        :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project}
 
       def h
         @highline ||= HighLine.new
@@ -165,14 +165,14 @@ class Chef
           exit 1
         end
 
-        unless Chef::Config[:knife][:project]
+        unless Chef::Config[:knife][:google_project]
           ui.error("Project ID is a compulsory parameter")
           exit 1
         end
 
         $stdout.sync = true
 
-        project_id = Chef::Config[:knife][:project]
+        project_id = Chef::Config[:knife][:google_project]
         validate_project(project_id)
 
         server_name = Chef::Config[:knife][:server_name]
