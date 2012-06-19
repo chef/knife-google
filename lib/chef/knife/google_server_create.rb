@@ -220,7 +220,6 @@ class Chef
         puts "#{ui.color("Public IP Address", :cyan)}: #{public_ip[0]}"
         puts "#{ui.color("Private IP Address", :cyan)}: #{private_ip[0]}"
         puts "\n#{ui.color("Waiting for sshd.", :magenta)}"
-        puts("\n")
         puts(".") until tcp_test_ssh(public_ip[0], "22") { sleep @initial_sleep_delay ||= 10; puts("done") }
         puts "\nBootstrapping #{h.color(server_name, :bold)}..."
         bootstrap_for_node(server_name, public_ip[0]).run
@@ -230,7 +229,7 @@ class Chef
         bootstrap = Chef::Knife::Bootstrap.new
         bootstrap.name_args = [public_ip]
         bootstrap.config[:run_list] = config[:run_list]
-        bootstrap.config[:ssh_user] = config[:ssh_user] || "root"
+        bootstrap.config[:ssh_user] = locate_config_value(:ssh_user) || "root"
         bootstrap.config[:identity_file] = locate_config_value(:private_key_file)
         bootstrap.config[:chef_node_name] = locate_config_value(:chef_node_name) || server_name
         bootstrap.config[:distro] = locate_config_value(:distro)
