@@ -47,6 +47,7 @@ class Chef
         @name_args.each do |server| 
           confirm("Do you really want to delete the server - #{server} ?")
           del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project_id=#{project_id} -f")
+          Chef::Log.debug 'Executing ' + del_instance.command
         
           if not del_instance.stderr.downcase.scan("error").empty?
             ui.error("Failed to delete server. Error: #{error}")

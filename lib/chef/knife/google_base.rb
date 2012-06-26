@@ -20,10 +20,10 @@ require 'stringio'
 require 'yajl'
 require 'mixlib/shellout'
 
+CLI_PREFIX='gcutil'
 class Chef
   class Knife
     module GoogleBase
-
       @parser = Yajl::Parser.new
       @gcompute = nil
       @cygwin_path = nil
@@ -43,14 +43,14 @@ class Chef
 	        #Remove extra quotes
 	        @cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
             #FIXME Generalize the python binary 
-            @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\gcompute"
+            @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\#{CLI_PREFIX}"
 	      else
             puts "Cannot Find Cygwin Installation !!! Please set CYGWINPATH to point to the Cygwin installation"
             exit 1
           end
-
         else
-          @gcompute="gcompute"
+          Chef::Log.debug("Linux Environment")
+          @gcompute = CLI_PREFIX
         end
       end
 
@@ -72,7 +72,7 @@ class Chef
   
           #Auth token should exist in either ENV['HOME'] or cygwin_home
           #XXX Find a way to remove the hard-coded file name
-	  if not File.file?("#{ENV['HOME']}\\.gcompute_auth")
+	  if not File.file?("#{ENV['HOME']}\\.#{CLI_PREFIX}_auth")
             ENV['HOME'] = cygwin_home
 	  end
         end
@@ -82,6 +82,7 @@ class Chef
 
       def validate_project(project_id)
         cmd = "#{gcompute} getproject --project_id=#{project_id}"
+        Chef::Log.debug 'Executing ' + cmd
         getprj = exec_shell_cmd(cmd)
         if getprj.status.exitstatus > 0
           if not getprj.stdout.scan("Enter verification code").empty?
