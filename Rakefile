@@ -66,7 +66,7 @@ task :install => :package do
       cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
       cmd = "#{cygwin_path}\\bin\\python2.6.exe #{cygwin_path}\\bin\\pip install #{GCOMPUTE_PACKAGE_LOCATION}//#{GCOMPUTE_PACKAGE}"
     else
-      puts "Cannot Find Cygwin Installation !!! Please set environment variables CYGWINPATH and PATH correctly"
+      puts "Cannot Find Cygwin Installation !!! Please set environment variables CYGWINPATH to point the Cygwin Installation"
       exit 1
     end
   else #Platform is Linux/OSX
