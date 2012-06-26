@@ -115,6 +115,19 @@ class Chef
         :proc => Proc.new { |network| Chef::Config[:knife][:network] = network},
         :default => "default"
 
+      option :external_ip_address,
+        :short => "-e IPADDRESS",
+        :long => "--external-ip-address IPADDRESS",
+        :description => "A Static IP provided by Google",
+        :proc => Proc.new { |ipaddr| Chef::Config[:knife][:external_ip_address] = ipaddr},
+        :default => "ephemeral"
+
+      option :internal_ip_address,
+        :short => "-P IPADDRESS",
+        :long => "--internal-ip-address IPADDRESS",
+        :description => "A Static IP provided by Google",
+        :proc => Proc.new { |ipaddr| Chef::Config[:knife][:internal_ip_address] = ipaddr}
+
       option :project,
         :short => "-p PROJECT",
         :long => "--project_id PROJECT",
@@ -127,7 +140,7 @@ class Chef
       
       def locate_config_value(key)
         key = key.to_sym
-        Chef::Config[:knife][key] || config[key]
+        config[key] || Chef::Config[:knife][key]
       end
 
       def tcp_test_ssh(hostname, port)
@@ -182,12 +195,16 @@ class Chef
         flavor = locate_config_value(:flavor)
         zone = locate_config_value(:availability_zone)
         user = locate_config_value(:ssh_user)
-
+        external_ip_address = locate_config_value(:external_ip_address)
+        internal_ip_address = locate_config_value(:internal_ip_address) || nil
         puts "\n#{ui.color("Waiting for the server to be Instantiated", :magenta)}"
         cmd_add_instance = "#{@gcompute} addinstance #{server_name} --machine_type #{flavor} " +
                              "--zone #{zone} --project_id #{project_id} --tags #{server_name} " +
-                             "--authorized_ssh_keys #{user}:#{key_file} --network #{network} --print_json"
+                             "--authorized_ssh_keys #{user}:#{key_file} --network #{network} " +
+                             "--external_ip_address #{external_ip_address} --print_json"
+        cmd_add_instance << " --internal_ip_address #{internal_ip_address}" if internal_ip_address 
 
+        Chef::Log.debug 'Executing ' +  cmd_add_instance
         create_server = exec_shell_cmd(cmd_add_instance)
 
         if create_server.stderr.downcase.scan("error").size > 0
@@ -202,6 +219,7 @@ class Chef
                     
         #Fetch server information
         cmd_get_instance  = "#{@gcompute} getinstance #{server_name} --project_id #{project_id} --print_json "
+        Chef::Log.debug 'Executing ' +  cmd_get_instance
         get_instance = exec_shell_cmd(cmd_get_instance)
 
         if not get_instance.stderr.downcase.scan("error").empty?
@@ -228,7 +246,7 @@ class Chef
       def bootstrap_for_node(server_name, public_ip)
         bootstrap = Chef::Knife::Bootstrap.new
         bootstrap.name_args = [public_ip]
-        bootstrap.config[:run_list] = config[:run_list]
+        bootstrap.config[:run_list] = locate_config_value(:run_list)
         bootstrap.config[:ssh_user] = locate_config_value(:ssh_user) || "root"
         bootstrap.config[:identity_file] = locate_config_value(:private_key_file)
         bootstrap.config[:chef_node_name] = locate_config_value(:chef_node_name) || server_name

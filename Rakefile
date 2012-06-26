@@ -20,7 +20,7 @@ require 'rake/rdoctask'
 require 'mixlib/shellout'
 
 GEM_NAME = "knife-google"
-GCOMPUTE_PACKAGE="gcompute.tar.gz"
+GCOMPUTE_PACKAGE="gcutil.tar.gz"
 GCOMPUTE_PACKAGE_LOCATION="external"
 
 spec = eval(File.read("knife-google.gemspec"))

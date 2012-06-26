@@ -9,15 +9,15 @@ Be sure you are running the latest version Chef. Versions earlier than 0.10.0 do
 
     gem install chef
 
-This plugin depends on the gcompute CLI utility
-    pip install https://dl.google.com/dl/compute/gcompute.tar.gz
+This plugin depends on the gcutil CLI utility
+    pip install https://dl.google.com/dl/compute/gcutil.tar.gz
 
 This plugin is distributed as a Ruby Gem. To build and install it, run:
 
     gem build knife-google
     gem install knife-google
 
-Alternatively, the rake utility installs the gcompute CLI utility as part of installation
+Alternatively, the rake utility installs the gcutil CLI utility as part of installation
 
     rake install
 
@@ -26,24 +26,23 @@ Be sure you are running the latest version Chef. Versions earlier than 0.10.0 do
 
     Follow these instructions to install Chef-Workstation on Windows: http://wiki.opscode.com/display/chef/Workstation+Setup+for+Windows
 
-The gcompute tool can be installed on Windows, via Cygwin. Install Cygwin with Python Environment:
+The gcutil tool can be installed on Windows, via Cygwin. 
 
-    Follow these instructions to install Cygwin: http://www.cygwin.com/install.html
-    Setup Python, easy_install and pip: http://anythingsimple.blogspot.in/2010/04/using-pip-virtualenv-and.html
+    Install Cygwin with Python Environment: https://developers.google.com/compute/docs/gcutil_setup
 
 In Windows, set CYGWINPATH environment variable to point the Cygwin Installation and add %CYGWINPATH%\\bin to the PATH environment variable 
 
     set CYGWINPATH=<CYGWIN INSTALLATION PATH>
     set PATH=%CYGWINPATH%\\bin;%PATH%
 
-Use the rake utility to install gcompute CLI utility and the knife plugin
+Use the rake utility to install gcutil CLI utility and the knife plugin
 
     rake install
 
 = CONFIGURATION:
-Run gcompute auth to request a token. This command prints a URL where you can acquire an OAuth 2.0 refresh token for Google Compute.
+Run gcutil auth to request a token. This command prints a URL where you can acquire an OAuth 2.0 refresh token for Google Compute.
 
-    gcompute auth --project_id=<your_project_id>
+    gcutil auth --project_id=<your_project_id>
     Go to the following link in your browser:
     <link>
 

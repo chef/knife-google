@@ -3,7 +3,7 @@ require 'knife-google/version'
 
 Gem::Specification.new do |s|
   s.name = 'knife-google'
-  s.version = KnifeGoogle::VERSION
+: s.version = KnifeGoogle::VERSION
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.rdoc", "LICENSE" ]
