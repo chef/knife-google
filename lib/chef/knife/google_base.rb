@@ -20,7 +20,7 @@ require 'stringio'
 require 'yajl'
 require 'mixlib/shellout'
 
-CLI_PREFIX='gcutil'
+$CLI_PREFIX='gcutil'
 class Chef
   class Knife
     module GoogleBase
@@ -43,14 +43,14 @@ class Chef
 	        #Remove extra quotes
 	        @cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
             #FIXME Generalize the python binary 
-            @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\#{CLI_PREFIX}"
+            @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\#{$CLI_PREFIX}"
 	      else
             puts "Cannot Find Cygwin Installation !!! Please set CYGWINPATH to point to the Cygwin installation"
             exit 1
           end
         else
           Chef::Log.debug("Linux Environment")
-          @gcompute = CLI_PREFIX
+          @gcompute = $CLI_PREFIX
         end
       end
 
@@ -72,7 +72,7 @@ class Chef
   
           #Auth token should exist in either ENV['HOME'] or cygwin_home
           #XXX Find a way to remove the hard-coded file name
-	  if not File.file?("#{ENV['HOME']}\\.#{CLI_PREFIX}_auth")
+	  if not File.file?("#{ENV['HOME']}\\.#{$CLI_PREFIX}_auth")
             ENV['HOME'] = cygwin_home
 	  end
         end
@@ -86,8 +86,9 @@ class Chef
         getprj = exec_shell_cmd(cmd)
         if getprj.status.exitstatus > 0
           if not getprj.stdout.scan("Enter verification code").empty?
+            ui.error("Failed to authenticate the account")
             ui.error("If not authenticated, please Authenticate gcompute to access the Google Compute Cloud")
-            ui.error("Authenticate by executing gcompute auth --project_id=<project_id>")
+            ui.error("Authenticate by executing gcutil auth --project_id=<project_id>")
             exit 1
           end
           ui.error("#{getprj.stderr}")
