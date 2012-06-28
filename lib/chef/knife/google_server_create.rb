@@ -77,7 +77,7 @@ class Chef
         :default => "ubuntu"
 
       option :server_name,
-        :short => "-N NAME",
+        :short => "-s NAME",
         :long => "--server-name NAME",
         :description => "The server name",
         :proc => Proc.new { |server_name| Chef::Config[:knife][:server_name] = server_name } 
