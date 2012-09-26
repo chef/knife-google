@@ -212,8 +212,12 @@ class Chef
           exit 1
         end
         if create_server.stdout.downcase.scan("error").size > 0
-          output = to_json(create_server.stdout)
-          ui.error("\nFailed to create server: #{output["error"]}")
+          begin
+            output = to_json(create_server.stdout)["items"][0]["error"]
+          rescue
+            output = create_server.stdout
+          end
+          ui.error("\nFailed to create server: #{output}")
           exit 1
         end
                     
