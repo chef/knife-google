@@ -92,9 +92,8 @@ class Chef
       option :image,
         :short => "-I IMAGE",
         :long => "--google-image IMAGE",
-        :description => "Your google virtual app template/image name",
-        :proc => Proc.new { |template| Chef::Config[:knife][:image] = template },
-        :default => "gcompute8-standard"
+        :description => "Your google Image resource name",
+        :proc => Proc.new { |template| Chef::Config[:knife][:image] = template }
         
       option :private_key_file,
         :short => "-i PRIVATE_KEY_FILE",
@@ -203,6 +202,7 @@ class Chef
                              "--authorized_ssh_keys #{user}:#{key_file} --network #{network} " +
                              "--external_ip_address #{external_ip_address} --print_json"
         cmd_add_instance << " --internal_ip_address #{internal_ip_address}" if internal_ip_address 
+        cmd_add_instance << " --image=#{image}" if image
 
         Chef::Log.debug 'Executing ' +  cmd_add_instance
         create_server = exec_shell_cmd(cmd_add_instance)
