@@ -50,8 +50,11 @@ Run gcutil auth to request a token. This command prints a URL where you can acqu
 
 
     # provision a new 2 Core 1GB Ubuntu 10.04 webserver
-    knife google server create -N <server-name> -i <SSH Identity Key> -k <SSH Public Key> --tcp 22,80,8080 
-    --udp 10000 --project_id <project-name> --flavor standard-2-cpu-ephemeral-disk
+    knife google server create --server-name <server-name> -i <SSH Identity Key> -k <SSH Public Key> 
+    --project_id <project-name> --flavor n1-standard-2 --distro chef-full 
+    --google-image projects/google/images/ubuntu-10-04-v20120912
+    -r role[<your role>] -E <your environment>
+
     
 Additionally the following options may be set in your `knife.rb`:
 

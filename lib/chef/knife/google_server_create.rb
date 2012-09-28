@@ -48,7 +48,7 @@ class Chef
         :short => "-Z ZONE",
         :long => "--availability-zone ZONE",
         :description => "The Availability Zone",
-        :default => "us-east-a",
+        :default => "us-east1-a",
         :proc => Proc.new { |key| Chef::Config[:knife][:availability_zone] = key }
 
       option :distro,
@@ -92,9 +92,8 @@ class Chef
       option :image,
         :short => "-I IMAGE",
         :long => "--google-image IMAGE",
-        :description => "Your google virtual app template/image name",
-        :proc => Proc.new { |template| Chef::Config[:knife][:image] = template },
-        :default => "gcompute8-standard"
+        :description => "Your google Image resource name",
+        :proc => Proc.new { |template| Chef::Config[:knife][:image] = template }
         
       option :private_key_file,
         :short => "-i PRIVATE_KEY_FILE",
@@ -203,6 +202,7 @@ class Chef
                              "--authorized_ssh_keys #{user}:#{key_file} --network #{network} " +
                              "--external_ip_address #{external_ip_address} --print_json"
         cmd_add_instance << " --internal_ip_address #{internal_ip_address}" if internal_ip_address 
+        cmd_add_instance << " --image=#{image}" if image
 
         Chef::Log.debug 'Executing ' +  cmd_add_instance
         create_server = exec_shell_cmd(cmd_add_instance)
@@ -212,8 +212,12 @@ class Chef
           exit 1
         end
         if create_server.stdout.downcase.scan("error").size > 0
-          output = to_json(create_server.stdout)
-          ui.error("\nFailed to create server: #{output["error"]}")
+          begin
+            output = to_json(create_server.stdout)["items"][0]["error"]
+          rescue
+            output = create_server.stdout
+          end
+          ui.error("\nFailed to create server: #{output}")
           exit 1
         end
                     
