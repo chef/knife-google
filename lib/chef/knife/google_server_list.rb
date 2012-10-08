@@ -22,8 +22,6 @@ class Chef
         require 'stringio'
         require 'yajl'
         require 'highline'
-        require 'chef/knife'
-        require 'chef/json_compat'
         require 'tempfile'
         require 'chef/knife/google_base'
         Chef::Knife.load_deps
