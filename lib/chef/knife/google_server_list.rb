@@ -29,12 +29,12 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google server list (options)"
+      banner "knife google server list PROJECT_ID (options)"
 
       option :project_id,
-        :short => "-p PROJECTNAME",
-        :long => "--project_id PROJECTNAME",
-        :description => "Your Google Compute Project Name",
+        :short => "-p PROJECT_ID",
+        :long => "--project_id PROJECT_ID",
+        :description => "The Google Compute Engine project identifier",
         :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project } 
 
       def h
@@ -43,7 +43,7 @@ class Chef
 
       def run
         unless Chef::Config[:knife][:google_project]
-          ui.error("Project ID is a compulsory parameter")
+          ui.error("A Google Compute Engine project identifier is required")
           exit 1
         end
         $stdout.sync = true
