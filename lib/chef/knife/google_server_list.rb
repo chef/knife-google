@@ -31,9 +31,9 @@ class Chef
 
       banner "knife google server list PROJECT_ID (options)"
 
-      option :project_id,
+      option :project,
         :short => "-p PROJECT_ID",
-        :long => "--project_id PROJECT_ID",
+        :long => "--project PROJECT_ID",
         :description => "The Google Compute Engine project identifier",
         :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project } 
 
@@ -50,7 +50,7 @@ class Chef
 
         project_id = Chef::Config[:knife][:google_project]
         validate_project(project_id)
-        list_instances = exec_shell_cmd("#{@gcompute} listinstances --print_json --project_id=#{project_id}")
+        list_instances = exec_shell_cmd("#{@gcompute} listinstances --print_json --project=#{project_id}")
         Chef::Log.debug 'Executing ' + list_instances.command
         list_instances.run_command
 
