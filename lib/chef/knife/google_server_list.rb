@@ -14,18 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'stringio'
-require 'yajl'
-require 'highline'
-require 'chef/knife'
-require 'chef/json_compat'
-require 'tempfile'
-
-require 'chef/knife/google_base'
-
 class Chef
   class Knife
     class GoogleServerList < Knife
+
+      deps do
+        require 'stringio'
+        require 'yajl'
+        require 'highline'
+        require 'tempfile'
+        require 'chef/knife/google_base'
+        Chef::Knife.load_deps
+      end
 
       include Knife::GoogleBase
 
