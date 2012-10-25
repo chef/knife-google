@@ -26,9 +26,9 @@ class Chef
 
       banner "knife google server delete SERVER (options)"
 
-      option :project_id,
+      option :project,
         :short => "-p PROJECTNAME",
-        :long => "--project_id PROJECTNAME",
+        :long => "--project PROJECTNAME",
         :description => "Your Google Compute Project Name",
         :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project } 
 
@@ -44,7 +44,7 @@ class Chef
 
         @name_args.each do |server| 
           confirm("Do you really want to delete the server - #{server} ?")
-          del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project_id=#{project_id} -f")
+          del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project=#{project_id} -f")
           Chef::Log.debug 'Executing ' + del_instance.command
         
           if not del_instance.stderr.downcase.scan("error").empty?

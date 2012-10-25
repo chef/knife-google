@@ -126,7 +126,7 @@ class Chef
 
       option :project,
         :short => "-p PROJECT",
-        :long => "--project_id PROJECT",
+        :long => "--project PROJECT",
         :description => "Google Compute Project",
         :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project}
 
@@ -195,7 +195,7 @@ class Chef
         internal_ip_address = locate_config_value(:internal_ip_address) || nil
         puts "\n#{ui.color("Waiting for the server to be Instantiated", :magenta)}"
         cmd_add_instance = "#{@gcompute} addinstance #{server_name} --machine_type #{flavor} " +
-                             "--zone #{zone} --project_id #{project_id} --tags #{server_name} " +
+                             "--zone #{zone} --project #{project_id} --tags #{server_name} " +
                              "--authorized_ssh_keys #{user}:#{key_file} --network #{network} " +
                              "--external_ip_address #{external_ip_address} --print_json"
         cmd_add_instance << " --internal_ip_address #{internal_ip_address}" if internal_ip_address 
