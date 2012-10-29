@@ -95,16 +95,6 @@ class Chef
           exit 1
         end
       end
-
-      def self.included(includer)
-        includer.class_eval do
-          deps do
-            require 'chef/json_compat'
-            require 'chef/knife'
-            Chef::Knife.load_deps
-          end
-        end
-      end
     end
   end
 end
