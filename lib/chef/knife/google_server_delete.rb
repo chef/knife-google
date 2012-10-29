@@ -16,6 +16,9 @@
 # limitations under the License.
 #
 
+require 'chef/knife'
+require 'chef/json_compat'
+
 require 'chef/knife/google_base'
 
 class Chef
@@ -23,13 +26,6 @@ class Chef
     class GoogleServerDelete < Knife
 
       include Knife::GoogleBase
-      deps do
-        require 'chef/knife'
-        require '/chef/json_compat'
-        Chef::Knife.load_deps
-      end
-
-
       banner "knife google server delete SERVER (options)"
 
       option :project_id,

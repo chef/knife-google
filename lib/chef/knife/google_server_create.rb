@@ -14,6 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'highline'
+require 'net/ssh/multi'
+require 'net/scp'
+require 'tempfile'
+
+require 'chef/knife'
+require 'chef/knife/google_base'
 
 class Chef
   class Knife
@@ -23,13 +30,6 @@ class Chef
         require 'readline'
         require 'chef/json_compat'
         require 'chef/knife/bootstrap'
-        require 'highline'
-        require 'net/ssh/multi'
-        require 'net/scp'
-        require 'tempfile'
-        require 'chef/knife'
-        require 'chef/knife/google_base'
-
         Chef::Knife::Bootstrap.load_deps
       end
 
