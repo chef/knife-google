@@ -6,9 +6,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,11 +30,11 @@ class Chef
 
       option :project_id,
         :short => "-p PROJECTNAME",
-        :long => "--project_id PROJECTNAME",
+        :long => "--project PROJECTNAME",
         :description => "Your Google Compute Project Name",
-        :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project } 
+        :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project }
 
-      def run 
+      def run
         unless Chef::Config[:knife][:google_project]
           ui.error("Project ID is a compulsory parameter")
           exit 1
@@ -42,13 +42,13 @@ class Chef
 
         $stdout.sync = true
         project_id = Chef::Config[:knife][:google_project]
-        validate_project(project_id) 
+        validate_project(project_id)
 
-        @name_args.each do |server| 
+        @name_args.each do |server|
           confirm("Do you really want to delete the server - #{server} ?")
-          del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project_id=#{project_id} -f")
+          del_instance = exec_shell_cmd("#{@gcompute} deleteinstance #{server} --print_json --project=#{project_id} -f")
           Chef::Log.debug 'Executing ' + del_instance.command
-        
+
           if not del_instance.stderr.downcase.scan("error").empty?
             ui.error("Failed to delete server. Error: #{error}")
             exit 1

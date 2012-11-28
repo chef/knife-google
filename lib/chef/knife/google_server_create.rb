@@ -5,9 +5,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,8 @@ require 'tempfile'
 
 require 'chef/knife'
 require 'chef/knife/google_base'
+require 'chef/knife/bootstrap'
+
 
 class Chef
   class Knife
@@ -48,7 +50,7 @@ class Chef
         :short => "-Z ZONE",
         :long => "--availability-zone ZONE",
         :description => "The Availability Zone",
-        :default => "us-east1-a",
+        :default => "us-east-a",
         :proc => Proc.new { |key| Chef::Config[:knife][:availability_zone] = key }
 
       option :distro,
@@ -80,7 +82,7 @@ class Chef
         :short => "-s NAME",
         :long => "--server-name NAME",
         :description => "The server name",
-        :proc => Proc.new { |server_name| Chef::Config[:knife][:server_name] = server_name } 
+        :proc => Proc.new { |server_name| Chef::Config[:knife][:server_name] = server_name }
 
       option :flavor,
         :short => "-f FLAVOR",
@@ -94,19 +96,19 @@ class Chef
         :long => "--google-image IMAGE",
         :description => "Your google Image resource name",
         :proc => Proc.new { |template| Chef::Config[:knife][:image] = template }
-        
+
       option :private_key_file,
         :short => "-i PRIVATE_KEY_FILE",
         :long => "--private-key-file PRIVATE_KEY_FILE",
         :description => "The SSH private key file used for authentication",
-        :proc => Proc.new { |identity| Chef::Config[:knife][:private_key_file] = identity } 
- 
+        :proc => Proc.new { |identity| Chef::Config[:knife][:private_key_file] = identity }
+
       option :public_key_file,
         :short => "-k PUBLIC_KEY_FILE",
         :long => "--public-key-file PUBLIC_KEY_FILE",
         :description => "The SSH public key file used for authentication",
-        :proc => Proc.new { |identity| Chef::Config[:knife][:public_key_file] = identity } 
- 
+        :proc => Proc.new { |identity| Chef::Config[:knife][:public_key_file] = identity }
+
       option :network,
         :short => "-n NETWORKNAME",
         :long => "--network NETWORKNAME",
@@ -129,14 +131,14 @@ class Chef
 
       option :project,
         :short => "-p PROJECT",
-        :long => "--project_id PROJECT",
+        :long => "--project PROJECT",
         :description => "Google Compute Project",
         :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project}
 
       def h
         @highline ||= HighLine.new
       end
-      
+
       def locate_config_value(key)
         key = key.to_sym
         config[key] || Chef::Config[:knife][key]
@@ -198,10 +200,10 @@ class Chef
         internal_ip_address = locate_config_value(:internal_ip_address) || nil
         puts "\n#{ui.color("Waiting for the server to be Instantiated", :magenta)}"
         cmd_add_instance = "#{@gcompute} addinstance #{server_name} --machine_type #{flavor} " +
-                             "--zone #{zone} --project_id #{project_id} --tags #{server_name} " +
+                             "--zone #{zone} --project #{project_id} --tags #{server_name} " +
                              "--authorized_ssh_keys #{user}:#{key_file} --network #{network} " +
                              "--external_ip_address #{external_ip_address} --print_json"
-        cmd_add_instance << " --internal_ip_address #{internal_ip_address}" if internal_ip_address 
+        cmd_add_instance << " --internal_ip_address #{internal_ip_address}" if internal_ip_address
         cmd_add_instance << " --image=#{image}" if image
 
         Chef::Log.debug 'Executing ' +  cmd_add_instance
@@ -220,9 +222,9 @@ class Chef
           ui.error("\nFailed to create server: #{output}")
           exit 1
         end
-                    
+
         #Fetch server information
-        cmd_get_instance  = "#{@gcompute} getinstance #{server_name} --project_id #{project_id} --print_json "
+        cmd_get_instance  = "#{@gcompute} getinstance #{server_name} --project #{project_id} --print_json "
         Chef::Log.debug 'Executing ' +  cmd_get_instance
         get_instance = exec_shell_cmd(cmd_get_instance)
 
@@ -234,7 +236,7 @@ class Chef
         server = to_json(get_instance.stdout)
         private_ip = []
         public_ip = []
-        server["networkInterfaces"].each do  |interface| 
+        server["networkInterfaces"].each do  |interface|
           private_ip << interface["networkIP"]
           interface["accessConfigs"].select { |cfg| public_ip << cfg["natIP"] }
         end

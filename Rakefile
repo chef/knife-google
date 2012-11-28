@@ -20,8 +20,10 @@ require 'rake/rdoctask'
 require 'mixlib/shellout'
 
 GEM_NAME = "knife-google"
-GCOMPUTE_PACKAGE="gcutil.tar.gz"
+GCOMPUTE_VERSION="1.3.4"
+GCOMPUTE_PACKAGE="gcutil-#{GCOMPUTE_VERSION}"
 GCOMPUTE_PACKAGE_LOCATION="external"
+GCOMPUTE_DEST_DIR="/usr/local/share"
 
 spec = eval(File.read("knife-google.gemspec"))
 
@@ -47,12 +49,6 @@ end
 
 task :install => :package do
 
-  def is_python_pip_installed?
-    shell_cmd = Mixlib::ShellOut.new("which pip")
-    shell_cmd.run_command
-    return shell_cmd.status.exitstatus == 0
-  end
-
   def is_platform_windows?
     return RUBY_PLATFORM.scan('w32').size > 0
   end
@@ -64,17 +60,15 @@ task :install => :package do
   if is_platform_windows?
     if is_cygwin_installed?
       cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
-      cmd = "#{cygwin_path}\\bin\\python2.6.exe #{cygwin_path}\\bin\\pip install #{GCOMPUTE_PACKAGE_LOCATION}//#{GCOMPUTE_PACKAGE}"
+      cmd = "tar -xf #{GCOMPUTE_PACKAGE_LOCATION}\\#{GCOMPUTE_PACKAGE}.tar.gz -C #{cygwin_path}\\bin\\ &" +
+      "#{cygwin_path}\\bin\\ln.exe -sf /bin/#{GCOMPUTE_PACKAGE}/gcutil /bin/gcutil"
     else
       puts "Cannot Find Cygwin Installation !!! Please set environment variables CYGWINPATH to point the Cygwin Installation"
       exit 1
     end
   else #Platform is Linux/OSX
-    cmd = "pip install #{GCOMPUTE_PACKAGE_LOCATION}/#{GCOMPUTE_PACKAGE}"
-  end
-  if not is_python_pip_installed?
-    puts ("gcompute is a python package. Pip - the installer for Python packages is not installed. Please Install it")
-    exit 1
+    cmd = "sudo tar -xf #{GCOMPUTE_PACKAGE_LOCATION}/#{GCOMPUTE_PACKAGE}.tar.gz -C #{GCOMPUTE_DEST_DIR};" +
+    "sudo ln -sf #{GCOMPUTE_DEST_DIR}/#{GCOMPUTE_PACKAGE}/gcutil  /usr/local/bin/gcutil"
   end
 
   #Install the gcompute library on which the knife plugin depends on
@@ -83,10 +77,10 @@ task :install => :package do
   puts shell_cmd.stdout
   err = shell_cmd.stderr
   if err.size > 0
-    puts ("Failed to install gcompute. Error: #{err}")
-    exit 1
+    STDERR.puts "Failed to install gcompute. Error: #{err}"
+    #Continue Anyways
   end
-  
+
   sh %{gem install pkg/#{GEM_NAME}-#{KnifeGoogle::VERSION} --no-rdoc --no-ri}
 end
 
