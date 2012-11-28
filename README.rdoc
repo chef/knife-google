@@ -26,11 +26,11 @@ Be sure you are running the latest version Chef. Versions earlier than 0.10.0 do
 
     Follow these instructions to install Chef-Workstation on Windows: http://wiki.opscode.com/display/chef/Workstation+Setup+for+Windows
 
-The gcutil tool can be installed on Windows, via Cygwin. 
+The gcutil tool can be installed on Windows, via Cygwin.
 
     Install Cygwin with Python Environment: https://developers.google.com/compute/docs/gcutil_setup
 
-In Windows, set CYGWINPATH environment variable to point the Cygwin Installation and add %CYGWINPATH%\\bin to the PATH environment variable 
+In Windows, set CYGWINPATH environment variable to point the Cygwin Installation and add %CYGWINPATH%\\bin to the PATH environment variable
 
     set CYGWINPATH=<CYGWIN INSTALLATION PATH>
     set PATH=%CYGWINPATH%\\bin;%PATH%
@@ -42,7 +42,7 @@ Use the rake utility to install gcutil CLI utility and the knife plugin
 = CONFIGURATION:
 Run gcutil auth to request a token. This command prints a URL where you can acquire an OAuth 2.0 refresh token for Google Compute.
 
-    gcutil auth --project_id=<your_project_id>
+    gcutil auth --project=<your_project_id>
     Go to the following link in your browser:
     <link>
 
@@ -50,12 +50,12 @@ Run gcutil auth to request a token. This command prints a URL where you can acqu
 
 
     # provision a new 2 Core 1GB Ubuntu 10.04 webserver
-    knife google server create --server-name <server-name> -i <SSH Identity Key> -k <SSH Public Key> 
-    --project_id <project-name> --flavor n1-standard-2 --distro chef-full 
+    knife google server create --server-name <server-name> -i <SSH Identity Key> -k <SSH Public Key>
+    --project <project-name> --flavor n1-standard-2 --distro chef-full
     --google-image projects/google/images/ubuntu-10-04-v20120912
     -r role[<your role>] -E <your environment>
 
-    
+
 Additionally the following options may be set in your `knife.rb`:
 
 * flavor
