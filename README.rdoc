@@ -3,22 +3,15 @@
 = DESCRIPTION:
 
 This is the official Opscode Knife plugin for Google. This plugin gives knife the ability to create, bootstrap, and manage servers on the Google Cloud.
+This plugin uses the [gcutil]https://developers.google.com/compute/docs/gcutil/ CLI utility from Google.
 
 = INSTALLATION (LINUX/OSX):
 Be sure you are running the latest version Chef. Versions earlier than 0.10.0 don't support plugins:
 
     gem install chef
 
-This plugin depends on the gcutil CLI utility
-    pip install https://dl.google.com/dl/compute/gcutil.tar.gz
 
-This plugin is distributed as a Ruby Gem. To build and install it, run:
-
-    gem build knife-google
-    gem install knife-google
-
-Alternatively, the rake utility installs the gcutil CLI utility as part of installation
-
+This plugin is distributed as a Ruby Gem. To build and install it, use the rake utility. The rake utility installs the gcutil CLI utility as part of installation:
     rake install
 
 = INSTALLATION (WINDOWS):
