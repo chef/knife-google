@@ -15,19 +15,18 @@
 # limitations under the License.
 
 require 'rubygems'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
+require 'rubygems/package_task'
 require 'mixlib/shellout'
 
 GEM_NAME = "knife-google"
-GCOMPUTE_VERSION="1.3.4"
+GCOMPUTE_VERSION="1.5.0"
 GCOMPUTE_PACKAGE="gcutil-#{GCOMPUTE_VERSION}"
 GCOMPUTE_PACKAGE_LOCATION="external"
 GCOMPUTE_DEST_DIR="/usr/local/share"
 
 spec = eval(File.read("knife-google.gemspec"))
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
