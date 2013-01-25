@@ -39,7 +39,7 @@ class Chef
 
       option :project_id,
         :short => "-p PROJECT_ID",
-        :long => "--project_id PROJECT_ID",
+        :long => "--project PROJECT_ID",
         :description => "The Google Compute Engine project identifier",
         :proc => Proc.new { |project| Chef::Config[:knife][:google_project] = project }
 

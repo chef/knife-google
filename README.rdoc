@@ -76,6 +76,7 @@ Outputs a list of all servers in the currently configured Google Cloud account. 
 = LICENSE:
 
 Author:: Chirag Jog (<chiragj@websym.com>)
+Contributors:: Riccardo Carlesso (<palladiusbonton@gmail.com>)
 Copyright:: Copyright (c) 2012 Opscode, Inc.
 License:: Apache License, Version 2.0
 
