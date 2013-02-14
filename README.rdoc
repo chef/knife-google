@@ -73,9 +73,16 @@ Deletes an existing server in the currently configured Google Cloud account by t
 
 Outputs a list of all servers in the currently configured Google Cloud account. Please note - this shows all instances associated with the account, some of which may not be currently managed by the Chef server.
 
+== knife google image list
+Outputs a list of all available images public from Google Compute Engine and those that have custom-created in the project.
+
+== knife google flavor list
+Outputs a list of all available flavors (available hardware configuration for a server) available to the currently configured Google Compute Engine account. Each flavor has a unique combination of virtual cpus, disk space and memory capacity. This data may be useful when choosing a flavor id to pass to the `knife google server create` subcommand.
+
+
 = LICENSE:
 
-Author:: Chirag Jog (<chiragj@websym.com>)
+Author:: Chirag Jog (<chirag@clogeny.com>)
 Copyright:: Copyright (c) 2012 Opscode, Inc.
 License:: Apache License, Version 2.0
 
