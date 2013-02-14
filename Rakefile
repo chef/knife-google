@@ -19,7 +19,7 @@ require 'rubygems/package_task'
 require 'mixlib/shellout'
 
 GEM_NAME = "knife-google"
-GCOMPUTE_VERSION="1.5.0"
+GCOMPUTE_VERSION="1.7.1"
 GCOMPUTE_PACKAGE="gcutil-#{GCOMPUTE_VERSION}"
 GCOMPUTE_PACKAGE_LOCATION="external"
 GCOMPUTE_DEST_DIR="/usr/local/share"
