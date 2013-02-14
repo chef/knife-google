@@ -50,7 +50,7 @@ class Chef
         :short => "-Z ZONE",
         :long => "--availability-zone ZONE",
         :description => "The Availability Zone",
-        :default => "us-east-a",
+        :default => "us-central1-a",
         :proc => Proc.new { |key| Chef::Config[:knife][:availability_zone] = key }
 
       option :distro,
@@ -89,7 +89,7 @@ class Chef
         :long => "--flavor FLAVOR",
         :description => "The flavor of server (standard-1-cpu,standard-2-cpu-ephemeral-disk, etc)",
         :proc => Proc.new { |f| Chef::Config[:knife][:flavor] = f },
-        :default => "standard-1-cpu"
+        :default => "n1-standard-1-d"
 
       option :image,
         :short => "-I IMAGE",
@@ -183,7 +183,9 @@ class Chef
           ui.error("Project ID is a compulsory parameter")
           exit 1
         end
-
+        unless Chef::Config[:knife][:image]
+          ui.error("Image is a compulsory parameter")
+        end
         $stdout.sync = true
 
         project_id = Chef::Config[:knife][:google_project]
@@ -199,12 +201,31 @@ class Chef
         external_ip_address = locate_config_value(:external_ip_address)
         internal_ip_address = locate_config_value(:internal_ip_address) || nil
         puts "\n#{ui.color("Waiting for the server to be Instantiated", :magenta)}"
+
+        #fetch image URL
+        image_json = begin
+          cmd_get_image = "#{@gcompute} getimage #{image} --print_json --project google"
+          gimage_info = exec_shell_cmd(cmd_get_image)
+          if gimage_info.stdout.empty?
+            cmd_get_image = "#{@gcompute} getimage #{image} --print_json --project #{project_id}"
+            limage_info = exec_shell_cmd(cmd_get_image)
+            if limage_info.stdout.empty?
+              ui.error("Cannot find image #{image}")
+              exit 1
+            else
+              to_json(limage_info.stdout)
+            end
+          else
+            to_json(gimage_info.stdout)
+          end
+        end
+
         cmd_add_instance = "#{@gcompute} addinstance #{server_name} --machine_type #{flavor} " +
                              "--zone #{zone} --project #{project_id} --tags #{server_name} " +
                              "--authorized_ssh_keys #{user}:#{key_file} --network #{network} " +
                              "--external_ip_address #{external_ip_address} --print_json"
         cmd_add_instance << " --internal_ip_address #{internal_ip_address}" if internal_ip_address
-        cmd_add_instance << " --image=#{image}" if image
+        cmd_add_instance << " --image=#{image_json['selfLink']}"
 
         Chef::Log.debug 'Executing ' +  cmd_add_instance
         create_server = exec_shell_cmd(cmd_add_instance)
