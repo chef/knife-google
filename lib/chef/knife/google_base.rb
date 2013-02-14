@@ -54,13 +54,8 @@ class Chef
         end
       end
 
-      def parser
-        if @parser.nil?
-          @parser = Yajl::Parser.new
-        end
-      end
-
       def to_json(data)
+        parser = Yajl::Parser.new
         data_s = StringIO::new(data.strip)
         parser.parse(data_s) {|obj| return obj}
       end
@@ -72,7 +67,7 @@ class Chef
 
           #Auth token should exist in either ENV['HOME'] or cygwin_home
           #XXX Find a way to remove the hard-coded file name
-	  if not File.file?("#{ENV['HOME']}\\.#{$CLI_PREFIX}_auth")
+	        if not File.file?("#{ENV['HOME']}\\.#{$CLI_PREFIX}_auth")
             ENV['HOME'] = cygwin_home
 	  end
         end
