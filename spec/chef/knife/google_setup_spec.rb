@@ -1,4 +1,4 @@
-# Copyright 2013, Google, Inc.
+# Copyright 2013 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'spec_helper'
 
-require 'rspec/core/rake_task'
+describe Chef::Knife::GoogleSetup do
 
-RSpec::Core::RakeTask.new
+  let(:knife_plugin) { Chef::Knife::GoogleSetup.new(["-f credential.json"]) }
 
-task :default => :spec
+  it "should invoke the google-compute-client-ruby setup process" do
+    Google::Compute::Client.should_receive(:setup)
+    knife_plugin.run
+  end
+end

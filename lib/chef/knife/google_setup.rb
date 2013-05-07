@@ -1,4 +1,4 @@
-# Copyright 2013, Google, Inc.
+# Copyright 2013 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'chef/knife/google_base'
 
-require 'rspec/core/rake_task'
+class Chef
+  class Knife
+    class GoogleSetup < Knife
 
-RSpec::Core::RakeTask.new
+      include Knife::GoogleBase
 
-task :default => :spec
+      banner "knife google setup"
+
+      def run
+        Google::Compute::Client.setup
+      end
+    end
+  end
+end
+

@@ -1,0 +1,21 @@
+{
+  "kind":"compute#project",
+  "id":"129922222222222",
+  "creationTimestamp":"2012-09-13 18:33:49 -0700",
+  "selfLink":"https://www.googleapis.com/compute/v1beta14/projects/mock-project",
+  "name":"mock-project",
+  "description":"",
+  "commonInstanceMetadata":{
+    "kind":"compute#metadata",
+    "items":[{"key":"mock-key","value":"mock-value"}]
+  },
+  "quotas":[
+    {"metric":"INSTANCES","usage":10.0,"limit":20.0},
+    {"metric":"CPUS","usage":40.0,"limit":96.0},
+    {"metric":"EPHEMERAL_ADDRESSES","usage":10.0,"limit":20.0},
+    {"metric":"DISKS","usage":8.0,"limit":20.0},
+    {"metric":"DISKS_TOTAL_GB","usage":2.0,"limit":40.0},
+    {"metric":"FIREWALLS","usage":10.0,"limit":100.0},
+    {"metric":"IMAGES","usage":0.0,"limit":100.0}],
+  "externalIpAddresses":["4.4.4.4"]
+}

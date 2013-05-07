@@ -1,4 +1,4 @@
-# Copyright 2013, Google, Inc.
+# Copyright 2013 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'spec_helper'
 
-require 'rspec/core/rake_task'
+describe Chef::Knife::GoogleZoneList do
 
-RSpec::Core::RakeTask.new
+  let(:knife_plugin) do
+    Chef::Knife::GoogleZoneList.new([])
+  end
 
-task :default => :spec
+  it "should enlist all the GCE zones when run invoked" do
+    client = mock(Google::Compute::Client)
+    Google::Compute::Client.stub!(:from_json).
+      and_return(client)
+    client.should_receive(:zones).
+      and_return(mock("zone-collection", :list=>[stored_zone]))
+    $stdout.should_receive(:write).with(kind_of(String))
+    knife_plugin.run
+  end
+end

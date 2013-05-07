@@ -1,7 +1,4 @@
-#
-# Author:: Chirag Jog (<chiragj@websym.com>)
-# Copyright:: Copyright (c) 2012 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2013 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,81 +11,60 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-require 'stringio'
-require 'yajl'
-require 'mixlib/shellout'
+require 'chef/knife'
+require 'google/compute'
 
-$CLI_PREFIX='gcutil'
 class Chef
   class Knife
     module GoogleBase
-      @parser = Yajl::Parser.new
-      @gcompute = nil
-      @cygwin_path = nil
 
-      def is_platform_windows?
-        return RUBY_PLATFORM.scan('w32').size > 0
-      end
-
-      def is_cygwin_installed?
-          ENV['CYGWINPATH'] != nil
-      end
-
-      def gcompute
-        return if @gcompute
-        if is_platform_windows?
-          if is_cygwin_installed?
-	        #Remove extra quotes
-	        @cygwin_path = ENV['CYGWINPATH'].chomp('\'').reverse.chomp('\'').reverse
-            #FIXME Generalize the python binary
-            @gcompute="#{@cygwin_path}\\bin\\python2.6.exe #{@cygwin_path}\\bin\\#{$CLI_PREFIX}"
-	      else
-            puts "Cannot Find Cygwin Installation !!! Please set CYGWINPATH to point to the Cygwin installation"
-            exit 1
+      # hack for mixlib-cli workaround
+      # https://github.com/opscode/knife-ec2/blob/master/lib/chef/knife/ec2_base.rb
+      def self.included(includer)
+        includer.class_eval do
+          deps do
+            require 'google/compute'
+            require 'chef/json_compat'
           end
-        else
-          Chef::Log.debug("Linux Environment")
-          @gcompute = $CLI_PREFIX
+
+          option :compute_credential_file,
+            :short => "-f CREDENTIAL_FILE",
+            :long => "--compute-credential-file CREDENTIAL_FILE",
+            :description => "Google Compute credential file (google setup can create this)"
         end
       end
 
-      def to_json(data)
-        parser = Yajl::Parser.new
-        data_s = StringIO::new(data.strip)
-        parser.parse(data_s) {|obj| return obj}
+      def client
+        @client ||= begin
+          Google::Compute::Client.from_json(config[:compute_credential_file])
+        end
       end
 
-      def exec_shell_cmd(cmd)
-        if is_platform_windows? and is_cygwin_installed?
-          #Change the HOME PATH From Windows to Cygwin
-          cygwin_home = "#{@cygwin_path}\\home\\#{ENV['USER']}"
-
-          #Auth token should exist in either ENV['HOME'] or cygwin_home
-          #XXX Find a way to remove the hard-coded file name
-	        if not File.file?("#{ENV['HOME']}\\.#{$CLI_PREFIX}_auth")
-            ENV['HOME'] = cygwin_home
-	  end
-        end
-        shell_cmd = Mixlib::ShellOut.new(cmd)
-        shell_cmd.run_command
+      def selflink2name(selflink)
+        selflink.split('/').last
       end
 
-      def validate_project(project_id)
-        cmd = "#{gcompute} getproject --project=#{project_id}"
-        Chef::Log.debug 'Executing ' + cmd
-        getprj = exec_shell_cmd(cmd)
-        if getprj.status.exitstatus > 0
-          if not getprj.stdout.scan("Enter verification code").empty?
-            ui.error("Failed to authenticate the account")
-            ui.error("If not authenticated, please Authenticate gcompute to access the Google Compute Cloud")
-            ui.error("Authenticate by executing gcutil auth --project=<project_id>")
-            exit 1
-          end
-          ui.error("#{getprj.stderr}")
-          exit 1
+      def msg_pair(label, value, color=:cyan)
+        if value && !value.to_s.empty?
+          ui.info("#{ui.color(label, color)}: #{value}")
         end
+      end
+
+      def disks(instance)
+        instance.disks.collect{|d|d.device_name}.compact
+      end
+
+      def private_ips(instance)
+        instance.network_interfaces.collect{|ni|ni.network_ip}.compact
+      end
+
+      def public_ips(instance)
+        instance.network_interfaces.collect{|ni|
+          ni.access_configs.map{|ac|
+            ac.nat_ip
+          }
+        }.flatten.compact
       end
     end
   end

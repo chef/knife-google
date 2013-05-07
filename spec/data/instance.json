@@ -1,0 +1,46 @@
+{
+  "kind":"compute#instance",
+  "id":"555555555076205",
+  "creationTimestamp":"2013-01-11 10:01:02 -0800",
+  "selfLink":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone/instances/mock-instance",
+  "name":"mock-instance",
+  "description":"",
+  "tags":{"fingerprint":"","items":["all"]},
+  "image":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/global/images/mock-image",
+  "machineType":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/global/machineTypes/mock-machine-type",
+  "status":"RUNNING",
+  "statusMessage":"",
+  "zone":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone",
+  "networkInterfaces":[{
+    "name":"nic0",
+    "network":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/global/networks/mock-network",
+    "networkIP":"10.100.0.10",
+    "accessConfigs":[{
+      "kind":"compute#accessConfig",
+      "name":"External NAT",
+      "type":"ONE_TO_ONE_NAT",
+      "natIP":"11.1.1.11"
+    }]
+  }],
+  "disks":[{
+    "kind":"compute#attachedDisk",
+    "type":"EPHEMERAL",
+    "mode":"READ_WRITE",
+    "source":"",
+    "deviceName":"",
+    "index":"0",
+    "boot":false
+  }],
+  "metadata":{
+    "kind":"compute#metadata",
+    "fingerprint":"",
+    "items":[{
+      "key":"",
+      "value":""
+    }]
+  },
+  "serviceAccounts":[{
+    "email":"",
+    "scopes":[""]
+  }]
+}
