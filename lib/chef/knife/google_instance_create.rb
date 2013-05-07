@@ -289,7 +289,7 @@ class Chef
           exit 1
         end
 
-        disks = config[:disks].collect{|disk| client.disks.get(:disk=>disk.name, :zone=>selflink2name(zone)).self_link}
+        disks = config[:disks].collect{|disk| client.disks.get(:disk=>disk, :zone=>selflink2name(zone)).self_link}
         metadata = config[:metadata].collect{|pair| Hash[*pair.split('=')] }
         network_interface = {'network'=>network}
 
