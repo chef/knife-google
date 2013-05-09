@@ -12,26 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Google compute engine, access config of an instance resource
-#https://developers.google.com/compute/docs/reference/v1beta13/instances/addAccessConfig
-#https://developers.google.com/compute/docs/reference/v1beta13/instances/deleteAccessConfig
-#
-require  'google/compute/mixins/utils'
+require 'google/compute/server/network_interface/access_config'
+require 'google/compute/mixins/utils'
 
 module Google
   module Compute
     class NetworkInterface
-      class AccessConfig
+      include Utils
 
-        include Utils
-
-        attr_reader :kind, :name, :type, :nat_ip
-       
-        def initialize(data)
-          @kind = data["kind"]
-          @name = data["name"]
-          @type = data["type"]
-          @nat_ip = data["natIP"]
+      attr_reader :name, :network, :network_ip, :access_configs
+      
+      def initialize(data)
+        @name = data["name"]
+        @network = data["network"]
+        @network_ip = data["networkIP"]
+        @access_configs=[]
+        if data["accessConfigs"] && data["accessConfigs"].is_a?(Array)
+          data["accessConfigs"].each do |config|
+            @access_configs << AccessConfig.new(config)
+          end
         end
       end
     end

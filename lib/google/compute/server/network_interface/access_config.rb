@@ -12,22 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Google compute engine, serial port output of instance resource
-# https://developers.google.com/compute/docs/reference/v1beta13/instances/serialPort
-
-require 'google/compute/mixins/utils'
+require  'google/compute/mixins/utils'
 
 module Google
   module Compute
-    class SerialPortOutput
-      include Utils
+    class NetworkInterface
+      class AccessConfig
 
-      attr_reader :kind, :self_link, :contents
-     
-      def initialize(data)
-        @kind = data["kind"]
-        @contents = data["contents"]
-        @self_link = data["selfLink"]
+        include Utils
+
+        attr_reader :kind, :name, :type, :nat_ip
+       
+        def initialize(data)
+          @kind = data["kind"]
+          @name = data["name"]
+          @type = data["type"]
+          @nat_ip = data["natIP"]
+        end
       end
     end
   end

@@ -14,15 +14,15 @@
 #
 require 'spec_helper'
 
-describe Chef::Knife::GoogleInstanceCreate do
+describe Chef::Knife::GoogleServerCreate do
 
   let(:knife_plugin) do
-    Chef::Knife::GoogleInstanceCreate.new(["-m"+stored_machine_type.name,
+    Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
       "-I"+stored_image.name, "-n"+stored_network.name,
       "-Z"+stored_zone.name, stored_instance.name])
   end
 
-  it "#run should invoke compute api to create an instance" do
+  it "#run should invoke compute api to create an server" do
     zones = mock(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
@@ -77,7 +77,7 @@ describe Chef::Knife::GoogleInstanceCreate do
     it "should throw exception when required params are not passed" do
       $stdout.stub!(:write) # lets not print those error messages
       expect {
-        Chef::Knife::GoogleInstanceCreate.new([ "NAME"])
+        Chef::Knife::GoogleServerCreate.new([ "NAME"])
       }.to raise_error(SystemExit)
     end
   end

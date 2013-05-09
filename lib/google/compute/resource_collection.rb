@@ -40,6 +40,10 @@ module Google
                 "a hash with a :name key " + 
                 "you have passed '#{options.inspect}'"
         end
+        if options.is_a?(Hash) && options.has_key?("server")
+          options[:instance] = options["server"]
+          options.delete("server")
+        end
         data = @dispatcher.dispatch(:api_method=>api_resource.get, :parameters=>options)
         @resource_class.new(data.merge(:dispatcher=>@dispatcher))
       end
@@ -61,8 +65,13 @@ module Google
       end
 
       def api_resource
+        # Servers => instances
         collection_name = resource_class_name.snake_case + "s"
-        @dispatcher.compute.send(collection_name)
+        if collection_name == "servers"
+          @dispatcher.compute.send("instances")
+        else
+          @dispatcher.compute.send(collection_name)
+        end
       end
     end
   end

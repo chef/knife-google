@@ -16,7 +16,7 @@ require 'chef/knife/google_base'
 
 class Chef
   class Knife
-    class GoogleInstanceCreate < Knife
+    class GoogleServerCreate < Knife
 
       include Knife::GoogleBase
 
@@ -27,46 +27,46 @@ class Chef
         Chef::Knife::Bootstrap.load_deps
       end
 
-      banner "knife google instance create NAME -m MACHINE_TYPE -I IMAGE -Z ZONE (options)"
+      banner "knife google server create NAME -m MACHINE_TYPE -I IMAGE -Z ZONE (options)"
 
       attr_accessor :initial_sleep_delay
       attr_reader :instance
 
       option :machine_type,
         :short => "-m MACHINE_TYPE",
-        :long => "--machine MACHINE_TYPE",
-        :description => "The machine type of instance (n1-highcpu-2, n1-highcpu-2-d, etc)",
+        :long => "--google-compute-machine MACHINE_TYPE",
+        :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)",
         :required => true
 
       option :image,
         :short => "-I IMAGE",
-        :long => "--image IMAGE",
-        :description => "The Image for the instance",
+        :long => "--google-compute-image IMAGE",
+        :description => "The Image for the server",
         :required => true
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--zone ZONE",
-        :description => "The Zone for this instance",
+        :long => "--google-compute-zone ZONE",
+        :description => "The Zone for this server",
         :required => true
 
       option :network,
         :short => "-n NETWORK",
-        :long => "--network NETWORK",
-        :description => "The network for this instance; default is 'default'",
+        :long => "--google-compute-network NETWORK",
+        :description => "The network for this server; default is 'default'",
         :default => "default"
 
       option :tags,
         :short => "-T TAG1,TAG2,TAG3",
-        :long => "--tags TAG1,TAG2,TAG3",
-        :description => "Tags for this instance",
+        :long => "--google-compute-tags TAG1,TAG2,TAG3",
+        :description => "Tags for this server",
         :proc => Proc.new { |tags| tags.split(',') },
         :default => []
 
       option :metadata,
         :short => "-M K=V[,K=V,...]",
-        :long => "--metadata Key=Value[,Key=Value...]",
-        :description => "The metadata for this instance",
+        :long => "--google-compute-metadata Key=Value[,Key=Value...]",
+        :description => "The metadata for this server",
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
 
@@ -142,7 +142,7 @@ class Chef
       option :compute_user_data,
         :long => "--user-data USER_DATA_FILE",
         :short => "-u USER_DATA_FILE",
-        :description => "The Google Compute User Data file to provision the instance with"
+        :description => "The Google Compute User Data file to provision the server with"
 
       option :hint,
         :long => "--hint HINT_NAME[=HINT_FILE]",
@@ -154,19 +154,19 @@ class Chef
         }
 
       option :instance_connect_ip,
-        :long => "--instance-connect-ip PUBLIC",
+        :long => "--google-compute-server-connect-ip PUBLIC",
         :short => "-a PUBLIC",
         :description => "Whether to use PUBLIC or PRIVATE address to connect; default is 'PUBLIC'",
         :default => 'PUBLIC'
 
       option :disks,
-        :long=> "--disks DISK1,DISK2",
+        :long=> "--google-compute-disks DISK1,DISK2",
         :proc => Proc.new { |metadata| metadata.split(',') },
         :description => "Disks to be attached",
         :default => []
 
       option :public_ip,
-        :long=> "--public-ip IP_ADDRESS",
+        :long=> "--google-compute-public-ip IP_ADDRESS",
         :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
         :default => "EPHEMERAL"
 
@@ -260,7 +260,7 @@ class Chef
       def run
         $stdout.sync = true
         unless @name_args.size > 0
-          ui.error("Please provide the name of the new instance")
+          ui.error("Please provide the name of the new server")
           exit 1
         end
 
@@ -314,13 +314,13 @@ class Chef
                                   :tags=> config[:tags]
                                 )
 
-        ui.info("Waiting for the create instance operation to complete")
+        ui.info("Waiting for the create server operation to complete")
         until zone_operation.progress.to_i == 100
           ui.info(".")
           sleep 1
           zone_operation = client.zoneOperations.get(:name=>zone_operation, :operation=>zone_operation.name, :zone=>selflink2name(zone))
         end
-        ui.info("Waiting for the instanse to be in running state")
+        ui.info("Waiting for the servers to be in running state")
 
         @instance = client.instances.get(:name=>@name_args.first, :zone=>selflink2name(zone))
         msg_pair("Instance Name", @instance.name)
@@ -336,7 +336,7 @@ class Chef
 
         msg_pair("Public IP Address", public_ips(@instance)) unless public_ips(@instance).empty?
         msg_pair("Private IP Address", private_ips(@instance))
-        ui.info("\n#{ui.color("Waiting for instance", :magenta)}")
+        ui.info("\n#{ui.color("Waiting for server", :magenta)}")
 
         ui.info("\n")
         ui.info(ui.color("Waiting for sshd", :magenta))

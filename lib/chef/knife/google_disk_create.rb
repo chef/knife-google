@@ -20,7 +20,7 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk create NAME --sizeGb N --zone ZONE (options)"
+      banner "knife google disk create NAME --google-disk-sizeGb N --google-compute-zone ZONE (options)"
 
       deps do
         require 'google/compute'
@@ -28,13 +28,13 @@ class Chef
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--zone ZONE",
-        :description => "The Zone for this instance",
+        :long => "--google-compute-zone ZONE",
+        :description => "The Zone for this disk",
         :required => true
 
       option :sizeGb,
         :short => "-s SIZE",
-        :long => "--sizeGb SIZE",
+        :long => "--google-disk-sizeGb SIZE",
         :description => "Disk size in GB",
         :required => true
 

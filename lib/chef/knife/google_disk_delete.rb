@@ -20,7 +20,7 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk delete NAME --zone ZONE"
+      banner "knife google disk delete NAME --google-compute-zone ZONE"
 
       deps do
         require 'google/compute'
@@ -28,8 +28,8 @@ class Chef
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--zone ZONE",
-        :description => "The Zone for this instance",
+        :long => "--google-compute-zone ZONE",
+        :description => "The Zone for this disk",
         :required => true
 
       def run

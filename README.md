@@ -1,10 +1,59 @@
 # knife-google
 
-A [knife] (http://wiki.opscode.com/display/chef/Knife) plugin to create, delete and enlist [Google Compute Engine] (https://cloud.google.com/products/compute-engine) instances.
+A [knife] (http://wiki.opscode.com/display/chef/Knife) plugin to create,
+delete and enlist
+[Google Compute Engine] (https://cloud.google.com/products/compute-engine)
+resources.
+
+## Overview
+
+This plugin adds functionality to Chef through a knife plugin to create,
+delete, and manage
+[Google Compute Engine](https://cloud.google.com/products/compute-engine)
+servers and disks.
+
+### Nomenclature
+
+This plugin conforms to the nomenclature used by similar plugins and uses
+the term "server" when referencing nodes managed by the plugin.  But in
+Google Compute Engine parlance, this is equivalent to an "instance" or
+"virtual machine instance".
+
+### Create a Google Cloud Platform project
+
+Before getting started with this plugin, you must first create a
+[Google Cloud Platform](https://cloud.google.com/) "project" and add the
+Google Compute Engine service to your project.  Once you have created your
+project, you will have access to other Google Cloud Platform services such as
+[App Egnine](https://developers.google.com/appengine/),
+[Cloud Storage](https://developers.google.com/storage/),
+[Cloud SQL](https://developers.google.com/cloud-sql/)
+and others, but this plugin only requires you enable Google Compute Engine in
+your project.  Note that you will need to be logged in with your Google
+Account before creating the project and adding services.
+
+### Authorizing Setup
+
+In order for the knife plugin to programatically manage your servers, you
+will first need to authorize its use of the Google Compute Engine API.
+Authorization to use any of Google's Cloud service API's utilizes the
+[OAuth 2.0](https://developers.google.com/accounts/docs/OAuth2) standard.
+Once your project has been created, log in to your Google account and visit the
+[API Console](http://code.google.com/apis/console) and follow the "API Access"
+menu.  Create a new "Client ID" and specify the
+[Installed Application](https://developers.google.com/accounts/docs/OAuth2#installed)
+Application type with sub-type "Other".  These actions will generate a new
+"Client ID", "Client secret", and "Redirect URI's".
+
+This knife plugin includes a 'setup' sub-command that requires you to supply
+the client ID and secret in order to obtain an "authorization token".  You
+will only need to run this command one time and the plugin will record your
+credential information and tokens for future API calls.
 
 ## Installation
 
-* You need to have [google compute access] (https://cloud.google.com/products/compute-engine) 
+Be sure you are running Chef version 0.10.0 or higher in order to use knife
+plugins.
 
 ```sh
     gem install knife-google
@@ -16,47 +65,159 @@ or, for Gemfile:
     gem 'knife-google'
 ```
 
-##  Uasge
+Depending on your system's configuration, you may need to run this command
+with root/Administrator privileges.
 
-For initial setup, run:
+##  Configuration
+
+For initial setup, you must first have created your Google Cloud Platform
+project, enabled Google Compute Engine, and set up the Client ID described
+above.  Run the 'setup' sub-command and supply the Client ID, secret, and
+authorization tokens when prompted.  It will also prompt you to open a URL
+in a browser.  Make sure sure the you are logged in with the Google account
+associated with the project and client id/secrete in order to authorize
+the plugin.
 
   ```sh
   knife google setup
   ```
 
-If you use the default file location for the token data, then you will not need
-to supply the `-f` flag with each run.
+By default, the credential and token information will be stored in
+`~/.google-compute.json`.  You can override this location with
+`-f <credential_file>` flag with all plugin commands.
+
+## Usage
 
 Some usage examples follow:
 
   ```sh
-  # to list all instances (including those that may not be managed by Chef)
-  knife google instance list -Z <zone>
+  # See a list of all zones, their statuses and maintenance windows
+  $ knife google zone list
 
-  # to create an instance
-  knife google instance create <instance name> -m <machine type> -I <image> -Z <zone> -i <ssh key file> -x <ssh-user>
+  # List all servers (including those that may not be managed by Chef)
+  $ knife google server list -Z us-central2-a
 
-  # to delete an instance (along with chef node and api client)
-  knife google instance delete <instance> --purge -Z <zone>
+  # Create a server
+  $ knife google server create www1 -m n1-standard-1 -I centos-6-v20130325 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe
+
+  # Delete a server (along with Chef node and API client via --purge)
+  $ knife google server delete www1 --purge -Z us-central2-a
   ```
 
 For a full list of commands, run `knife google` without additional arguments:
 
   ```sh
-  % knife google
+  $ knife google
 
-  ** GCE COMMANDS **
-  knife google disk list --zone ZONE (options)
+  ** GOOGLE COMMANDS **
+  knife google disk list --google-compute-zone ZONE (options)
   knife google zone list (options)
-  knife google instance delete INSTANCE [INSTANCE] --zone ZONE (options)
-  knife google instance create NAME --zone ZONE (options)
-  knife google disk create NAME --size N --zone ZONE (options)
+  knife google server delete SERVER [SERVER] --google-compute-zone ZONE (options)
+  knife google server create NAME --google-compute-zone ZONE (options)
+  knife google disk create NAME --google-disk-size N --google-compute-zone ZONE (options)
   knife google setup
-  knife google instance list --zone ZONE (options)
-  knife google disk delete NAME --zone ZONE
+  knife google server list --google-compute-zone ZONE (options)
+  knife google disk delete NAME --google-compute-zone ZONE
   ```
 
-## Contributing to changes
+More detailed help can be obtained by specifying sub-commands.  For
+instance,
+
+  ```sh
+  $ knife google server list -Z foo --help
+  knife google server list --google-compute-zone ZONE (options)
+      -s, --server-url URL             Chef Server URL
+      -k, --key KEY                    API Client Key
+          --[no-]color                 Use colored output, defaults to enabled
+      -f CREDENTIAL_FILE,              Google Compute credential file (google setup can create this)
+          --google-compute-credential-file
+      -c, --config CONFIG              The configuration file to use
+          --defaults                   Accept default values for all questions
+      -d, --disable-editing            Do not open EDITOR, just accept the data as is
+      -e, --editor EDITOR              Set the editor to use for interactive commands
+      -E, --environment ENVIRONMENT    Set the Chef environment
+      -F, --format FORMAT              Which format to use for output
+      -u, --user USER                  API Client Username
+          --print-after                Show the data after a destructive operation
+      -V, --verbose                    More verbose output. Use twice for max verbosity
+      -v, --version                    Show chef version
+      -y, --yes                        Say yes to all prompts for confirmation
+      -Z, --google-compute-zone ZONE   The Zone for this server (required)
+      -h, --help                       Show this message
+  ```
+
+## Sub-commands
+
+### knife google setup
+
+Use this command to initially set up authorization (see above for more
+details).  Note that if you override the default credential file with the
+`-f` parameter, you'll need to use the `-f` switch for *all* sub-commands.
+
+### knife google zone list
+
+Use this command to list out the available Google Compute Engine zones.
+You can find a zone's current status, number of deployed servers, disks,
+and upcoming maintenance windows.  The output should look similar to:
+
+  ```
+  Name            Status  Servers  Disks  Maintainance Window                                   
+  europe-west1-a  up      0        0      2013-08-03 19:00:00 +0000 to 2013-08-18 19:00:00 +0000
+  europe-west1-b  up      0        0      2013-05-11 19:00:00 +0000 to 2013-05-26 19:00:00 +0000
+  us-central1-a   up      0        1      2013-08-17 19:00:00 +0000 to 2013-09-01 19:00:00 +0000
+  us-central1-b   up      0        0      2013-06-08 19:00:00 +0000 to 2013-06-23 19:00:00 +0000
+  us-central2-a   up      10       6      2013-05-25 19:00:00 +0000 to 2013-06-09 19:00:00 +0000
+  ```
+
+### knife google server create
+
+Use this command to create a new Google Compute Engine server (a.k.a.
+instance).  You must specify a name, the machine type, the zone, and
+image.  See the extended options that also allow bootstrapping the
+node with `knife google server create --help`.
+
+### knife google server delete
+
+This command terminates and deletes a server.  Use the `--purge`
+option to also remove it from Chef.  Use `knife google server
+delete --help` for other options.
+
+### knife google server list
+
+Get a list of servers in the specified zone.  Note that this may
+include servers that are *not* managed by Chef.
+
+### knife google disk create
+
+Create a new persistent disk.  You must provide a name, size in
+gigabytes, and the desired zone.
+
+### knife google disk delete
+
+Delete an existing disk in the specified zone.  Note that the
+disk will *not* be deleted if it is currently attached to a
+running server.
+
+### knife google disk list
+
+See a listing of disks defined for a specific zone.
+
+## Build and Development
+
+Standard rake commands for building, installing, testing, and uninstalling the module.
+
+  ```
+  # Run spec tests
+  $ rake
+
+  # Build and install the module
+  $ rake install
+  
+  # Uninstall
+  $ rake uninstall
+  ```
+
+## Contributing
   * See [CONTRIB.md](https://github.com/opscode/knife-google/blob/master/CONTRIB.md)
 
 ## Licensing

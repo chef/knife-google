@@ -24,7 +24,7 @@ module Google
           def delete!
             options={type=>name}
             data = @dispatcher.dispatch(:api_method => api_resource.delete, :parameters=>options)
-            if ["Instance", "Disk"].include? self.resource_class_name
+            if ["Server", "Disk"].include? self.resource_class_name
               ZoneOperation.new(data.merge!(:dispatcher=>@dispatcher)) unless data.nil?
             else
               GlobalOperation.new(data.merge!(:dispatcher=>@dispatcher)) unless data.nil?
@@ -40,7 +40,7 @@ module Google
           options = name_to_hash(options) 
         end
         data = @dispatcher.dispatch(:api_method => api_resource.delete, :parameters=>options)
-        if ["Instance", "Disk"].include? self.resource_class_name
+        if ["Server", "Disk"].include? self.resource_class_name
           ZoneOperation.new(data.merge!(:dispatcher=>@dispatcher)) unless data.nil?
         else
           GlobalOperation.new(data.merge!(:dispatcher=>@dispatcher)) unless data.nil?

@@ -12,28 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Google compute engine, network interface of an instance
-
-require 'google/compute/instance/network_interface/access_config'
 require 'google/compute/mixins/utils'
 
 module Google
   module Compute
-    class NetworkInterface
+    class SerialPortOutput
       include Utils
 
-      attr_reader :name, :network, :network_ip, :access_configs
-      
+      attr_reader :kind, :self_link, :contents
+     
       def initialize(data)
-        @name = data["name"]
-        @network = data["network"]
-        @network_ip = data["networkIP"]
-        @access_configs=[]
-        if data["accessConfigs"] && data["accessConfigs"].is_a?(Array)
-          data["accessConfigs"].each do |config|
-            @access_configs << AccessConfig.new(config)
-          end
-        end
+        @kind = data["kind"]
+        @contents = data["contents"]
+        @self_link = data["selfLink"]
       end
     end
   end

@@ -14,9 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Google compute engine, disk resource reference
-# https://developers.google.com/compute/docs/reference/v1beta13/disks#resource
-
 require 'google/compute/resource'
 require 'google/compute/zone'
 

@@ -16,7 +16,7 @@ require 'chef/knife/google_base'
 
 class Chef
   class Knife
-    class GoogleInstanceDelete < Knife
+    class GoogleServerDelete < Knife
 
       include Knife::GoogleBase
 
@@ -24,14 +24,14 @@ class Chef
         require 'google/compute'
       end
 
-      banner "knife google instance delete INSTANCE [INSTANCE] --zone ZONE (options)"
+      banner "knife google server delete SERVER [SERVER] --google-compute-zone ZONE (options)"
 
       attr_reader :instances
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--zone ZONE",
-        :description => "The Zone for this instance",
+        :long => "--google-compute-zone ZONE",
+        :description => "The Zone for this server",
         :required => true
 
       option :purge,
@@ -39,12 +39,12 @@ class Chef
         :long => "--purge",
         :boolean => true,
         :default => false,
-        :description => "Destroy corresponding node and client on the Chef Server, in addition to destroying the GCE instance itself.  Assumes node and client have the same name as the instance (if not, add the '--node-name' option)."
+        :description => "Destroy corresponding node and client on the Chef Server, in addition to destroying the GCE server itself.  Assumes node and client have the same name as the server (if not, add the '--node-name' option)."
 
       option :chef_node_name,
         :short => "-N NAME",
         :long => "--node-name NAME",
-        :description => "The name of the node and client to delete, if it differs from the instance name.  Only has meaning when used with the '--purge' option."
+        :description => "The name of the node and client to delete, if it differs from the server name.  Only has meaning when used with the '--purge' option."
 
       # Taken from knife-ec2 plugin, for rational , check the following link
       # https://github.com/opscode/knife-ec2/blob/master/lib/chef/knife/ec2_server_delete.rb#L48
@@ -80,21 +80,21 @@ class Chef
             msg_pair("Private IP Address", private_ips(instance).join(','))
 
             puts "\n"
-            ui.confirm("Do you really want to delete instance '#{selflink2name(zone)}:#{instance.name}'")
+            ui.confirm("Do you really want to delete server '#{selflink2name(zone)}:#{instance.name}'")
 
             client.instances.delete(:instance=>instance.name, :zone=>selflink2name(zone))
 
-            ui.warn("Deleted instance '#{selflink2name(zone)}:#{instance.name}'")
+            ui.warn("Deleted server '#{selflink2name(zone)}:#{instance.name}'")
 
             if config[:purge]
               thing_to_delete = config[:chef_node_name] || instance.name
               destroy_item(Chef::Node, thing_to_delete, "node")
               destroy_item(Chef::ApiClient, thing_to_delete, "client")
             else
-              ui.warn("Corresponding node and client for the #{instance.name} instance  were not deleted and remain registered with the Chef Server")
+              ui.warn("Corresponding node and client for the #{instance.name} server  were not deleted and remain registered with the Chef Server")
             end
           rescue
-            ui.error("Could not locate instance '#{selflink2name(zone)}:#{instance_name}'.")
+            ui.error("Could not locate server '#{selflink2name(zone)}:#{instance_name}'.")
           end
         end
       end

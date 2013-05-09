@@ -43,8 +43,13 @@ module Google
 
       def api_resource
         # MacineType => machine_types
+        # Servers => instances
         collection_name = self.class.name.split('::').last.snake_case + "s"
-        @dispatcher.compute.send(collection_name)
+        if collection_name == "servers"
+          @dispatcher.compute.send("instances")
+        else
+          @dispatcher.compute.send(collection_name)
+        end
       end
 
       def type

@@ -12,16 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Google compute engine, instance resource reference
-# https://developers.google.com/compute/docs/reference/v1beta13/instances#resource
-
-require 'google/compute/instance/serial_port_output'
-require 'google/compute/instance/network_interface'
-require 'google/compute/instance/attached_disk'
+require 'google/compute/server/serial_port_output'
+require 'google/compute/server/network_interface'
+require 'google/compute/server/attached_disk'
 
 module Google
   module Compute
-    class Instance < Resource
+    class Server < Resource
 
       attr_reader  :tags, :image, :machine_type, :status, :status_message, :zone
       attr_reader  :network_interfaces, :disks, :metadata, :service_accounts

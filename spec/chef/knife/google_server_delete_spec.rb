@@ -16,14 +16,14 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::GoogleInstanceDelete do
+describe Chef::Knife::GoogleServerDelete do
 
   let(:knife_plugin) do
-    Chef::Knife::GoogleInstanceDelete.new(
+    Chef::Knife::GoogleServerDelete.new(
       [stored_instance.name, "-Z"+stored_zone.name])
   end
 
-  it "should print out error message if the instance is not found" do
+  it "should print out error message if the server is not found" do
     zones = mock(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
@@ -40,7 +40,7 @@ describe Chef::Knife::GoogleInstanceDelete do
 
     knife_plugin.config[:yes] = true
     knife_plugin.ui.should_receive(:error).
-      with("Could not locate instance '#{stored_zone.name}:#{stored_instance.name}'.")
+      with("Could not locate server '#{stored_zone.name}:#{stored_instance.name}'.")
     knife_plugin.stub!(:msg_pair)
     knife_plugin.run
   end

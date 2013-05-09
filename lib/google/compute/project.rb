@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Google compute engine, project resource reference
-# https://developers.google.com/compute/docs/reference/v1beta13/projects#resource
-
 module Google
   module Compute
     class Project < Resource
@@ -43,7 +40,7 @@ module Google
         temp_metadata = @common_instance_metadata["items"]
         options.keys.each do |k|
           if common_instance_metadata["items"].any?{|metadata| metadata["key"] == k}
-            raise ParameterValidation, "Key:'#{k}' already exist in common instance metadata"
+            raise ParameterValidation, "Key:'#{k}' already exist in common server metadata"
           else
             temp_metadata << {'key'=>k ,'value'=> options[k]} 
           end
@@ -55,7 +52,7 @@ module Google
         temp_metadata = common_instance_metadata["items"]
         options.keys.each do |k|
           unless common_instance_metadata["items"].any?{|metadata| metadata['key'] == k}
-            raise ParameterValidation, "Key:'#{k}' does not exist in common instance metadata"
+            raise ParameterValidation, "Key:'#{k}' does not exist in common server metadata"
           else
             temp_metadata.delete({'key'=>k, 'value'=> options[k]}) 
           end

@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Google compute engine, snapshot resource reference
-# https://developers.google.com/compute/docs/reference/v1beta13/snapshots#resource
-
 module Google
   module Compute
     class Snapshot < Resource

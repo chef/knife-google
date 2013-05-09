@@ -13,7 +13,7 @@
 # limitations under the License.
 require 'spec_helper'
 
-describe Google::Compute::Instance do
+describe Google::Compute::Server do
 
   before(:each) do
     @mock_api_client=mock(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
@@ -27,29 +27,29 @@ describe Google::Compute::Instance do
 
   it_should_behave_like Google::Compute::Resource
 
-  it "#get should return an individual instance" do
+  it "#get should return an individual Server" do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.instances.get, 
-           :parameters=>{"instance"=>"mock-instance", :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
-           and_return(mock_response(Google::Compute::Instance))
+           :parameters=>{:instance=>"mock-instance", :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
+           and_return(mock_response(Google::Compute::Server))
     instance = client.instances.get(:name=>'mock-instance', :zone=>"mock-zone")
-    instance.should be_a_kind_of Google::Compute::Instance
+    instance.should be_a_kind_of Google::Compute::Server
     instance.name.should eq('mock-instance')
     instance.disks.should be_a_kind_of(Array)
     instance.network_interfaces.should be_a_kind_of(Array)
   end
 
-  it "#list should return an array of instances" do
+  it "#list should return an array of Servers" do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.instances.list, 
            :parameters=>{:project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
-           and_return(mock_response(Google::Compute::Instance,true))
+           and_return(mock_response(Google::Compute::Server,true))
     instances = client.instances.list(:zone=>"mock-zone")
     instances.should_not be_empty
-    instances.all?{|i| i.is_a?(Google::Compute::Instance)}.should be_true
+    instances.all?{|i| i.is_a?(Google::Compute::Server)}.should be_true
   end
 
-  it "#create should create an instance" do
+  it "#create should create an server" do
     project_url ='https://www.googleapis.com/compute/v1beta14/projects/google.com:wf-test'
     zone = project_url + '/zones/europe-west1-a'
     disk = project_url + zone + '/disks/temp-disk'
@@ -85,33 +85,33 @@ describe Google::Compute::Instance do
                               )
   end
 
-  it "#delete should delete an instance" do
+  it "#delete should delete an server" do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.instances.delete, 
-           :parameters=>{:project=>"mock-project", "instance"=>'mock-instance', :zone=>"mock-zone"},
+           :parameters=>{:project=>"mock-project", :instance=>'mock-instance', :zone=>"mock-zone"},
            :body_object=>nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
-    o = client.instances.delete("instance"=>'mock-instance', :zone=>"mock-zone")
+    o = client.instances.delete(:instance=>'mock-instance', :zone=>"mock-zone")
   end
 
-  describe "with a specific instance" do
+  describe "with a specific server" do
 
     before(:each) do
       Google::Compute::Resource.any_instance.stub(:update!)
     end
 
     let(:instance) do
-      Google::Compute::Instance.new(mock_hash(Google::Compute::Instance).
+      Google::Compute::Server.new(mock_hash(Google::Compute::Server).
                                     merge(:dispatcher=>client.dispatcher))
     end
 
-    it "#addAccessConfig should add access config to an existing instance" do
+    it "#addAccessConfig should add access config to an existing server" do
     end
 
-    it "#deleteAccessConfig should delete access config to an existing instance" do
+    it "#deleteAccessConfig should delete access config to an existing server" do
     end
 
-    it "#serialPort should return serial port output of an existing instance" do
+    it "#serialPort should return serial port output of an existing server" do
       zone = "https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone"
       @mock_api_client.should_receive(:execute).
         with(:api_method=>mock_compute.instances.get_serial_port_output, 

@@ -14,13 +14,13 @@
 #
 require 'spec_helper'
 
-describe Chef::Knife::GoogleInstanceList do
+describe Chef::Knife::GoogleServerList do
 
   let(:knife_plugin) do
-    Chef::Knife::GoogleInstanceList.new(["-Z"+stored_zone.name])
+    Chef::Knife::GoogleServerList.new(["-Z"+stored_zone.name])
   end
 
-  it "should enlist all the GCE instance when run invoked" do
+  it "should enlist all the GCE servers when run invoked" do
     zones = mock(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)

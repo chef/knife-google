@@ -17,7 +17,7 @@ module Google
     class CreatableResourceCollection < DeletableResourceCollection
 
       def create(options={})
-        if ["Instance", "Disk"].include? self.resource_class_name
+        if ["Server", "Disk"].include? self.resource_class_name
           data = @dispatcher.dispatch(:api_method => api_resource.insert, 
                            :parameters=>{:project=>project, :zone=>options[:zone]},
                            :body_object => options )

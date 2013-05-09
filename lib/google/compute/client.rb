@@ -114,7 +114,7 @@ module Google
       end
 
       def instances
-        CreatableResourceCollection.new(:resource_class => Google::Compute::Instance, :dispatcher=>@dispatcher)
+        CreatableResourceCollection.new(:resource_class => Google::Compute::Server, :dispatcher=>@dispatcher)
       end
 
       def kernels

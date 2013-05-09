@@ -16,16 +16,16 @@ require 'chef/knife/google_base'
 
 class Chef
   class Knife
-    class GoogleInstanceList < Knife
+    class GoogleServerList < Knife
 
       include Knife::GoogleBase
 
-      banner "knife google instance list --zone ZONE (options)"
+      banner "knife google server list --google-compute-zone ZONE (options)"
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--zone ZONE",
-        :description => "The Zone for this instance",
+        :long => "--google-compute-zone ZONE",
+        :description => "The Zone for this server",
         :required => true
 
       def run

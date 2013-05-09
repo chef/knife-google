@@ -38,10 +38,13 @@ shared_examples Google::Compute::Resource do
 
   it "#type should have same type is class" do
     # TODO(erjohnso): {global,zone}operations are not resources
-    unless ["globaloperation", "zoneoperation"].include? resource.class.class_name
-      resource.type.downcase.should eq(resource.class.class_name)
-    else
+    #                 and instances are servers
+    if ["globaloperation", "zoneoperation"].include? resource.class.class_name
       resource.type.downcase.should eq("operation")
+    elsif resource.class.class_name == "server"
+      resource.type.downcase.should eq("instance")
+    else
+      resource.type.downcase.should eq(resource.class.class_name)
     end
   end
 

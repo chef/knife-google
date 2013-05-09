@@ -19,7 +19,7 @@ module SpecData
   SPEC_DATA_DIR = File.expand_path('../../data', __FILE__)
 
   def stored_instance
-    @instance ||= Google::Compute::Instance.new(load_json("instance.json"))
+    @instance ||= Google::Compute::Server.new(load_json("server.json"))
   end
 
   def stored_global_operation

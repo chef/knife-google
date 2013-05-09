@@ -29,7 +29,7 @@ class Chef
         zone_list = [
           ui.color("Name", :bold),
           ui.color('Status', :bold),
-          ui.color('Instances', :bold),
+          ui.color('Servers', :bold),
           ui.color('Disks', :bold),
           ui.color('Maintainance Window',:bold)].flatten.compact
 

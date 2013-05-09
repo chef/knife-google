@@ -16,7 +16,7 @@
 require 'spec_helper'
 
 describe Chef::Knife::GoogleBase do
-  let(:knife_plugin) { Chef::Knife::GoogleInstanceList.new(["-Z"+stored_zone.name]) }
+  let(:knife_plugin) { Chef::Knife::GoogleServerList.new(["-Z"+stored_zone.name]) }
 
   it "#client should return a Google::Compute::Client" do
     Google::Compute::Client.should_receive(:from_json).
@@ -36,11 +36,11 @@ describe Chef::Knife::GoogleBase do
     knife_plugin.msg_pair("label","value")
   end
 
-  it "#private_ips should extract private ip as an array from a GCE instance" do
+  it "#private_ips should extract private ip as an array from a GCE server" do
     knife_plugin.private_ips(stored_instance).should eq(['10.100.0.10'])
   end
 
-  it "#public_ips should extract private ip as an array from a GCE instance" do
+  it "#public_ips should extract private ip as an array from a GCE server" do
     knife_plugin.public_ips(stored_instance).should eq(['11.1.1.11'])
   end
 end
