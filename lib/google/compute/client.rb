@@ -48,7 +48,7 @@ module Google
       end
 
       def self.setup
-        $stdout.print "Enter project name: "
+        $stdout.print "Enter project ID (not name or number): "
         project = $stdin.gets.chomp
         $stdout.print "Enter client id: "
         client_id = $stdin.gets.chomp

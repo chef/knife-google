@@ -72,11 +72,11 @@ with root/Administrator privileges.
 
 For initial setup, you must first have created your Google Cloud Platform
 project, enabled Google Compute Engine, and set up the Client ID described
-above.  Run the 'setup' sub-command and supply the Client ID, secret, and
-authorization tokens when prompted.  It will also prompt you to open a URL
-in a browser.  Make sure sure the you are logged in with the Google account
-associated with the project and client id/secrete in order to authorize
-the plugin.
+above.  Run the 'setup' sub-command and supply the Project ID (not your
+project name or number), the Client ID, client secret, and authorization
+tokens when prompted.  It will also prompt you to open a URL in a browser.
+Make sure sure the you are logged in with the Google account associated
+with the project and client id/secrete in order to authorize the plugin.
 
   ```sh
   knife google setup
@@ -202,6 +202,13 @@ running server.
 
 See a listing of disks defined for a specific zone.
 
+## Troubleshooting
+
+ * Seeing 404 errors or zone not found?
+   This can result if you mistakenly specified an invalid "Project ID"
+   while going through the `knife google setup` command.  Make sure
+   you specified the "Project ID" (not the project name or number).
+
 ## Build and Development
 
 Standard rake commands for building, installing, testing, and uninstalling the module.
@@ -216,7 +223,6 @@ Standard rake commands for building, installing, testing, and uninstalling the m
   # Uninstall
   $ rake uninstall
   ```
-
 ## Contributing
   * See [CONTRIB.md](https://github.com/opscode/knife-google/blob/master/CONTRIB.md)
 

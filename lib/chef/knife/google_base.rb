@@ -42,7 +42,7 @@ class Chef
       end
 
       def selflink2name(selflink)
-        selflink.split('/').last
+        selflink.to_s == '' ? selflink.to_s : selflink.split('/').last
       end
 
       def msg_pair(label, value, color=:cyan)
