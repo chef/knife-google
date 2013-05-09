@@ -153,6 +153,9 @@ instance,
 Use this command to initially set up authorization (see above for more
 details).  Note that if you override the default credential file with the
 `-f` parameter, you'll need to use the `-f` switch for *all* sub-commands.
+When prompted, make sure to specify the "Project ID" (and not the name or
+number) or you will see 404/not found errors even if the setup command
+completes successfully.
 
 ### knife google zone list
 
