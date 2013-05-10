@@ -70,6 +70,8 @@ with root/Administrator privileges.
 
 ##  Configuration
 
+### Setting up the plugin
+
 For initial setup, you must first have created your Google Cloud Platform
 project, enabled Google Compute Engine, and set up the Client ID described
 above.  Run the 'setup' sub-command and supply the Project ID (not your
@@ -85,6 +87,31 @@ with the project and client id/secrete in order to authorize the plugin.
 By default, the credential and token information will be stored in
 `~/.google-compute.json`.  You can override this location with
 `-f <credential_file>` flag with all plugin commands.
+
+### Bootstrap Preparation and SSH
+
+In order to bootstrap nodes, you will first need to ensure your SSH
+keys are set up correctly.  In Google Compute Engine, you can store
+SSH keys in project metadata that will get copied over to new servers
+and placed in the appropriate user's `~/.ssh/authorized_keys` file.
+
+If you don't already have SSH keys set up, you can create them with
+the `ssh-keygen` program.  Open up the Metadata page from the
+GCE section of the cloud console.  If it doesn't already exist, create
+a new `sshKeys` key and paste in your user's `~/.ssh/id_rsa.pub`
+file (make sure to prefix the entry with the username).  An example
+entry should look something like this (note the prepended username of
+`adamed`:
+
+  ```
+  adamed:ssh-rsa AYAAB3Nwejwejjfjawlwl990sefjsfC5lPulcP4eZB+z1zcMF
+  76gTV4vojT/SWXymTfGpBL2KHTmF4jnGfEKPwjHIiLrZNHM2ISMi/atlKjOoUCVT
+  AvUyjqqp3z2KVXSP9P50Kgf8JYWjjXKApiZHkJOHJZ8GGf7aTnRU9NEGLbQK6Q1k
+  4UHbVG4ps4kSLWsJ7eVcu981GvlwP3ooiJ6YWcOX9PS58d4SNtq41/XaoLibKt/Y
+  Wzd/4tjYwMRVcxJdAy1T2474vkU/Qr7ibFinKeJymgouoQpEGhF64cF2pncCcmR7
+  zRk7CzL3mhcma8Zvwj234-2f3/+234/AR#@R#y1EEFsbzGbxOJfEVSTgJfvY7KYp
+  329df/2348sd3ARTx99 adamedwards@myhost
+  ```
 
 ## Usage
 
@@ -176,8 +203,14 @@ and upcoming maintenance windows.  The output should look similar to:
 
 Use this command to create a new Google Compute Engine server (a.k.a.
 instance).  You must specify a name, the machine type, the zone, and
-image.  See the extended options that also allow bootstrapping the
-node with `knife google server create --help`.
+image.  Note that if you are bootstrapping the node, make sure to
+follow the preparation instructions earlier and use the `-x` and
+`-i` commands to specify the username and the identify file for
+that user.  Make sure to use the private key file (e.g. `~/.ssh/id_rsa`)
+for the identity file and *not* the public key file.
+
+See the extended options that also allow bootstrapping the node with
+`knife google server create --help`.
 
 ### knife google server delete
 
@@ -188,7 +221,19 @@ delete --help` for other options.
 ### knife google server list
 
 Get a list of servers in the specified zone.  Note that this may
-include servers that are *not* managed by Chef.
+include servers that are *not* managed by Chef.  Your output should
+look something like:
+
+  ```
+  Name              Type           Image                 Public IP        Private IP      Disks               Zone           Status 
+  chef-svr          n1-standard-1  gcel-12-04-v20130325  103.59.80.113    10.240.45.78                        us-central2-a  running
+  chef-workstation  n1-standard-1  gcel-12-04-v20130325  103.59.85.188    10.240.9.140                        us-central2-a  running
+  fuse-dev          n1-standard-1  gcel-12-04-v20130225  103.59.80.147    10.240.166.18   pd-fuse             us-central2-a  running
+  magfs-c1          n1-standard-2  gcel-12-04-v20130225  103.59.87.217    10.240.61.92                        us-central2-a  running
+  magfs-c2          n1-standard-2  gcel-12-04-v20130225  103.59.80.161    10.240.175.240                      us-central2-a  running
+  magfs-c3          n1-standard-2  gcel-12-04-v20130325  178.255.120.69   10.240.34.197   jay-scratch         us-central2-a  running
+  magfs-svr         n1-standard-4  gcel-12-04-v20130225  103.59.80.178    10.240.81.25    pd28g               us-central2-a  running
+  ```
 
 ### knife google disk create
 
@@ -203,7 +248,14 @@ running server.
 
 ### knife google disk list
 
-See a listing of disks defined for a specific zone.
+See a listing of disks defined for a specific zone.  For example,
+
+  ```
+  Name                Zone           Source Snapshot  Size (In GB)  Status
+  jay-scratch         us-central2-a                   10            ready 
+  pd-fuse             us-central2-a                   10            ready 
+  pd28g               us-central2-a                   28            ready 
+  ```
 
 ## Troubleshooting
 
