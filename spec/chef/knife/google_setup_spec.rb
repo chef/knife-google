@@ -12,8 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-module Knife
-  module Google
-    VERSION = "1.0.0"
+require 'spec_helper'
+
+describe Chef::Knife::GoogleSetup do
+
+  let(:knife_plugin) { Chef::Knife::GoogleSetup.new(["-f credential.json"]) }
+
+  it "should invoke the google-compute-client-ruby setup process" do
+    Google::Compute::Client.should_receive(:setup)
+    knife_plugin.run
   end
 end

@@ -12,8 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-module Knife
-  module Google
-    VERSION = "1.0.0"
+require 'spec_helper'
+
+describe Chef::Knife::GoogleZoneList do
+
+  let(:knife_plugin) do
+    Chef::Knife::GoogleZoneList.new([])
+  end
+
+  it "should enlist all the GCE zones when run invoked" do
+    client = mock(Google::Compute::Client)
+    Google::Compute::Client.stub!(:from_json).
+      and_return(client)
+    client.should_receive(:zones).
+      and_return(mock("zone-collection", :list=>[stored_zone]))
+    $stdout.should_receive(:write).with(kind_of(String))
+    knife_plugin.run
   end
 end

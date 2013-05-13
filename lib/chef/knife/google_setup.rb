@@ -12,8 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-module Knife
-  module Google
-    VERSION = "1.0.0"
+require 'chef/knife/google_base'
+
+class Chef
+  class Knife
+    class GoogleSetup < Knife
+
+      include Knife::GoogleBase
+
+      banner "knife google setup"
+
+      def run
+        Google::Compute::Client.setup
+      end
+    end
   end
 end
+
