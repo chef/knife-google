@@ -34,11 +34,11 @@ Account before creating the project and adding services.
 
 ### Authorizing Setup
 
-In order for the knife plugin to programatically manage your servers, you
+In order for the knife plugin to programmatically manage your servers, you
 will first need to authorize its use of the Google Compute Engine API.
 Authorization to use any of Google's Cloud service API's utilizes the
 [OAuth 2.0](https://developers.google.com/accounts/docs/OAuth2) standard.
-Once your project has been created, log in to your Google account and visit the
+Once your project has been created, log in to your Google Account and visit the
 [API Console](http://code.google.com/apis/console) and follow the "API Access"
 menu.  Create a new "Client ID" and specify the
 [Installed Application](https://developers.google.com/accounts/docs/OAuth2#installed)
@@ -99,18 +99,19 @@ If you don't already have SSH keys set up, you can create them with
 the `ssh-keygen` program.  Open up the Metadata page from the
 GCE section of the cloud console.  If it doesn't already exist, create
 a new `sshKeys` key and paste in your user's `~/.ssh/id_rsa.pub`
-file (make sure to prefix the entry with the username).  An example
-entry should look something like this (note the prepended username of
-`adamed`:
+file; make sure to prefix the entry with the username that corresponds
+to the username specified with the `-x` (aka `--ssh-user`) argument of the knife 
+command or its default value of `root`.  An example entry should look
+something like this -- notice the prepended username of `myuser`:
 
   ```
-  adamed:ssh-rsa AYAAB3Nwejwejjfjawlwl990sefjsfC5lPulcP4eZB+z1zcMF
+  myuser:ssh-rsa AYAAB3Nwejwejjfjawlwl990sefjsfC5lPulcP4eZB+z1zcMF
   76gTV4vojT/SWXymTfGpBL2KHTmF4jnGfEKPwjHIiLrZNHM2ISMi/atlKjOoUCVT
   AvUyjqqp3z2KVXSP9P50Kgf8JYWjjXKApiZHkJOHJZ8GGf7aTnRU9NEGLbQK6Q1k
   4UHbVG4ps4kSLWsJ7eVcu981GvlwP3ooiJ6YWcOX9PS58d4SNtq41/XaoLibKt/Y
   Wzd/4tjYwMRVcxJdAy1T2474vkU/Qr7ibFinKeJymgouoQpEGhF64cF2pncCcmR7
   zRk7CzL3mhcma8Zvwj234-2f3/+234/AR#@R#y1EEFsbzGbxOJfEVSTgJfvY7KYp
-  329df/2348sd3ARTx99 adamedwards@myhost
+  329df/2348sd3ARTx99 mymail@myhost
   ```
 
 ## Usage
@@ -205,7 +206,7 @@ Use this command to create a new Google Compute Engine server (a.k.a.
 instance).  You must specify a name, the machine type, the zone, and
 image.  Note that if you are bootstrapping the node, make sure to
 follow the preparation instructions earlier and use the `-x` and
-`-i` commands to specify the username and the identify file for
+`-i` commands to specify the username and the identity file for
 that user.  Make sure to use the private key file (e.g. `~/.ssh/id_rsa`)
 for the identity file and *not* the public key file.
 
