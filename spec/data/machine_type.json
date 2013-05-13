@@ -1,0 +1,24 @@
+{
+  "kind":"compute#machineType",
+  "id":"130222222225",
+  "creationTimestamp":"2012-11-16 11:46:10 -0800",
+  "selfLink":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/global/machineTypes/mock-machine-type",
+  "name":"mock-machine-type",
+  "description":"2 vCPUS, 1.8 GB RAM, and a 10 GB ephemeral root disk",
+  "guestCpus":"2",
+  "memoryMb":"1843",
+  "imageSpaceGb":"10",
+  "ephemeralDisks":[{
+    "diskGb":"1"
+  }],
+  "maximumPersistentDisks":"16",
+  "maximumPersistentDisksSizeGb":"256",
+  "availableZone":[""],
+  "deprecated":{
+    "state":"",
+    "replacement":"",
+    "deprecated":"",
+    "obsolete":"",
+    "deleted":""
+  }
+}

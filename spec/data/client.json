@@ -1,0 +1,14 @@
+{
+  "authorization_uri":"https://accounts.google.com/o/oauth2/auth",
+  "token_credential_uri":"https://accounts.google.com/o/oauth2/token",
+  "scope":["https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/compute.readonly","https://www.googleapis.com/auth/devstorage.full_control","https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/devstorage.read_write","https://www.googleapis.com/auth/devstorage.write_only","https://www.googleapis.com/auth/userinfo.email"],
+  "redirect_uri":"urn:ietf:wg:oauth:2.0:oob",
+  "client_id":"xxx1112345673qww4565.apps.googleusercontent.com",
+  "client_secret":"W5KHDDIOHDLIFDLHDOK",
+  "access_token":"ya29sadfajdslfkjsaldSqXhdasdMk",
+  "expires_in":3600,
+  "refresh_token":"1sasdlkfhsaoZNiA",
+  "id_token":"eyJrnxBX_X7IIsadfhaslkhfaskleuhfalsiehfliuhfalisudhfliasuhfalsidufhalsiufeafdfbdbfyabfiabvfafvaifvadsvtaseifvtqwfetwftbabfuasftvakiftaifteawiutfevvvvvvvvvvvvvvvvvvvvvvvvvvvvvewaffffffffffffffffffeeeeeeeeeeeeeeeeeeeeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiffffffffffffffffffffffffffffffffffffffffffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuaqqqqqqqqqqqqqqqqqqqqqfebbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbiwwwwwwwwwwwwwwwwwwweffffffqqqqqqoiyyyyyyyyyyyyyyyyyyyqweqqqqqqqqqqqwwwwwwwwwwrrrrrrrrrrrrrrrr",
+  "issued_at":"2013-01-18 15:25:29 -0800",
+  "project" : "mock-project"
+}

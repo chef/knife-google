@@ -16,16 +16,16 @@ require 'chef/knife/google_base'
 
 class Chef
   class Knife
-    class GoogleServerList < Knife
+    class GoogleDiskList < Knife
 
       include Knife::GoogleBase
 
-      banner "knife google server list --google-compute-zone ZONE (options)"
+      banner "knife google disk list --google-compute-zone ZONE (options)"
 
       option :zone,
         :short => "-Z ZONE",
         :long => "--google-compute-zone ZONE",
-        :description => "The Zone for this server",
+        :description => "The Zone for disk listing",
         :required => true
 
       def run
@@ -38,28 +38,26 @@ class Chef
           exit 1
         end
 
-        instance_list = [
+        disk_list = [
           ui.color("Name", :bold),
-          ui.color('Type', :bold),
-          ui.color('Image', :bold),
-          ui.color('Public IP', :bold),
-          ui.color('Private IP', :bold),
-          ui.color('Disks', :bold),
-          ui.color("Zone", :bold),
+          ui.color('Zone', :bold),
+          ui.color('Source Snapshot', :bold),
+          ui.color('Size (In GB)', :bold),
           ui.color('Status', :bold)].flatten.compact
 
-        output_column_count = instance_list.length
+        output_column_count = disk_list.length
 
-        client.instances.list(:zone=>zone.name).each do |instance|
-          instance_list << instance.name
-          instance_list << selflink2name(instance.machine_type.to_s)
-          instance_list << selflink2name(instance.image.to_s)
-          instance_list << public_ips(instance).join(',')
-          instance_list << private_ips(instance).join(',')
-          instance_list << disks(instance).join(',')
-          instance_list << selflink2name(instance.zone.to_s)
-          instance_list << begin
-            status = instance.status.downcase
+        client.disks.list(:zone=>zone.name).each do |disk|
+          disk_list << disk.name
+          disk_list << selflink2name(disk.zone)
+          if disk.source_snapshot.nil?
+            disk_list << " "
+          else
+            selflink2name(disk.source_snapshot)
+          end
+          disk_list << disk.size_gb
+          disk_list << begin
+            status = disk.status.downcase
             case status
             when 'stopping', 'stopped', 'terminated'
               ui.color(status, :red)
@@ -70,7 +68,7 @@ class Chef
             end
           end
         end
-        puts ui.list(instance_list, :uneven_columns_across, output_column_count)
+        ui.info(ui.list(disk_list, :uneven_columns_across, output_column_count))
       end
     end
   end
