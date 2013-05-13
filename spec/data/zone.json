@@ -1,0 +1,30 @@
+{
+  "kind":"compute#zone",
+  "id":"130430234345556",
+  "creationTimestamp":"2012-11-15 22:06:55 -0800",
+  "selfLink":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone",
+  "name":"mock-zone",
+  "description":"mock-zone",
+  "status":"UP",
+  "maintenanceWindows":[{
+    "name":"2013-03-02-planned-outage",
+    "description":"maintenance zone",
+    "beginTime":"2013-03-02T12:00:00.000-08:00",
+    "endTime":"2013-03-17T13:00:00.000-07:00"}],
+  "availableMachineType":[""],
+  "quotas":[
+    {"metric":"INSTANCES","usage":10.0,"limit":20.0},
+    {"metric":"CPUS","usage":40.0,"limit":96.0},
+    {"metric":"EPHEMERAL_ADDRESSES","usage":10.0,"limit":20.0},
+    {"metric":"DISKS","usage":8.0,"limit":20.0},
+    {"metric":"DISKS_TOTAL_GB","usage":2.0,"limit":40.0},
+    {"metric":"FIREWALLS","usage":10.0,"limit":100.0},
+    {"metric":"IMAGES","usage":0.0,"limit":100.0}],
+  "deprecated":{
+    "state":"",
+    "replacement":"",
+    "deprecated":"",
+    "obsolete":"",
+    "deleted":""
+  }
+}
