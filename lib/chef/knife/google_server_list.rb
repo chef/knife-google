@@ -25,28 +25,23 @@ class Chef
       option :zone,
         :short => "-Z ZONE",
         :long => "--google-compute-zone ZONE",
-        :description => "The Zone for this server",
-        :required => true
+        :description => "The Zone for this server"
 
       def run
         $stdout.sync = true
-
+        
         begin
-          zone = client.zones.get(config[:zone])
+          zone = client.zones.get(config[:zone] || locate_config_value(:google_compute_zone))
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone]}' not found")
+          ui.error("Zone '#{config[:zone] || locate_config_value(:google_compute_zone)}' not found.")
+          exit 1
+        rescue Google::Compute::ParameterValidation
+          ui.error("Must specify zone in knife.rb or in command line as an option. Try with --help.")
           exit 1
         end
 
-        instance_list = [
-          ui.color("Name", :bold),
-          ui.color('Type', :bold),
-          ui.color('Image', :bold),
-          ui.color('Public IP', :bold),
-          ui.color('Private IP', :bold),
-          ui.color('Disks', :bold),
-          ui.color("Zone", :bold),
-          ui.color('Status', :bold)].flatten.compact
+        instance_label = ['Name', 'Type', 'Image', 'Public IP', 'Private IP', 'Disks', 'Zone', 'Status']
+        instance_list = (instance_label.map {|label| ui.color(label, :bold)}).flatten.compact
 
         output_column_count = instance_list.length
 
