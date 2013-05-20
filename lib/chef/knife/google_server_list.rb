@@ -31,12 +31,12 @@ class Chef
         $stdout.sync = true
         
         begin
-          zone = client.zones.get(config[:zone] || locate_config_value(:google_compute_zone))
+          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone])
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || locate_config_value(:google_compute_zone)}' not found.")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone] }' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
-          ui.error("Must specify zone in knife.rb or in command line as an option. Try with --help.")
+          ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
           exit 1
         end
 
