@@ -65,6 +65,16 @@ or, for Gemfile:
     gem 'knife-google'
 ```
 
+To configure Windows system to validate SSL certificate please download
+[cacert.pem](http://curl.haxx.se/ca/cacert.pem) file and save to C: drive.
+Now make ruby aware of your certificate authority by setting SSL_CERT_FILE. To set this in your current command prompt session, type:
+
+```sh
+    set SSL_CERT_FILE = C:\cacert.pem
+```
+
+On Linux system the configuration for SSL certificate validation is present by default.
+
 Depending on your system's configuration, you may need to run this command
 with root/Administrator privileges.
 
