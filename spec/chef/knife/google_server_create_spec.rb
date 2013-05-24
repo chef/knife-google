@@ -16,14 +16,8 @@ require 'spec_helper'
 
 describe Chef::Knife::GoogleServerCreate do
 
-  let(:knife_plugin) do
-    Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
-      "-I"+stored_image.name, "-n"+stored_network.name,
-      "-Z"+stored_zone.name, stored_instance.name])
-  end
-
-  it "#run should invoke compute api to create an server" do
-    zones = mock(Google::Compute::ListableResourceCollection)
+before(:each) do
+  zones = mock(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
 
@@ -59,7 +53,13 @@ describe Chef::Knife::GoogleServerCreate do
       :images=>images, :zones=>zones,:machine_types=>machine_types,
       :networks=>networks)
     Google::Compute::Client.stub!(:from_json).and_return(client)
+end
 
+
+  it "#run should invoke compute api to create an server" do
+    knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
+      "-I"+stored_image.name, "-n"+stored_network.name,
+      "-Z"+stored_zone.name, stored_instance.name])
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
@@ -72,13 +72,29 @@ describe Chef::Knife::GoogleServerCreate do
 
     knife_plugin.run
   end
+  it "should read zone value from knife config file." do
+    Chef::Config[:knife][:google_compute_zone] = stored_zone.name
+    knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
+      "-I"+stored_image.name, "-n"+stored_network.name,
+       stored_instance.name])
+    knife_plugin.config[:disks]=[]
+    knife_plugin.config[:metadata]=[]
+    knife_plugin.config[:public_ip]='EPHEMERAL'
+    knife_plugin.ui.stub!(:info)
 
-  describe "without appropriate command line options" do
-    it "should throw exception when required params are not passed" do
-      $stdout.stub!(:write) # lets not print those error messages
-      expect {
-        Chef::Knife::GoogleServerCreate.new([ "NAME"])
-      }.to raise_error(SystemExit)
-    end
+    knife_plugin.stub!(:wait_for_sshd)
+    knife_plugin.should_receive(:bootstrap_for_node).
+      with(stored_instance,'10.100.0.10').
+      and_return(mock("Chef::Knife::Bootstrap",:run=>true))
+    knife_plugin.run
+  end
+end
+
+describe "without appropriate command line options" do
+  it "should throw exception when required params are not passed" do
+    $stdout.stub!(:write) # lets not print those error messages
+    expect {
+      Chef::Knife::GoogleServerCreate.new([ "NAME"])
+    }.to raise_error(SystemExit)
   end
 end

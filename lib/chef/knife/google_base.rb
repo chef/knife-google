@@ -66,6 +66,7 @@ class Chef
           }
         }.flatten.compact
       end
+
     end
   end
 end

@@ -47,8 +47,7 @@ class Chef
       option :zone,
         :short => "-Z ZONE",
         :long => "--google-compute-zone ZONE",
-        :description => "The Zone for this server",
-        :required => true
+        :description => "The Zone for this server"
 
       option :network,
         :short => "-n NETWORK",
@@ -265,23 +264,29 @@ class Chef
         end
 
         begin
-          zone = client.zones.get(config[:zone]).self_link
+          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone]).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone]}' not found")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone]}' not found")
+          exit 1
+        rescue Google::Compute::ParameterValidation
+          ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
           exit 1
         end
+
         begin
           machine_type = client.machine_types.get(config[:machine_type]).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("MachineType '#{config[:machine_type]}' not found")
           exit 1
         end
+
         begin
           image = client.images.get(:project=>'google', :name=>config[:image]).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("Image '#{config[:image]}' not found")
           exit 1
         end
+
         begin
           network = client.networks.get(config[:network]).self_link
         rescue Google::Compute::ResourceNotFound
