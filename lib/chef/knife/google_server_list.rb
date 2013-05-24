@@ -65,7 +65,12 @@ class Chef
             end
           end
         end
-        puts ui.list(instance_list, :uneven_columns_across, output_column_count)
+
+        if instance_list.count > 8  # This condition checks if there are any servers available. The first 8 values are the Labels. 
+           puts ui.list(instance_list, :uneven_columns_across, output_column_count)
+        else
+           puts "No servers found in #{zone.name} zone."
+        end
       end
     end
   end
