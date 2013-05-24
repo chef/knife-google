@@ -80,9 +80,7 @@ module Google
         begin
           api_client.authorization.fetch_access_token!
         rescue Faraday::Error::ConnectionFailed => e
-          raise ConnectionFail, "\"The SSL certificates validation may not configured for this system. Please refer README to configured SSL certificates validation\". #{e.message}"
-        rescue Exception => e
-          raise e.message
+          raise ConnectionFail, "\"The SSL certificates validation may not configured for this system. Please refer README to configured SSL certificates validation\". #{e.message}" if e.message.include? "SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed"
         else
           access_token = api_client.authorization.access_token
           refresh_token = api_client.authorization.refresh_token
