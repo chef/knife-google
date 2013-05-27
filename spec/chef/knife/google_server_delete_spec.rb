@@ -103,3 +103,25 @@ describe Chef::Knife::GoogleServerDelete do
     end
   end
 end
+
+describe Chef::Knife::GoogleServerDelete do
+  it "should read zone value from knife config file." do
+    Chef::Config[:knife][:google_compute_zone] = stored_zone.name
+    knife_plugin = Chef::Knife::GoogleServerDelete.new([stored_instance.name])
+    zones = mock(Google::Compute::ListableResourceCollection)
+    zones.should_receive(:get).with(stored_zone.name).and_return(stored_zone)
+
+    instances = mock(Google::Compute::DeletableResourceCollection)
+    instances.should_receive(:get).with(:name=>stored_instance.name, :zone=>stored_zone.name).
+        and_return(stored_instance)
+    instances.should_receive(:delete).with(:instance=>stored_instance.name, :zone=>stored_zone.name)
+
+    client = mock(Google::Compute::Client, :zones=>zones, :instances=>instances)
+    Google::Compute::Client.stub!(:from_json).and_return(client)
+    knife_plugin.config[:yes] = true
+    knife_plugin.ui.should_receive(:warn).twice
+    knife_plugin.stub!(:msg_pair)
+    knife_plugin.run
+    
+  end
+end

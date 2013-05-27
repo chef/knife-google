@@ -15,24 +15,23 @@
 require 'spec_helper'
 
 describe Chef::Knife::GoogleServerList do
-
-  let(:knife_plugin) do
-    Chef::Knife::GoogleServerList.new(["-Z"+stored_zone.name])
+  before(:each) do
+    zones = mock(Google::Compute::ListableResourceCollection)
+    zones.should_receive(:get).with(stored_zone.name).and_return(stored_zone)
+    instances = mock(Google::Compute::DeletableResourceCollection)
+    instances.should_receive(:list).with(:zone=>stored_zone.name).and_return([stored_instance])
+    client = mock(Google::Compute::Client, :instances=>instances, :zones=>zones)
+    Google::Compute::Client.stub!(:from_json).and_return(client)
   end
 
   it "should enlist all the GCE servers when run invoked" do
-    zones = mock(Google::Compute::ListableResourceCollection)
-    zones.should_receive(:get).with(stored_zone.name).
-      and_return(stored_zone)
-
-    instances = mock(Google::Compute::DeletableResourceCollection)
-    instances.should_receive(:list).with(:zone=>stored_zone.name).
-      and_return([stored_instance])
-
-    client = mock(Google::Compute::Client,
-      :instances=>instances, :zones=>zones)
-    Google::Compute::Client.stub!(:from_json).and_return(client)
-
+    knife_plugin = Chef::Knife::GoogleServerList.new(["-Z"+stored_zone.name])
+    $stdout.should_receive(:write).with(kind_of(String))
+    knife_plugin.run
+  end
+  
+  it "should list all the GCE servers when zone is set in knife.rb" do
+    knife_plugin = Chef::Knife::GoogleServerList.new([Chef::Config[:knife][:google_compute_zone] = stored_zone.name])
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end
