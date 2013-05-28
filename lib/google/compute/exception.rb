@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'faraday'
 module Google
   module Compute
     class ParameterValidation < ArgumentError; end
@@ -23,6 +24,7 @@ module Google
     class OperationTimeout < RuntimeError; end
     class HashConvert < RuntimeError; end
     class ResourceNotFound < RuntimeError; end
+    class ConnectionFail < Faraday::Error::ConnectionFailed; end
   end
 end
 
