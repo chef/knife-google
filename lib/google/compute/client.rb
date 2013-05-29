@@ -76,24 +76,32 @@ module Google
         $stdout.print "\n\nAuthorization code: "
         authorization_code = $stdin.gets.chomp
         api_client.authorization.code = authorization_code
-        api_client.authorization.fetch_access_token!
-        access_token = api_client.authorization.access_token
-        refresh_token = api_client.authorization.refresh_token
-        id_token = api_client.authorization.id_token
-        expires_in = api_client.authorization.expires_in
-        issued_at = api_client.authorization.issued_at.to_s
-        if !@credential_file
-            filepath = File.expand_path(DEFAULT_FILE)
+        
+        begin
+          api_client.authorization.fetch_access_token!
+        rescue Faraday::Error::ConnectionFailed => e
+          raise ConnectionFail,
+            "The SSL certificates validation may not configured for this system. Please refer README to configured SSL certificates validation"\
+              if e.message.include? "SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed"
         else
-            filepath = File.expand_path(@credential_file)
-        end
-        File.open(filepath,'w+') do |f|
-          f.write(MultiJson.dump({"authorization_uri" => authorization_uri,
-            "token_credential_uri"=>"https://accounts.google.com/o/oauth2/token",
-            "scope"=>scope,"redirect_uri"=>redirect_uri, "client_id"=>client_id,
-            "client_secret"=>client_secret, "access_token"=>access_token,
-            "expires_in"=>expires_in,"refresh_token"=> refresh_token, "id_token"=>id_token,
-            "issued_at"=>issued_at,"project"=>project }, :pretty=>true))
+          access_token = api_client.authorization.access_token
+          refresh_token = api_client.authorization.refresh_token
+          id_token = api_client.authorization.id_token
+          expires_in = api_client.authorization.expires_in
+          issued_at = api_client.authorization.issued_at.to_s
+          if !@credential_file
+              filepath = File.expand_path(DEFAULT_FILE)
+          else
+              filepath = File.expand_path(@credential_file)
+          end
+          File.open(filepath,'w+') do |f|
+            f.write(MultiJson.dump({"authorization_uri" => authorization_uri,
+              "token_credential_uri"=>"https://accounts.google.com/o/oauth2/token",
+              "scope"=>scope,"redirect_uri"=>redirect_uri, "client_id"=>client_id,
+              "client_secret"=>client_secret, "access_token"=>access_token,
+              "expires_in"=>expires_in,"refresh_token"=> refresh_token, "id_token"=>id_token,
+              "issued_at"=>issued_at,"project"=>project }, :pretty=>true))
+          end
         end
       end
 
