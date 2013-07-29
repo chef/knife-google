@@ -71,7 +71,7 @@ describe Google::Compute::Disk do
   end
 
   it "#create should create a new disk" do
-    #zone = 'https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone'
+    #zone = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone'
     zone = 'mock-zone'
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.disks.insert, 
@@ -83,7 +83,7 @@ describe Google::Compute::Disk do
   end
 
   it "#insert should create a new disk also" do
-    #zone = 'https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone'
+    #zone = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone'
     zone = 'mock-zone'
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.disks.insert, 

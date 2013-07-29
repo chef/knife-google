@@ -162,7 +162,7 @@ module Google
         end
 
         def compute
-          @compute ||= @api_client.discovered_api('compute','v1beta14')
+          @compute ||= @api_client.discovered_api('compute','v1beta15')
         end
         
         def dispatch(opts)

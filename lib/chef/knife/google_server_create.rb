@@ -274,7 +274,7 @@ class Chef
         end
 
         begin
-          machine_type = client.machine_types.get(config[:machine_type]).self_link
+          machine_type = client.machine_types.get(:name=>config[:machine_type], :zone=>selflink2name(zone)).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("MachineType '#{config[:machine_type]}' not found")
           exit 1

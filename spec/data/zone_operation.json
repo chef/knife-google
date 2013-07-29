@@ -2,9 +2,9 @@
   "kind":"compute#operation",
   "id":"10333333339018",
   "creationTimestamp":"2013-01-24 11:21:00 -0800",
-  "selfLink":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/zone/mock-zone/operations/mock-zone-operation",
+  "selfLink":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/zone/mock-zone/operations/mock-zone-operation",
   "name":"mock-zone-operation",
-  "targetLink":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone/disks/mock-disk",
+  "targetLink":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone/disks/mock-disk",
   "targetId":"12991111436063",
   "clientOperationId":"",
   "status":"DONE",
@@ -32,5 +32,5 @@
     "message":""
   }],
   "operationType":"insert",
-  "zone":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone"
+  "zone":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone"
 }

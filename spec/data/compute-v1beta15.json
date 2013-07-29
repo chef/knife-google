@@ -1,11 +1,11 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"DsY8aw3zSOMYNAy_X4JnK21hrvA/jMkGiSUPovOxLdbwSvW2hSiv5bs\"",
+ "etag": "\"0kaFfN0xfjZjASExv-gUnrWhdto/66VVERAXJ8eaR7pNe0eGIJGlLYs\"",
  "discoveryVersion": "v1",
- "id": "compute:v1beta14",
+ "id": "compute:v1beta15",
  "name": "compute",
- "version": "v1beta14",
- "revision": "20130403",
+ "version": "v1beta15",
+ "revision": "20130320",
  "title": "Compute Engine API",
  "description": "API for the Google Compute Engine service.",
  "ownerDomain": "google.com",
@@ -14,15 +14,15 @@
   "x16": "http://www.google.com/images/icons/product/compute_engine-16.png",
   "x32": "http://www.google.com/images/icons/product/compute_engine-32.png"
  },
- "documentationLink": "https://developers.google.com/compute/docs/reference/v1beta14",
+ "documentationLink": "https://developers.google.com/compute/docs/reference/v1beta15",
  "labels": [
   "limited_availability"
  ],
  "protocol": "rest",
- "baseUrl": "https://www.googleapis.com/compute/v1beta14/projects/",
- "basePath": "/compute/v1beta14/projects/",
+ "baseUrl": "https://www.googleapis.com/compute/v1beta15/projects/",
+ "basePath": "/compute/v1beta15/projects/",
  "rootUrl": "https://www.googleapis.com/",
- "servicePath": "compute/v1beta14/projects/",
+ "servicePath": "compute/v1beta15/projects/",
  "batchPath": "batch",
  "parameters": {
   "alt": {
@@ -110,6 +110,167 @@
     }
    }
   },
+  "Address": {
+   "id": "Address",
+   "type": "object",
+   "description": "A reserved address resource.",
+   "properties": {
+    "address": {
+     "type": "string",
+     "description": "The IP address represented by this resource."
+    },
+    "creationTimestamp": {
+     "type": "string",
+     "description": "Creation timestamp in RFC3339 text format (output only)."
+    },
+    "description": {
+     "type": "string",
+     "description": "An optional textual description of the resource; provided by the client when the resource is created."
+    },
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only).",
+     "format": "uint64"
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of the resource.",
+     "default": "compute#address"
+    },
+    "name": {
+     "type": "string",
+     "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
+     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "annotations": {
+      "required": [
+       "compute.addresses.insert"
+      ]
+     }
+    },
+    "region": {
+     "type": "string",
+     "description": "URL of the region where the address resides (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for the resource (output only)."
+    },
+    "status": {
+     "type": "string",
+     "description": "The status of the address (output only)."
+    },
+    "user": {
+     "type": "string",
+     "description": "URL of the resource currently using this address (output only)."
+    }
+   }
+  },
+  "AddressAggregatedList": {
+   "id": "AddressAggregatedList",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "object",
+     "description": "A map of scoped address lists.",
+     "additionalProperties": {
+      "$ref": "AddressesScopedList",
+      "description": "Name of the scope containing this set of addresses."
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#addressAggregatedList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
+  "AddressList": {
+   "id": "AddressList",
+   "type": "object",
+   "description": "Contains a list of address resources.",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "array",
+     "description": "The address resources.",
+     "items": {
+      "$ref": "Address"
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#addressList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
+  "AddressesScopedList": {
+   "id": "AddressesScopedList",
+   "type": "object",
+   "properties": {
+    "addresses": {
+     "type": "array",
+     "description": "List of addresses contained in this scope.",
+     "items": {
+      "$ref": "Address"
+     }
+    },
+    "warning": {
+     "type": "object",
+     "description": "Informational warning which replaces the list of addresses when the list is empty.",
+     "properties": {
+      "code": {
+       "type": "string",
+       "description": "The warning type identifier for this warning."
+      },
+      "data": {
+       "type": "array",
+       "description": "Metadata for this warning in 'key: value' format.",
+       "items": {
+        "type": "object",
+        "properties": {
+         "key": {
+          "type": "string",
+          "description": "A key for the warning data."
+         },
+         "value": {
+          "type": "string",
+          "description": "A warning data value corresponding to the key."
+         }
+        }
+       }
+      },
+      "message": {
+       "type": "string",
+       "description": "Optional human-readable details for this warning."
+      }
+     }
+    }
+   }
+  },
   "AttachedDisk": {
    "id": "AttachedDisk",
    "type": "object",
@@ -125,7 +286,7 @@
     },
     "index": {
      "type": "integer",
-     "description": "A zero-based index to assign to this disk, where 0 is reserved for the boot disk. If not specified, the server will choose an appropriate value.",
+     "description": "A zero-based index to assign to this disk, where 0 is reserved for the boot disk. If not specified, the server will choose an appropriate value (output only).",
      "format": "int32"
     },
     "kind": {
@@ -143,7 +304,7 @@
     },
     "type": {
      "type": "string",
-     "description": "Type of the disk, either \"EPHEMERAL\" or \"PERSISTENT\". Note that persistent disks must be created before you can specify them here.",
+     "description": "Type of the disk, either \"SCRATCH\" or \"PERSISTENT\". Note that persistent disks must be created before you can specify them here.",
      "annotations": {
       "required": [
        "compute.instances.insert"
@@ -243,6 +404,37 @@
     }
    }
   },
+  "DiskAggregatedList": {
+   "id": "DiskAggregatedList",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "object",
+     "description": "A map of scoped disk lists.",
+     "additionalProperties": {
+      "$ref": "DisksScopedList",
+      "description": "Name of the scope containing this set of disks."
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#diskAggregatedList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
   "DiskList": {
    "id": "DiskList",
    "type": "object",
@@ -271,6 +463,50 @@
     "selfLink": {
      "type": "string",
      "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
+  "DisksScopedList": {
+   "id": "DisksScopedList",
+   "type": "object",
+   "properties": {
+    "disks": {
+     "type": "array",
+     "description": "List of disks contained in this scope.",
+     "items": {
+      "$ref": "Disk"
+     }
+    },
+    "warning": {
+     "type": "object",
+     "description": "Informational warning which replaces the list of disks when the list is empty.",
+     "properties": {
+      "code": {
+       "type": "string",
+       "description": "The warning type identifier for this warning."
+      },
+      "data": {
+       "type": "array",
+       "description": "Metadata for this warning in 'key: value' format.",
+       "items": {
+        "type": "object",
+        "properties": {
+         "key": {
+          "type": "string",
+          "description": "A key for the warning data."
+         },
+         "value": {
+          "type": "string",
+          "description": "A warning data value corresponding to the key."
+         }
+        }
+       }
+      },
+      "message": {
+       "type": "string",
+       "description": "Optional human-readable details for this warning."
+      }
+     }
     }
    }
   },
@@ -480,6 +716,10 @@
        "compute.images.insert"
       ]
      }
+    },
+    "status": {
+     "type": "string",
+     "description": "Status of the image (output only). It will be one of the following READY - after image has been successfully created and is ready for use FAILED - if creating the image fails for some reason PENDING - the image creation is in progress An image can be used to create other resources suck as instances only after the image has been successfully created and the status is set to READY."
     }
    }
   },
@@ -588,7 +828,7 @@
     },
     "selfLink": {
      "type": "string",
-     "description": "Server defined URL for the resource (output only)."
+     "description": "Server defined URL for this resource (output only)."
     },
     "serviceAccounts": {
      "type": "array",
@@ -612,6 +852,37 @@
     "zone": {
      "type": "string",
      "description": "URL of the zone where the instance resides (output only)."
+    }
+   }
+  },
+  "InstanceAggregatedList": {
+   "id": "InstanceAggregatedList",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "object",
+     "description": "A map of scoped instance lists.",
+     "additionalProperties": {
+      "$ref": "InstancesScopedList",
+      "description": "Name of the scope containing this set of instances."
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#instanceAggregatedList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
     }
    }
   },
@@ -643,6 +914,50 @@
     "selfLink": {
      "type": "string",
      "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
+  "InstancesScopedList": {
+   "id": "InstancesScopedList",
+   "type": "object",
+   "properties": {
+    "instances": {
+     "type": "array",
+     "description": "List of instances contained in this scope.",
+     "items": {
+      "$ref": "Instance"
+     }
+    },
+    "warning": {
+     "type": "object",
+     "description": "Informational warning which replaces the list of instances when the list is empty.",
+     "properties": {
+      "code": {
+       "type": "string",
+       "description": "The warning type identifier for this warning."
+      },
+      "data": {
+       "type": "array",
+       "description": "Metadata for this warning in 'key: value' format.",
+       "items": {
+        "type": "object",
+        "properties": {
+         "key": {
+          "type": "string",
+          "description": "A key for the warning data."
+         },
+         "value": {
+          "type": "string",
+          "description": "A warning data value corresponding to the key."
+         }
+        }
+       }
+      },
+      "message": {
+       "type": "string",
+       "description": "Optional human-readable details for this warning."
+      }
+     }
     }
    }
   },
@@ -720,13 +1035,6 @@
    "type": "object",
    "description": "A machine type resource.",
    "properties": {
-    "availableZone": {
-     "type": "array",
-     "description": "The zones that this machine type can run in.",
-     "items": {
-      "type": "string"
-     }
-    },
     "creationTimestamp": {
      "type": "string",
      "description": "Creation timestamp in RFC3339 text format (output only)."
@@ -738,20 +1046,6 @@
     "description": {
      "type": "string",
      "description": "An optional textual description of the resource."
-    },
-    "ephemeralDisks": {
-     "type": "array",
-     "description": "List of extended ephemeral disks assigned to the instance.",
-     "items": {
-      "type": "object",
-      "properties": {
-       "diskGb": {
-        "type": "integer",
-        "description": "Size of the ephemeral disk, defined in GB.",
-        "format": "int32"
-       }
-      }
-     }
     },
     "guestCpus": {
      "type": "integer",
@@ -793,9 +1087,58 @@
      "description": "Name of the resource.",
      "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
     },
+    "scratchDisks": {
+     "type": "array",
+     "description": "List of extended scratch disks assigned to the instance.",
+     "items": {
+      "type": "object",
+      "properties": {
+       "diskGb": {
+        "type": "integer",
+        "description": "Size of the scratch disk, defined in GB.",
+        "format": "int32"
+       }
+      }
+     }
+    },
     "selfLink": {
      "type": "string",
      "description": "Server defined URL for the resource (output only)."
+    },
+    "zone": {
+     "type": "string",
+     "description": "Url of the zone where the machine type resides (output only)."
+    }
+   }
+  },
+  "MachineTypeAggregatedList": {
+   "id": "MachineTypeAggregatedList",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "object",
+     "description": "A map of scoped machine type lists.",
+     "additionalProperties": {
+      "$ref": "MachineTypesScopedList",
+      "description": "Name of the scope containing this set of machine types."
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#machineTypeAggregatedList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
     }
    }
   },
@@ -817,7 +1160,7 @@
     },
     "kind": {
      "type": "string",
-     "description": "Type of the resource.",
+     "description": "Type of resource.",
      "default": "compute#machineTypeList"
     },
     "nextPageToken": {
@@ -826,7 +1169,51 @@
     },
     "selfLink": {
      "type": "string",
-     "description": "Server defined URL for the resource (output only)."
+     "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
+  "MachineTypesScopedList": {
+   "id": "MachineTypesScopedList",
+   "type": "object",
+   "properties": {
+    "machineTypes": {
+     "type": "array",
+     "description": "List of machine types contained in this scope.",
+     "items": {
+      "$ref": "MachineType"
+     }
+    },
+    "warning": {
+     "type": "object",
+     "description": "Informational warning which replaces the list of machine types when the list is empty.",
+     "properties": {
+      "code": {
+       "type": "string",
+       "description": "The warning type identifier for this warning."
+      },
+      "data": {
+       "type": "array",
+       "description": "Metadata for this warning in 'key: value' format.",
+       "items": {
+        "type": "object",
+        "properties": {
+         "key": {
+          "type": "string",
+          "description": "A key for the warning data."
+         },
+         "value": {
+          "type": "string",
+          "description": "A warning data value corresponding to the key."
+         }
+        }
+       }
+      },
+      "message": {
+       "type": "string",
+       "description": "Optional human-readable details for this warning."
+      }
+     }
     }
    }
   },
@@ -958,7 +1345,7 @@
     },
     "networkIP": {
      "type": "string",
-     "description": "An optional IPV4 internal network address to assign to the instance for this network interface. If not specified, one will be assigned from the available range."
+     "description": "An optional IPV4 internal network address assigned to the instance for this network interface (output only)."
     }
    }
   },
@@ -1073,6 +1460,10 @@
      "description": "An optional progress indicator that ranges from 0 to 100. There is no requirement that this be linear or support any granularity of operations. This should not be used to guess at when the operation will be complete. This number should be monotonically increasing as the operation progresses (output only).",
      "format": "int32"
     },
+    "region": {
+     "type": "string",
+     "description": "URL of the region where the operation resides (output only)."
+    },
     "selfLink": {
      "type": "string",
      "description": "Server defined URL for the resource (output only)."
@@ -1142,6 +1533,37 @@
     }
    }
   },
+  "OperationAggregatedList": {
+   "id": "OperationAggregatedList",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "object",
+     "description": "A map of scoped operation lists.",
+     "additionalProperties": {
+      "$ref": "OperationsScopedList",
+      "description": "Name of the scope containing this set of operations."
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#operationAggregatedList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
   "OperationList": {
    "id": "OperationList",
    "type": "object",
@@ -1173,6 +1595,50 @@
     }
    }
   },
+  "OperationsScopedList": {
+   "id": "OperationsScopedList",
+   "type": "object",
+   "properties": {
+    "operations": {
+     "type": "array",
+     "description": "List of operations contained in this scope.",
+     "items": {
+      "$ref": "Operation"
+     }
+    },
+    "warning": {
+     "type": "object",
+     "description": "Informational warning which replaces the list of operations when the list is empty.",
+     "properties": {
+      "code": {
+       "type": "string",
+       "description": "The warning type identifier for this warning."
+      },
+      "data": {
+       "type": "array",
+       "description": "Metadata for this warning in 'key: value' format.",
+       "items": {
+        "type": "object",
+        "properties": {
+         "key": {
+          "type": "string",
+          "description": "A key for the warning data."
+         },
+         "value": {
+          "type": "string",
+          "description": "A warning data value corresponding to the key."
+         }
+        }
+       }
+      },
+      "message": {
+       "type": "string",
+       "description": "Optional human-readable details for this warning."
+      }
+     }
+    }
+   }
+  },
   "Project": {
    "id": "Project",
    "type": "object",
@@ -1189,13 +1655,6 @@
     "description": {
      "type": "string",
      "description": "An optional textual description of the resource."
-    },
-    "externalIpAddresses": {
-     "type": "array",
-     "description": "Internet available IP addresses available for use in this project.",
-     "items": {
-      "type": "string"
-     }
     },
     "id": {
      "type": "string",
@@ -1242,6 +1701,252 @@
      "type": "number",
      "description": "Current usage of this metric.",
      "format": "double"
+    }
+   }
+  },
+  "Region": {
+   "id": "Region",
+   "type": "object",
+   "description": "Region resource.",
+   "properties": {
+    "creationTimestamp": {
+     "type": "string",
+     "description": "Creation timestamp in RFC3339 text format (output only)."
+    },
+    "deprecated": {
+     "$ref": "DeprecationStatus",
+     "description": "The deprecation status associated with this region."
+    },
+    "description": {
+     "type": "string",
+     "description": "Textual description of the resource."
+    },
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only).",
+     "format": "uint64"
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of the resource.",
+     "default": "compute#region"
+    },
+    "name": {
+     "type": "string",
+     "description": "Name of the resource."
+    },
+    "quotas": {
+     "type": "array",
+     "description": "Quotas assigned to this region.",
+     "items": {
+      "$ref": "Quota"
+     }
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for the resource (output only)."
+    },
+    "status": {
+     "type": "string",
+     "description": "Status of the region, \"UP\" or \"DOWN\"."
+    },
+    "zones": {
+     "type": "array",
+     "description": "A list of zones homed in this region, in the form of resource URLs.",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "RegionList": {
+   "id": "RegionList",
+   "type": "object",
+   "description": "Contains a list of region resources.",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "array",
+     "description": "The region resources.",
+     "items": {
+      "$ref": "Region"
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#regionList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
+    }
+   }
+  },
+  "Route": {
+   "id": "Route",
+   "type": "object",
+   "description": "The route resource. A Route is a rule that specifies how certain packets should be handled by the virtual network. Routes are associated with VMs by tag and the set of Routes for a particular VM is called its routing table. For each packet leaving a VM, the system searches that VM's routing table for a single best matching Route. Routes match packets by destination IP address, preferring smaller or more specific ranges over larger ones. If there is a tie, the system selects the Route with the smallest priority value. If there is still a tie, it uses the layer three and four packet headers to select just one of the remaining matching Routes. The packet is then forwarded as specified by the next_hop field of the winning Route -- either to another VM destination, a VM gateway or a GCE operated gateway. Packets that do not match any Route in the sending VM's routing table will be dropped.",
+   "properties": {
+    "creationTimestamp": {
+     "type": "string",
+     "description": "Creation timestamp in RFC3339 text format (output only)."
+    },
+    "description": {
+     "type": "string",
+     "description": "An optional textual description of the resource; provided by the client when the resource is created."
+    },
+    "destRange": {
+     "type": "string",
+     "description": "Which packets does this route apply to?",
+     "annotations": {
+      "required": [
+       "compute.routes.insert"
+      ]
+     }
+    },
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only).",
+     "format": "uint64"
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of the resource.",
+     "default": "compute#route"
+    },
+    "name": {
+     "type": "string",
+     "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
+     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "annotations": {
+      "required": [
+       "compute.routes.insert"
+      ]
+     }
+    },
+    "network": {
+     "type": "string",
+     "description": "URL of the network to which this route is applied; provided by the client when the route is created.",
+     "annotations": {
+      "required": [
+       "compute.routes.insert"
+      ]
+     }
+    },
+    "nextHopGateway": {
+     "type": "string",
+     "description": "The URL to a gateway that should handle matching packets."
+    },
+    "nextHopInstance": {
+     "type": "string",
+     "description": "The URL to an instance that should handle matching packets."
+    },
+    "nextHopIp": {
+     "type": "string",
+     "description": "The network IP address of an instance that should handle matching packets."
+    },
+    "nextHopNetwork": {
+     "type": "string",
+     "description": "The URL of the local network if it should handle matching packets."
+    },
+    "priority": {
+     "type": "integer",
+     "description": "Breaks ties between Routes of equal specificity. Routes with smaller values win when tied with routes with larger values.",
+     "format": "uint32",
+     "annotations": {
+      "required": [
+       "compute.routes.insert"
+      ]
+     }
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for the resource (output only)."
+    },
+    "tags": {
+     "type": "array",
+     "description": "A list of instance tags to which this route applies.",
+     "items": {
+      "type": "string"
+     },
+     "annotations": {
+      "required": [
+       "compute.routes.insert"
+      ]
+     }
+    },
+    "warnings": {
+     "type": "array",
+     "description": "If potential misconfigurations are detected for this route, this field will be populated with warning messages.",
+     "items": {
+      "type": "object",
+      "properties": {
+       "code": {
+        "type": "string",
+        "description": "The warning type identifier for this warning."
+       },
+       "data": {
+        "type": "array",
+        "description": "Metadata for this warning in 'key: value' format.",
+        "items": {
+         "type": "object",
+         "properties": {
+          "key": {
+           "type": "string",
+           "description": "A key for the warning data."
+          },
+          "value": {
+           "type": "string",
+           "description": "A warning data value corresponding to the key."
+          }
+         }
+        }
+       },
+       "message": {
+        "type": "string",
+        "description": "Optional human-readable details for this warning."
+       }
+      }
+     }
+    }
+   }
+  },
+  "RouteList": {
+   "id": "RouteList",
+   "type": "object",
+   "description": "Contains a list of route resources.",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only)."
+    },
+    "items": {
+     "type": "array",
+     "description": "The route resources.",
+     "items": {
+      "$ref": "Route"
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of resource.",
+     "default": "compute#routeList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "A token used to continue a truncated list request (output only)."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for this resource (output only)."
     }
    }
   },
@@ -1314,12 +2019,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
-     "annotations": {
-      "required": [
-       "compute.snapshots.insert"
-      ]
-     }
+     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
     },
     "selfLink": {
      "type": "string",
@@ -1327,7 +2027,7 @@
     },
     "sourceDisk": {
      "type": "string",
-     "description": "The source disk used to create this snapshot. Once the source disk has been deleted from the system, this field will be cleared, and will not be set even if a disk with the same name has been re-created."
+     "description": "The source disk used to create this snapshot. Once the source disk has been deleted from the system, this field will be cleared, and will not be set even if a disk with the same name has been re-created (output only)."
     },
     "sourceDiskId": {
      "type": "string",
@@ -1394,13 +2094,6 @@
    "type": "object",
    "description": "A zone resource.",
    "properties": {
-    "availableMachineType": {
-     "type": "array",
-     "description": "The machine types that can be used in this zone (output only).",
-     "items": {
-      "type": "string"
-     }
-    },
     "creationTimestamp": {
      "type": "string",
      "description": "Creation timestamp in RFC3339 text format (output only)."
@@ -1502,8 +2195,310 @@
   }
  },
  "resources": {
+  "addresses": {
+   "methods": {
+    "aggregatedList": {
+     "id": "compute.addresses.aggregatedList",
+     "path": "{project}/aggregated/addresses",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of addresses grouped by scope.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project"
+     ],
+     "response": {
+      "$ref": "AddressAggregatedList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "delete": {
+     "id": "compute.addresses.delete",
+     "path": "{project}/regions/{region}/addresses/{address}",
+     "httpMethod": "DELETE",
+     "description": "Deletes the specified address resource.",
+     "parameters": {
+      "address": {
+       "type": "string",
+       "description": "Name of the address resource to delete.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region",
+      "address"
+     ],
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "get": {
+     "id": "compute.addresses.get",
+     "path": "{project}/regions/{region}/addresses/{address}",
+     "httpMethod": "GET",
+     "description": "Returns the specified address resource.",
+     "parameters": {
+      "address": {
+       "type": "string",
+       "description": "Name of the address resource to return.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region",
+      "address"
+     ],
+     "response": {
+      "$ref": "Address"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "insert": {
+     "id": "compute.addresses.insert",
+     "path": "{project}/regions/{region}/addresses",
+     "httpMethod": "POST",
+     "description": "Creates an address resource in the specified project using the data included in the request.",
+     "parameters": {
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region"
+     ],
+     "request": {
+      "$ref": "Address"
+     },
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "list": {
+     "id": "compute.addresses.list",
+     "path": "{project}/regions/{region}/addresses",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of address resources contained within the specified region.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region"
+     ],
+     "response": {
+      "$ref": "AddressList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    }
+   }
+  },
   "disks": {
    "methods": {
+    "aggregatedList": {
+     "id": "compute.disks.aggregatedList",
+     "path": "{project}/aggregated/disks",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of disks grouped by scope.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project"
+     ],
+     "response": {
+      "$ref": "DiskAggregatedList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "createSnapshot": {
+     "id": "compute.disks.createSnapshot",
+     "path": "{project}/zones/{zone}/disks/{disk}/createSnapshot",
+     "httpMethod": "POST",
+     "parameters": {
+      "disk": {
+       "type": "string",
+       "description": "Name of the persistent disk resource to delete.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "zone": {
+       "type": "string",
+       "description": "Name of the zone scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "zone",
+      "disk"
+     ],
+     "request": {
+      "$ref": "Snapshot"
+     },
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
     "delete": {
      "id": "compute.disks.delete",
      "path": "{project}/zones/{zone}/disks/{disk}",
@@ -1891,6 +2886,50 @@
   },
   "globalOperations": {
    "methods": {
+    "aggregatedList": {
+     "id": "compute.globalOperations.aggregatedList",
+     "path": "{project}/aggregated/operations",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of all operations grouped by scope.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project"
+     ],
+     "response": {
+      "$ref": "OperationAggregatedList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
     "delete": {
      "id": "compute.globalOperations.delete",
      "path": "{project}/global/operations/{operation}",
@@ -2190,7 +3229,7 @@
        "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
        "location": "path"
       },
-      "network_interface": {
+      "networkInterface": {
        "type": "string",
        "description": "Network interface name.",
        "required": true,
@@ -2215,7 +3254,7 @@
       "project",
       "zone",
       "instance",
-      "network_interface"
+      "networkInterface"
      ],
      "request": {
       "$ref": "AccessConfig"
@@ -2225,6 +3264,49 @@
      },
      "scopes": [
       "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "aggregatedList": {
+     "id": "compute.instances.aggregatedList",
+     "path": "{project}/aggregated/instances",
+     "httpMethod": "GET",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project"
+     ],
+     "response": {
+      "$ref": "InstanceAggregatedList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
      ]
     },
     "attachDisk": {
@@ -2316,7 +3398,7 @@
      "httpMethod": "POST",
      "description": "Deletes an access config from an instance's network interface.",
      "parameters": {
-      "access_config": {
+      "accessConfig": {
        "type": "string",
        "description": "Access config name.",
        "required": true,
@@ -2329,7 +3411,7 @@
        "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
        "location": "path"
       },
-      "network_interface": {
+      "networkInterface": {
        "type": "string",
        "description": "Network interface name.",
        "required": true,
@@ -2354,8 +3436,8 @@
       "project",
       "zone",
       "instance",
-      "access_config",
-      "network_interface"
+      "accessConfig",
+      "networkInterface"
      ],
      "response": {
       "$ref": "Operation"
@@ -2752,44 +3834,11 @@
   },
   "machineTypes": {
    "methods": {
-    "get": {
-     "id": "compute.machineTypes.get",
-     "path": "{project}/global/machineTypes/{machineType}",
+    "aggregatedList": {
+     "id": "compute.machineTypes.aggregatedList",
+     "path": "{project}/aggregated/machineTypes",
      "httpMethod": "GET",
-     "description": "Returns the specified machine type resource.",
-     "parameters": {
-      "machineType": {
-       "type": "string",
-       "description": "Name of the machine type resource to return.",
-       "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
-       "location": "path"
-      },
-      "project": {
-       "type": "string",
-       "description": "Name of the project scoping this request.",
-       "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "project",
-      "machineType"
-     ],
-     "response": {
-      "$ref": "MachineType"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/compute",
-      "https://www.googleapis.com/auth/compute.readonly"
-     ]
-    },
-    "list": {
-     "id": "compute.machineTypes.list",
-     "path": "{project}/global/machineTypes",
-     "httpMethod": "GET",
-     "description": "Retrieves the list of machine type resources available to the specified project.",
+     "description": "Retrieves the list of machine type resources grouped by scope.",
      "parameters": {
       "filter": {
        "type": "string",
@@ -2820,6 +3869,99 @@
      },
      "parameterOrder": [
       "project"
+     ],
+     "response": {
+      "$ref": "MachineTypeAggregatedList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "get": {
+     "id": "compute.machineTypes.get",
+     "path": "{project}/zones/{zone}/machineTypes/{machineType}",
+     "httpMethod": "GET",
+     "description": "Returns the specified machine type resource.",
+     "parameters": {
+      "machineType": {
+       "type": "string",
+       "description": "Name of the machine type resource to return.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "zone": {
+       "type": "string",
+       "description": "Name of the zone scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "zone",
+      "machineType"
+     ],
+     "response": {
+      "$ref": "MachineType"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "list": {
+     "id": "compute.machineTypes.list",
+     "path": "{project}/zones/{zone}/machineTypes",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of machine type resources available to the specified project.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "zone": {
+       "type": "string",
+       "description": "Name of the zone scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "zone"
      ],
      "response": {
       "$ref": "MachineTypeList"
@@ -3027,6 +4169,361 @@
     }
    }
   },
+  "regionOperations": {
+   "methods": {
+    "delete": {
+     "id": "compute.regionOperations.delete",
+     "path": "{project}/region/{region}/operations/{operation}",
+     "httpMethod": "DELETE",
+     "description": "Deletes the specified region-specific operation resource.",
+     "parameters": {
+      "operation": {
+       "type": "string",
+       "description": "Name of the operation resource to delete.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region",
+      "operation"
+     ],
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "get": {
+     "id": "compute.regionOperations.get",
+     "path": "{project}/regions/{region}/operations/{operation}",
+     "httpMethod": "GET",
+     "description": "Retrieves the specified region-specific operation resource.",
+     "parameters": {
+      "operation": {
+       "type": "string",
+       "description": "Name of the operation resource to return.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the zone scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region",
+      "operation"
+     ],
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "list": {
+     "id": "compute.regionOperations.list",
+     "path": "{project}/regions/{region}/operations",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of operation resources contained within the specified region.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region"
+     ],
+     "response": {
+      "$ref": "OperationList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    }
+   }
+  },
+  "regions": {
+   "methods": {
+    "get": {
+     "id": "compute.regions.get",
+     "path": "{project}/regions/{region}",
+     "httpMethod": "GET",
+     "description": "Returns the specified region resource.",
+     "parameters": {
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region resource to return.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region"
+     ],
+     "response": {
+      "$ref": "Region"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "list": {
+     "id": "compute.regions.list",
+     "path": "{project}/regions",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of region resources available to the specified project.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project"
+     ],
+     "response": {
+      "$ref": "RegionList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    }
+   }
+  },
+  "routes": {
+   "methods": {
+    "delete": {
+     "id": "compute.routes.delete",
+     "path": "{project}/global/routes/{route}",
+     "httpMethod": "DELETE",
+     "description": "Deletes the specified route resource.",
+     "parameters": {
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "route": {
+       "type": "string",
+       "description": "Name of the route resource to delete.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "route"
+     ],
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "get": {
+     "id": "compute.routes.get",
+     "path": "{project}/global/routes/{route}",
+     "httpMethod": "GET",
+     "description": "Returns the specified route resource.",
+     "parameters": {
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "route": {
+       "type": "string",
+       "description": "Name of the route resource to return.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "route"
+     ],
+     "response": {
+      "$ref": "Route"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "insert": {
+     "id": "compute.routes.insert",
+     "path": "{project}/global/routes",
+     "httpMethod": "POST",
+     "description": "Creates a route resource in the specified project using the data included in the request.",
+     "parameters": {
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project"
+     ],
+     "request": {
+      "$ref": "Route"
+     },
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "list": {
+     "id": "compute.routes.list",
+     "path": "{project}/global/routes",
+     "httpMethod": "GET",
+     "description": "Retrieves the list of route resources available to the specified project.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Optional. Filter expression for filtering listed resources.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "Optional. Maximum count of results to be returned. Maximum and default value is 100.",
+       "default": "100",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "100",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Optional. Tag returned by a previous list request truncated by maxResults. Used to continue a previous list request.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project"
+     ],
+     "response": {
+      "$ref": "RouteList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    }
+   }
+  },
   "snapshots": {
    "methods": {
     "delete": {
@@ -3092,33 +4589,6 @@
      "scopes": [
       "https://www.googleapis.com/auth/compute",
       "https://www.googleapis.com/auth/compute.readonly"
-     ]
-    },
-    "insert": {
-     "id": "compute.snapshots.insert",
-     "path": "{project}/global/snapshots",
-     "httpMethod": "POST",
-     "description": "Creates a persistent disk snapshot resource in the specified project using the data included in the request.",
-     "parameters": {
-      "project": {
-       "type": "string",
-       "description": "Name of the project scoping this request.",
-       "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "project"
-     ],
-     "request": {
-      "$ref": "Snapshot"
-     },
-     "response": {
-      "$ref": "Operation"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/compute"
      ]
     },
     "list": {
