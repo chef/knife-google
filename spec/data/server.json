@@ -24,7 +24,7 @@
   }],
   "disks":[{
     "kind":"compute#attachedDisk",
-    "type":"EPHEMERAL",
+    "type":"SCRATCH",
     "mode":"READ_WRITE",
     "source":"",
     "deviceName":"",

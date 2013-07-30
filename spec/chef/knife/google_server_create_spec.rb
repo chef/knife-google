@@ -22,7 +22,8 @@ before(:each) do
       and_return(stored_zone)
 
     machine_types = mock(Google::Compute::ListableResourceCollection)
-    machine_types.should_receive(:get).with(stored_machine_type.name).
+    machine_types.should_receive(:get).
+      with({:name=>stored_machine_type.name, :zone=>stored_zone.name}).
       and_return(stored_machine_type)
 
     images = mock(Google::Compute::ListableResourceCollection)

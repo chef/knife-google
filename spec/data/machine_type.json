@@ -8,12 +8,12 @@
   "guestCpus":"2",
   "memoryMb":"1843",
   "imageSpaceGb":"10",
-  "ephemeralDisks":[{
+  "scratchDisks":[{
     "diskGb":"1"
   }],
   "maximumPersistentDisks":"16",
   "maximumPersistentDisksSizeGb":"256",
-  "availableZone":[""],
+  "zone":"",
   "deprecated":{
     "state":"",
     "replacement":"",
