@@ -48,7 +48,7 @@ describe Google::Compute::Snapshot do
   end
 
   it "#create should create a new snapshot" do
-    disk = 'https://www.googleapis.com/compute/v1beta13/projects/mock-project/disks/mock-disk'
+    disk = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/disks/mock-disk'
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.snapshots.insert, 
            :parameters=>{:project=>"mock-project"},
