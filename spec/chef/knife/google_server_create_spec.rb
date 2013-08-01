@@ -56,10 +56,10 @@ before(:each) do
     Google::Compute::Client.stub!(:from_json).and_return(client)
 end
 
-
   it "#run should invoke compute api to create an server" do
     knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
-      "-I"+stored_image.name, "-n"+stored_network.name,
+      "-I"+stored_image.name, "-J"+"google",
+      "-n"+stored_network.name,
       "-Z"+stored_zone.name, stored_instance.name])
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]
@@ -76,7 +76,8 @@ end
   it "should read zone value from knife config file." do
     Chef::Config[:knife][:google_compute_zone] = stored_zone.name
     knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
-      "-I"+stored_image.name, "-n"+stored_network.name,
+      "-I"+stored_image.name, "-J"+"google",
+      "-n"+stored_network.name,
        stored_instance.name])
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]

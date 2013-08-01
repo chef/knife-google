@@ -44,6 +44,12 @@ class Chef
         :description => "The Image for the server",
         :required => true
 
+      option :image_project,
+        :short => "-J IMAGE_PROJECT",
+        :long => "--google-compute-image-project PROJECT",
+        :description => "The Project containing the Image for the server",
+        :required => true
+
       option :zone,
         :short => "-Z ZONE",
         :long => "--google-compute-zone ZONE",
@@ -281,7 +287,7 @@ class Chef
         end
 
         begin
-          image = client.images.get(:project=>'google', :name=>config[:image]).self_link
+          image = client.images.get(:project=>config[:image_project], :name=>config[:image]).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("Image '#{config[:image]}' not found")
           exit 1
