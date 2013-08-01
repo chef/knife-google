@@ -216,16 +216,15 @@ and upcoming maintenance windows.  The output should look similar to:
 ### knife google server create
 
 Use this command to create a new Google Compute Engine server (a.k.a.
-instance).  You must specify a name, the machine type, the zone,
-image and the project hosting the image.  If you would like to use a 
-Debian image, the image project should be debian-cloud. If you would 
-like to use a Cent OS image, use centos-cloud. If you would like 
-information about your own custom image, use your own project ID. Also 
-note that if you are bootstrapping the node, make sure to follow the 
-preparation instructions earlier and use the `-x` and `-i` commands to 
-specify the username and the identity file for that user.  Make sure 
-to use the private key file (e.g. `~/.ssh/id_rsa`) for the identity 
-file and *not* the public key file.
+instance).  You must specify a name, the machine type, the zone, the
+image and the project hosting the image.  To use a Debian image, the 
+image project should be `debian-cloud`.  To use a Cent OS image, use 
+`centos-cloud`.  To use other custom images, specify the project name
+hosting image.  Also note that if you are bootstrapping the node, make 
+sure to follow the preparation instructions earlier and use the `-x` 
+and `-i` commands to specify the username and the identity file for 
+that user.  Make sure to use the private key file (e.g. `~/.ssh/id_rsa`) 
+for the identity file and *not* the public key file.
 
 See the extended options that also allow bootstrapping the node with
 `knife google server create --help`.
@@ -249,7 +248,7 @@ look something like:
   fuse-dev          n1-standard-1  gcel-12-04-v20130225  103.59.80.147    10.240.166.18   pd-fuse             us-central2-a  running
   magfs-c1          n1-standard-2  gcel-12-04-v20130225  103.59.87.217    10.240.61.92                        us-central2-a  running
   magfs-c2          n1-standard-2  gcel-12-04-v20130225  103.59.80.161    10.240.175.240                      us-central2-a  running
-  magfs-c3          n1-standard-2  gcel-12-04-v20130325  178.255.120.69   10.240.34.197   jay-scratch         us-central2-a  running
+  magfs-c3          n1-standard-2  gcel-12-04-v20130325  178.255.120.6[[[[9   10.240.34.197   jay-scratch         us-central2-a  running
   magfs-svr         n1-standard-4  gcel-12-04-v20130225  103.59.80.178    10.240.81.25    pd28g               us-central2-a  running
   ```
 
