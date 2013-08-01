@@ -27,10 +27,10 @@ describe Google::Compute::Network do
 
   it_should_behave_like Google::Compute::Resource
   
-  it "#get should return an individual network" do
+  it '#get should return an individual network' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.networks.get, 
-           :parameters=>{"network"=>"mock-network", :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{'network'=>'mock-network', :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::Network))
     network = client.networks.get('mock-network')
     network.should be_a_kind_of Google::Compute::Network
@@ -38,30 +38,30 @@ describe Google::Compute::Network do
     network.should respond_to(:ip_v4_range)
   end
 
-  it "#list should return an array of networks" do
+  it '#list should return an array of networks' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.networks.list, 
-           :parameters=>{ :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::Network, true))
     networks = client.networks.list
     networks.should_not be_empty
     networks.all?{|n| n.is_a?(Google::Compute::Network)}.should be_true
   end
 
-  it "#create should create a new network" do
+  it '#create should create a new network' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.networks.insert, 
-           :parameters=>{ :project=>"mock-project"},
-           :body_object=>{:name=>"mock-network", :IPv4Range=>"122.12.0.0/16"}).
+           :parameters=>{ :project=>'mock-project'},
+           :body_object=>{:name=>'mock-network', :IPv4Range=>'122.12.0.0/16'}).
            and_return(mock_response(Google::Compute::GlobalOperation))
     o = client.networks.create(:name=>'mock-network', :IPv4Range=>'122.12.0.0/16')
     o.should be_a_kind_of Google::Compute::GlobalOperation
   end
 
-  it "#delete should delete an existing network" do
+  it '#delete should delete an existing network' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.networks.delete, 
-           :parameters=>{"network"=>"mock-network", :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{'network'=>'mock-network', :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::GlobalOperation))
     client.networks.delete('mock-network')
   end

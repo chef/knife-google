@@ -32,10 +32,9 @@ describe Google::Compute::Disk do
       with(:api_method=>mock_compute.disks.get, 
            :parameters=>{"disk"=>"mock-disk", :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
            and_return(mock_response(Google::Compute::Disk))
-
-    disk = client.disks.get(:name=>'mock-disk', :zone=>'mock-zone')
+    disk = client.disks.get(:name=>"mock-disk", :zone=>"mock-zone")
     disk.should be_a_kind_of Google::Compute::Disk
-    disk.name.should eq('mock-disk')
+    disk.name.should eq("mock-disk")
   end
 
 #  TODO(erjohnso): come back to this and see about fixing it
@@ -97,9 +96,9 @@ describe Google::Compute::Disk do
   it "#delete should delete an existing disk" do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.disks.delete, 
-           :parameters=>{ :project=>"mock-project",'disk'=>'mock-disk', :zone=>"mock-zone"},:body_object =>nil).
+           :parameters=>{ :project=>"mock-project","disk"=>"mock-disk", :zone=>"mock-zone"},:body_object =>nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
-    o = client.disks.delete("disk"=>'mock-disk', :zone=>'mock-zone')
+    o = client.disks.delete("disk"=>"mock-disk", :zone=>"mock-zone")
     o.should be_a_kind_of Google::Compute::ZoneOperation
   end
 
