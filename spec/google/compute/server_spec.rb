@@ -50,11 +50,11 @@ describe Google::Compute::Server do
   end
 
   it "#create should create an server" do
-    project_url ='https://www.googleapis.com/compute/v1beta15/projects/google.com:wf-test'
+    project_url ='https://www.googleapis.com/compute/v1beta15/projects/mock-project'
     zone = project_url + '/zones/europe-west1-a'
-    disk = project_url + zone + '/disks/temp-disk'
+    disk = project_url + zone + '/disks/mock-disk'
     machine_type = project_url + '/global/machineTypes/n1-highcpu-2'
-    image = 'https://www.googleapis.com/compute/v1beta15/projects/google/global/images/centos-6-2-v20120326'
+    image = 'https://www.googleapis.com/compute/v1beta15/projects/centos-cloud/global/images/centos-6-vYYYYMMDD'
     network = project_url + '/global/networks/api-network'
     access_config = {"name" => "External NAT", "type" => "ONE_TO_ONE_NAT"}
 
