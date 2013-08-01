@@ -1,11 +1,11 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"0kaFfN0xfjZjASExv-gUnrWhdto/66VVERAXJ8eaR7pNe0eGIJGlLYs\"",
+ "etag": "\"BgGnx7p-6wsAbOn4St99QhtBGbA/Hk26fYiJ5zpQtK3PlB6olr8BGG0\"",
  "discoveryVersion": "v1",
  "id": "compute:v1beta15",
  "name": "compute",
  "version": "v1beta15",
- "revision": "20130320",
+ "revision": "20130525",
  "title": "Compute Engine API",
  "description": "API for the Google Compute Engine service.",
  "ownerDomain": "google.com",
@@ -15,9 +15,6 @@
   "x32": "http://www.google.com/images/icons/product/compute_engine-32.png"
  },
  "documentationLink": "https://developers.google.com/compute/docs/reference/v1beta15",
- "labels": [
-  "limited_availability"
- ],
  "protocol": "rest",
  "baseUrl": "https://www.googleapis.com/compute/v1beta15/projects/",
  "basePath": "/compute/v1beta15/projects/",
@@ -80,6 +77,9 @@
     },
     "https://www.googleapis.com/auth/devstorage.read_only": {
      "description": "View your data in Google Cloud Storage"
+    },
+    "https://www.googleapis.com/auth/devstorage.read_write": {
+     "description": "Manage your data in Google Cloud Storage"
     }
    }
   }
@@ -632,6 +632,73 @@
     }
    }
   },
+  "HttpHealthCheck": {
+   "id": "HttpHealthCheck",
+   "type": "object",
+   "description": "An HttpHealthCheck resource. This resource defines a template for how individual VMs should be checked for health, via HTTP.",
+   "properties": {
+    "checkIntervalSec": {
+     "type": "integer",
+     "description": "How often (in seconds) to send a health check. The default value is 5 seconds.",
+     "format": "int32"
+    },
+    "creationTimestamp": {
+     "type": "string",
+     "description": "Creation timestamp in RFC3339 text format (output only)."
+    },
+    "description": {
+     "type": "string",
+     "description": "An optional textual description of the resource; provided by the client when the resource is created."
+    },
+    "healthyThreshold": {
+     "type": "integer",
+     "description": "A so-far unhealthy VM will be marked healthy after this many consecutive successes. The default value is 2.",
+     "format": "int32"
+    },
+    "host": {
+     "type": "string",
+     "description": "The value of the host header in the HTTP health check request. If left empty (default value), the public IP on behalf of which this health check is performed will be used."
+    },
+    "id": {
+     "type": "string",
+     "description": "Unique identifier for the resource; defined by the server (output only).",
+     "format": "uint64"
+    },
+    "kind": {
+     "type": "string",
+     "description": "Type of the resource.",
+     "default": "compute#httpHealthCheck"
+    },
+    "name": {
+     "type": "string",
+     "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
+     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
+    },
+    "port": {
+     "type": "integer",
+     "description": "The TCP port number for the HTTP health check request. The default value is 80.",
+     "format": "int32"
+    },
+    "requestPath": {
+     "type": "string",
+     "description": "The request path of the HTTP health check request. The default value is \"/\"."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "Server defined URL for the resource (output only)."
+    },
+    "timeoutSec": {
+     "type": "integer",
+     "description": "How long (in seconds) to wait before claiming failure. The default value is 5 seconds.",
+     "format": "int32"
+    },
+    "unhealthyThreshold": {
+     "type": "integer",
+     "description": "A so-far healthy VM will be marked unhealthy after this many consecutive failures. The default value is 2.",
+     "format": "int32"
+    }
+   }
+  },
   "Image": {
    "id": "Image",
    "type": "object",
@@ -761,7 +828,7 @@
    "properties": {
     "canIpForward": {
      "type": "boolean",
-     "description": "Reserved for future use."
+     "description": "Allows this instance to send packets with source IP addresses other than its own and receive packets with destination IP addresses other than its own. If this instance will be used as an IP gateway or it will be set as the next-hop in a Route resource, say true. If unsure, leave this set to false."
     },
     "creationTimestamp": {
      "type": "string",
@@ -2152,6 +2219,10 @@
       "$ref": "Quota"
      }
     },
+    "region": {
+     "type": "string",
+     "description": "Full URL reference to the region which hosts the zone (output only)."
+    },
     "selfLink": {
      "type": "string",
      "description": "Server defined URL for the resource (output only)."
@@ -3038,6 +3109,45 @@
     }
    }
   },
+  "httpHealthChecks": {
+   "methods": {
+    "patch": {
+     "id": "compute.httpHealthChecks.patch",
+     "path": "{project}/global/httpHealthChecks/{httpHealthCheck}",
+     "httpMethod": "PATCH",
+     "description": "Updates a HttpHealthCheck resource in the specified project using the data included in the request. This method supports patch semantics.",
+     "parameters": {
+      "httpHealthCheck": {
+       "type": "string",
+       "description": "Name of the HttpHealthCheck resource to update.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "httpHealthCheck"
+     ],
+     "request": {
+      "$ref": "HttpHealthCheck"
+     },
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
+     ]
+    }
+   }
+  },
   "images": {
    "methods": {
     "delete": {
@@ -3165,7 +3275,8 @@
      },
      "scopes": [
       "https://www.googleapis.com/auth/compute",
-      "https://www.googleapis.com/auth/devstorage.read_only"
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/devstorage.read_write"
      ]
     },
     "list": {
@@ -3661,6 +3772,46 @@
      "scopes": [
       "https://www.googleapis.com/auth/compute",
       "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "reset": {
+     "id": "compute.instances.reset",
+     "path": "{project}/zones/{zone}/instances/{instance}/reset",
+     "httpMethod": "POST",
+     "description": "Performs a hard reset on the instance.",
+     "parameters": {
+      "instance": {
+       "type": "string",
+       "description": "Name of the instance scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Name of the project scoping this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "zone": {
+       "type": "string",
+       "description": "Name of the zone scoping this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "zone",
+      "instance"
+     ],
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/compute"
      ]
     },
     "setMetadata": {
@@ -4173,7 +4324,7 @@
    "methods": {
     "delete": {
      "id": "compute.regionOperations.delete",
-     "path": "{project}/region/{region}/operations/{operation}",
+     "path": "{project}/regions/{region}/operations/{operation}",
      "httpMethod": "DELETE",
      "description": "Deletes the specified region-specific operation resource.",
      "parameters": {

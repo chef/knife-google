@@ -47,18 +47,6 @@ describe Google::Compute::Snapshot do
     snapshots.all?{|s| s.is_a?(Google::Compute::Snapshot)}.should be_true
   end
 
-  it "#create should create a new snapshot" do
-    disk = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/disks/mock-disk'
-    @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.snapshots.insert, 
-           :parameters=>{:project=>"mock-project"},
-           :body_object=>{:name=>'api-snapshot', :sourceDisk=>disk}).
-           and_return(mock_response(Google::Compute::GlobalOperation))
-
-    o = client.snapshots.create(:name=>'api-snapshot', :sourceDisk=>disk)
-    o.should be_a_kind_of Google::Compute::GlobalOperation
-  end
-
   it "#delete should delete an existing snapshot" do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.snapshots.delete, 

@@ -102,4 +102,15 @@ describe Google::Compute::Disk do
     o = client.disks.delete("disk"=>'mock-disk', :zone=>'mock-zone')
     o.should be_a_kind_of Google::Compute::ZoneOperation
   end
+
+  it "#createSnapshot should create a new snapshot" do
+    zone = 'mock-zone'
+    disk = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/disks/mock-disk'
+    @mock_api_client.should_receive(:execute).
+      with(:api_method=>mock_compute.disks.create_snapshot,
+           :parameters=>{:project=>"mock-project", :zone=>zone, :disk=>disk}, :body_object=>nil).
+           and_return(mock_response(Google::Compute::ZoneOperation))
+    o = client.disks.create_snapshot(:project=>"mock-project", :zone=>zone, :disk=>disk)
+    o.should be_a_kind_of Google::Compute::ZoneOperation
+  end
 end
