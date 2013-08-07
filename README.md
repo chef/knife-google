@@ -226,9 +226,10 @@ convention:
   centos-6-vYYYYMMDD
   ```
 
-Unless `-J IMAGE_PROJECT_ID` is specified, knife-google will first look 
-in the same project as the instance, followed by either `debian-cloud`
-or `centos-cloud`. 
+By default, the plugin will look for the specified image in the instance's
+primary project first and then consult GCE's officially supported image
+locations. The `-J IMAGE_PROJECT_ID` option can be specified to force the
+plugin to look for the image in an alternate project location.
 
 Note that if you are bootstrapping the node, make sure to follow the 
 preparation instructions earlier and use the `-x` and `-i` commands 
