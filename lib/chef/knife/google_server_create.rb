@@ -293,17 +293,19 @@ class Chef
           project = $1
           if image_project.empty?
             unless checked_custom
-              ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
               checked_custom = true
+              ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
               image = client.images.get(:project=>project, :name=>config[:image]).self_link
             else
               case config[:image].downcase
               when /debian/
                 project = 'debian-cloud'
+                ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
               when /centos/
                 project = 'centos-cloud'
+                ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
               end
-              ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
+              checked_all = true
               image = client.images.get(:project=>project, :name=>config[:image]).self_link
             end
           else
@@ -316,7 +318,7 @@ class Chef
           unless checked_all then
             retry
           else
-            ui.error("Image '#{config[:image]}' not found in Project '#{project}'")
+            ui.error("Image '#{config[:image]}' not found")
             exit 1
           end
         end
