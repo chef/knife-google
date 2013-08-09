@@ -44,6 +44,12 @@ class Chef
         :description => "The Image for the server",
         :required => true
 
+      option :image_project_id,
+        :short => "-J IMAGE_PROJECT_ID",
+        :long => "--google-compute-image-project-id IMAGE_PROJECT_ID",
+        :description => "The project-id containing the Image (debian-cloud, centos-cloud, etc)",
+        :default => "" 
+
       option :zone,
         :short => "-Z ZONE",
         :long => "--google-compute-zone ZONE",
@@ -274,17 +280,47 @@ class Chef
         end
 
         begin
-          machine_type = client.machine_types.get(config[:machine_type]).self_link
+          machine_type = client.machine_types.get(:name=>config[:machine_type], :zone=>selflink2name(zone)).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("MachineType '#{config[:machine_type]}' not found")
           exit 1
         end
 
+        (checked_custom, checked_all) = false
         begin
-          image = client.images.get(:project=>'google', :name=>config[:image]).self_link
+          image_project = config[:image_project_id]
+          machine_type=~Regexp.new('/projects/(.*?)/')
+          project = $1
+          if image_project.empty?
+            unless checked_custom
+              checked_custom = true
+              ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
+              image = client.images.get(:project=>project, :name=>config[:image]).self_link
+            else
+              case config[:image].downcase
+              when /debian/
+                project = 'debian-cloud'
+                ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
+              when /centos/
+                project = 'centos-cloud'
+                ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
+              end
+              checked_all = true
+              image = client.images.get(:project=>project, :name=>config[:image]).self_link
+            end
+          else
+            checked_all = true
+            project = image_project
+            image = client.images.get(:project=>project, :name=>config[:image]).self_link
+          end
+          ui.info("Found Image '#{config[:image]}' in Project '#{project}'")
         rescue Google::Compute::ResourceNotFound
-          ui.error("Image '#{config[:image]}' not found")
-          exit 1
+          unless checked_all then
+            retry
+          else
+            ui.error("Image '#{config[:image]}' not found")
+            exit 1
+          end
         end
 
         begin

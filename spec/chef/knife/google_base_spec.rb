@@ -26,7 +26,7 @@ describe Chef::Knife::GoogleBase do
 
   it "#selflink2name should return name from a seleflink url" do
     knife_plugin.selflink2name(
-      'https://www.googleapis.com/compute/v1beta14/projects/mock-project/category/resource').
+      'https://www.googleapis.com/compute/v1beta15/projects/mock-project/category/resource').
       should eq('resource')
   end
 

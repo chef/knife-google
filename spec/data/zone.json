@@ -2,7 +2,7 @@
   "kind":"compute#zone",
   "id":"130430234345556",
   "creationTimestamp":"2012-11-15 22:06:55 -0800",
-  "selfLink":"https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone",
+  "selfLink":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone",
   "name":"mock-zone",
   "description":"mock-zone",
   "status":"UP",

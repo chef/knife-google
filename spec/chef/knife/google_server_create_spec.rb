@@ -16,18 +16,19 @@ require 'spec_helper'
 
 describe Chef::Knife::GoogleServerCreate do
 
-before(:each) do
-  zones = mock(Google::Compute::ListableResourceCollection)
+  before(:each) do
+    zones = mock(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
 
     machine_types = mock(Google::Compute::ListableResourceCollection)
-    machine_types.should_receive(:get).with(stored_machine_type.name).
+    machine_types.should_receive(:get).
+      with({:name=>stored_machine_type.name, :zone=>stored_zone.name}).
       and_return(stored_machine_type)
 
     images = mock(Google::Compute::ListableResourceCollection)
     images.should_receive(:get).
-      with({:project=>"google", :name=>stored_image.name}).
+      with({:project=>"debian-cloud", :name=>stored_image.name}).
       and_return(stored_image)
 
     networks = mock(Google::Compute::ListableResourceCollection)
@@ -53,12 +54,12 @@ before(:each) do
       :images=>images, :zones=>zones,:machine_types=>machine_types,
       :networks=>networks)
     Google::Compute::Client.stub!(:from_json).and_return(client)
-end
-
+  end
 
   it "#run should invoke compute api to create an server" do
     knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
-      "-I"+stored_image.name, "-n"+stored_network.name,
+      "-I"+stored_image.name, "-J"+"debian-cloud",
+      "-n"+stored_network.name,
       "-Z"+stored_zone.name, stored_instance.name])
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]
@@ -72,10 +73,12 @@ end
 
     knife_plugin.run
   end
+
   it "should read zone value from knife config file." do
     Chef::Config[:knife][:google_compute_zone] = stored_zone.name
     knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
-      "-I"+stored_image.name, "-n"+stored_network.name,
+      "-I"+stored_image.name, "-J"+"debian-cloud",
+      "-n"+stored_network.name,
        stored_instance.name])
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]
@@ -88,6 +91,7 @@ end
       and_return(mock("Chef::Knife::Bootstrap",:run=>true))
     knife_plugin.run
   end
+
 end
 
 describe "without appropriate command line options" do
