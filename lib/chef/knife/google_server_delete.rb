@@ -21,6 +21,7 @@ class Chef
       include Knife::GoogleBase
 
       deps do
+        require 'chef/api_client'
         require 'google/compute'
       end
 
