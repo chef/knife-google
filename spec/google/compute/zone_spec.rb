@@ -28,23 +28,24 @@ describe Google::Compute::Zone do
 
   it_should_behave_like Google::Compute::Resource
 
-  it "#get should return an individual zone" do
+  it '#get should return an individual zone' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.zones.get, 
-           :parameters=>{"zone"=>"mock-zone", :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{'zone'=>'mock-zone', :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::Zone))
     zone = client.zones.get('mock-zone')
     zone.should be_a_kind_of Google::Compute::Zone
     zone.name.should eq('mock-zone')
   end
 
-  it "#list should return an array of zones" do
+  it '#list should return an array of zones' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.zones.list, 
-           :parameters=>{ :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::Zone, true))
     zones = client.zones.list
     zones.should_not be_empty
     zones.all?{|zone| zone.is_a?(Google::Compute::Zone)}.should be_true
   end
+
 end

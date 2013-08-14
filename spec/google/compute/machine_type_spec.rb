@@ -29,11 +29,11 @@ describe Google::Compute::MachineType do
 
   it_should_behave_like Google::Compute::Resource
 
-  it "#get should return an individual machine types" do
+  it '#get should return an individual machine types' do
 
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.machine_types.get, 
-           :parameters=>{"machineType"=>"mock-machine-type", :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{'machineType'=>'mock-machine-type', :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::MachineType))
 
     machine_type = client.machine_types.get('mock-machine-type')
@@ -41,10 +41,10 @@ describe Google::Compute::MachineType do
     machine_type.name.should eq('mock-machine-type')
     machine_type.guest_cpus.should be_a_kind_of(Fixnum)
   end
-  it "#list should return an array of machine types" do
+  it '#list should return an array of machine types' do
   @mock_api_client.should_receive(:execute).
     with(:api_method=>mock_compute.machine_types.list, 
-         :parameters=>{ :project=>"mock-project"},:body_object=>nil).
+         :parameters=>{ :project=>'mock-project'},:body_object=>nil).
          and_return(mock_response(Google::Compute::MachineType, true))
     mts = client.machine_types.list
     mts.should_not be_empty

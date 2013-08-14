@@ -139,7 +139,7 @@ Some usage examples follow:
   $ knife google server list -Z us-central2-a
 
   # Create a server
-  $ knife google server create www1 -m n1-standard-1 -I centos-6-v20130325 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe
 
   # Delete a server (along with Chef node and API client via --purge)
   $ knife google server delete www1 --purge -Z us-central2-a
@@ -216,12 +216,26 @@ and upcoming maintenance windows.  The output should look similar to:
 ### knife google server create
 
 Use this command to create a new Google Compute Engine server (a.k.a.
-instance).  You must specify a name, the machine type, the zone, and
-image.  Note that if you are bootstrapping the node, make sure to
-follow the preparation instructions earlier and use the `-x` and
-`-i` commands to specify the username and the identity file for
-that user.  Make sure to use the private key file (e.g. `~/.ssh/id_rsa`)
-for the identity file and *not* the public key file.
+instance).  You must specify a name, the machine type, the zone, and 
+the the image name. Images provided by Google follow this naming 
+convention:
+
+  ```
+  debian-7-wheezy-vYYYYMMDD
+  debian-6-squeeze-vYYYYMMDD
+  centos-6-vYYYYMMDD
+  ```
+
+By default, the plugin will look for the specified image in the instance's
+primary project first and then consult GCE's officially supported image
+locations. The `-J IMAGE_PROJECT_ID` option can be specified to force the
+plugin to look for the image in an alternate project location.
+
+Note that if you are bootstrapping the node, make sure to follow the 
+preparation instructions earlier and use the `-x` and `-i` commands 
+to specify the username and the identity file for that user.  Make sure 
+to use the private key file (e.g. `~/.ssh/id_rsa`) for the identity 
+file and *not* the public key file.
 
 See the extended options that also allow bootstrapping the node with
 `knife google server create --help`.

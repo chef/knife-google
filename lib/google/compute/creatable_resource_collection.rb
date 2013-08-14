@@ -33,6 +33,12 @@ module Google
       def insert(options={})
         create(options)
       end
+
+      def create_snapshot(options={})
+        data = @dispatcher.dispatch(:api_method => api_resource.create_snapshot, :parameters=>options)
+        ZoneOperation.new(data.merge!(:dispatcher=>@dispatcher)) unless data.nil?
+      end
+
     end
   end
 end

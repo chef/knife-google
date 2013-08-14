@@ -27,10 +27,10 @@ describe Google::Compute::GlobalOperation do
 
   it_should_behave_like Google::Compute::Resource
 
-  it "#list should return an array of global operations" do
+  it '#list should return an array of global operations' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.global_operations.list, 
-           :parameters=>{ :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::GlobalOperation, true))
 
     operations = client.globalOperations.list
@@ -38,10 +38,10 @@ describe Google::Compute::GlobalOperation do
     operations.all?{|o| o.is_a?(Google::Compute::GlobalOperation)}.should be_true
   end
 
-  it "#get should return an individual global operation" do
+  it '#get should return an individual global operation' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.global_operations.get, 
-           :parameters=>{"globalOperation"=>"mock-global-operation", :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{'globalOperation'=>'mock-global-operation', :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response(Google::Compute::GlobalOperation))
 
     operation = client.globalOperations.get('mock-global-operation')
@@ -51,10 +51,10 @@ describe Google::Compute::GlobalOperation do
     operation.start_time.should be_a_kind_of(Time)
   end
 
-  it "#delete should delete an existing global operation" do
+  it '#delete should delete an existing global operation' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.global_operations.delete, 
-           :parameters=>{"globalOperation"=>"mock-global-operation", :project=>"mock-project"},:body_object=>nil).
+           :parameters=>{'globalOperation'=>'mock-global-operation', :project=>'mock-project'},:body_object=>nil).
            and_return(mock_response)
 
     client.globalOperations.delete('mock-global-operation')
