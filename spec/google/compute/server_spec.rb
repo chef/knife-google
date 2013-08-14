@@ -27,43 +27,43 @@ describe Google::Compute::Server do
 
   it_should_behave_like Google::Compute::Resource
 
-  it "#get should return an individual Server" do
+  it '#get should return an individual Server' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.instances.get, 
-           :parameters=>{:instance=>"mock-instance", :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
+           :parameters=>{:instance=>'mock-instance', :project=>'mock-project', :zone=>'mock-zone'},:body_object=>nil).
            and_return(mock_response(Google::Compute::Server))
-    instance = client.instances.get(:name=>'mock-instance', :zone=>"mock-zone")
+    instance = client.instances.get(:name=>'mock-instance', :zone=>'mock-zone')
     instance.should be_a_kind_of Google::Compute::Server
     instance.name.should eq('mock-instance')
     instance.disks.should be_a_kind_of(Array)
     instance.network_interfaces.should be_a_kind_of(Array)
   end
 
-  it "#list should return an array of Servers" do
+  it '#list should return an array of Servers' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.instances.list, 
-           :parameters=>{:project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
+           :parameters=>{:project=>'mock-project', :zone=>'mock-zone'},:body_object=>nil).
            and_return(mock_response(Google::Compute::Server,true))
-    instances = client.instances.list(:zone=>"mock-zone")
+    instances = client.instances.list(:zone=>'mock-zone')
     instances.should_not be_empty
     instances.all?{|i| i.is_a?(Google::Compute::Server)}.should be_true
   end
 
-  it "#create should create an server" do
-    project_url ='https://www.googleapis.com/compute/v1beta14/projects/google.com:wf-test'
+  it '#create should create an server' do
+    project_url ='https://www.googleapis.com/compute/v1beta15/projects/mock-project'
     zone = project_url + '/zones/europe-west1-a'
-    disk = project_url + zone + '/disks/temp-disk'
+    disk = project_url + zone + '/disks/mock-disk'
     machine_type = project_url + '/global/machineTypes/n1-highcpu-2'
-    image = 'https://www.googleapis.com/compute/v1beta14/projects/google/global/images/centos-6-2-v20120326'
+    image = 'https://www.googleapis.com/compute/v1beta15/projects/debian-cloud/global/images/debian-7'
     network = project_url + '/global/networks/api-network'
-    access_config = {"name" => "External NAT", "type" => "ONE_TO_ONE_NAT"}
+    access_config = {'name' => 'External NAT', 'type' => 'ONE_TO_ONE_NAT'}
 
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.instances.insert, 
-           :parameters=>{:project=>"mock-project", :zone=>"mock-zone"},
+           :parameters=>{:project=>'mock-project', :zone=>'mock-zone'},
            :body_object=>{:name =>'mock-instance',
              :image => image,
-             :zone => "mock-zone",
+             :zone => 'mock-zone',
              :disks => [disk],
              :machineType => machine_type,
              :metadata =>{'items'=>[{'key'=>'someKey','value'=>'someValue'}]},
@@ -78,23 +78,23 @@ describe Google::Compute::Server do
                                 :machineType =>machine_type,
                                 :disks=>[disk],
                                 :metadata=>{'items'=>[{'key'=>'someKey','value'=>'someValue'}]},
-                                :zone=>"mock-zone",
+                                :zone=>'mock-zone',
                                 :networkInterfaces => [{'network'=>network,
                                   'accessConfigs' => [access_config]
                                   }]
                               )
   end
 
-  it "#delete should delete an server" do
+  it '#delete should delete an server' do
     @mock_api_client.should_receive(:execute).
       with(:api_method=>mock_compute.instances.delete, 
-           :parameters=>{:project=>"mock-project", :instance=>'mock-instance', :zone=>"mock-zone"},
+           :parameters=>{:project=>'mock-project', :instance=>'mock-instance', :zone=>'mock-zone'},
            :body_object=>nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
-    o = client.instances.delete(:instance=>'mock-instance', :zone=>"mock-zone")
+    o = client.instances.delete(:instance=>'mock-instance', :zone=>'mock-zone')
   end
 
-  describe "with a specific server" do
+  describe 'with a specific server' do
 
     before(:each) do
       Google::Compute::Resource.any_instance.stub(:update!)
@@ -105,17 +105,17 @@ describe Google::Compute::Server do
                                     merge(:dispatcher=>client.dispatcher))
     end
 
-    it "#addAccessConfig should add access config to an existing server" do
+    it '#addAccessConfig should add access config to an existing server' do
     end
 
-    it "#deleteAccessConfig should delete access config to an existing server" do
+    it '#deleteAccessConfig should delete access config to an existing server' do
     end
 
-    it "#serialPort should return serial port output of an existing server" do
-      zone = "https://www.googleapis.com/compute/v1beta14/projects/mock-project/zones/mock-zone"
+    it '#serialPort should return serial port output of an existing server' do
+      zone = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone'
       @mock_api_client.should_receive(:execute).
         with(:api_method=>mock_compute.instances.get_serial_port_output, 
-           :parameters=>{:project=>"mock-project",:instance=>'mock-instance', :zone=>zone},
+           :parameters=>{:project=>'mock-project',:instance=>'mock-instance', :zone=>zone},
            :body_object=>nil).
            and_return(mock_response(Google::Compute::SerialPortOutput))
       instance.serial_port_output.should be_a_kind_of(Google::Compute::SerialPortOutput)
