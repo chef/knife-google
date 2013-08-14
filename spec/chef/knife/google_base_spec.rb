@@ -20,7 +20,7 @@ describe Chef::Knife::GoogleBase do
 
   it "#client should return a Google::Compute::Client" do
     Google::Compute::Client.should_receive(:from_json).
-      and_return(mock(Google::Compute::Client))
+      and_return(double(Google::Compute::Client))
     knife_plugin.client
   end
 

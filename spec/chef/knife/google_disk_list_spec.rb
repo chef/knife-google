@@ -21,15 +21,15 @@ describe Chef::Knife::GoogleDiskList do
   end
 
   it "should enlist all the GCE disks when run invoked" do
-    zones = mock(Google::Compute::ListableResourceCollection)
+    zones = double(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
-    disks = mock(Google::Compute::ListableResourceCollection)
+    disks = double(Google::Compute::ListableResourceCollection)
     disks.should_receive(:list).with(:zone=>stored_zone.name).
       and_return([stored_disk])
 
-    client = mock(Google::Compute::Client, :disks=>disks, :zones=>zones)
-    Google::Compute::Client.stub!(:from_json).and_return(client)
+    client = double(Google::Compute::Client, :disks=>disks, :zones=>zones)
+    Google::Compute::Client.stub(:from_json).and_return(client)
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end

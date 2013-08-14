@@ -17,25 +17,25 @@ require 'spec_helper'
 describe Chef::Knife::GoogleServerCreate do
 
   before(:each) do
-    zones = mock(Google::Compute::ListableResourceCollection)
+    zones = double(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
 
-    machine_types = mock(Google::Compute::ListableResourceCollection)
+    machine_types = double(Google::Compute::ListableResourceCollection)
     machine_types.should_receive(:get).
       with({:name=>stored_machine_type.name, :zone=>stored_zone.name}).
       and_return(stored_machine_type)
 
-    images = mock(Google::Compute::ListableResourceCollection)
+    images = double(Google::Compute::ListableResourceCollection)
     images.should_receive(:get).
       with({:project=>"debian-cloud", :name=>stored_image.name}).
       and_return(stored_image)
 
-    networks = mock(Google::Compute::ListableResourceCollection)
+    networks = double(Google::Compute::ListableResourceCollection)
     networks.should_receive(:get).with(stored_network.name).
       and_return(stored_network)
 
-    instances = mock(Google::Compute::ListableResourceCollection)
+    instances = double(Google::Compute::ListableResourceCollection)
     instances.should_receive(:create).with(
       {:name=>stored_instance.name, :image=>stored_image.self_link,
       :machineType=>stored_machine_type.self_link, :disks=>[],
@@ -50,10 +50,10 @@ describe Chef::Knife::GoogleServerCreate do
       with(:zone=>stored_zone.name, :name=>stored_instance.name).
       and_return(stored_instance)
 
-    client = mock(Google::Compute::Client, :instances=>instances,
+    client = double(Google::Compute::Client, :instances=>instances,
       :images=>images, :zones=>zones,:machine_types=>machine_types,
       :networks=>networks)
-    Google::Compute::Client.stub!(:from_json).and_return(client)
+    Google::Compute::Client.stub(:from_json).and_return(client)
   end
 
   it "#run should invoke compute api to create an server" do
@@ -64,12 +64,12 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
-    knife_plugin.ui.stub!(:info)
+    knife_plugin.ui.stub(:info)
 
-    knife_plugin.stub!(:wait_for_sshd)
+    knife_plugin.stub(:wait_for_sshd)
     knife_plugin.should_receive(:bootstrap_for_node).
       with(stored_instance,'10.100.0.10').
-      and_return(mock("Chef::Knife::Bootstrap",:run=>true))
+      and_return(double("Chef::Knife::Bootstrap",:run=>true))
 
     knife_plugin.run
   end
@@ -83,12 +83,12 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
-    knife_plugin.ui.stub!(:info)
+    knife_plugin.ui.stub(:info)
 
-    knife_plugin.stub!(:wait_for_sshd)
+    knife_plugin.stub(:wait_for_sshd)
     knife_plugin.should_receive(:bootstrap_for_node).
       with(stored_instance,'10.100.0.10').
-      and_return(mock("Chef::Knife::Bootstrap",:run=>true))
+      and_return(double("Chef::Knife::Bootstrap",:run=>true))
     knife_plugin.run
   end
 
@@ -96,7 +96,7 @@ end
 
 describe "without appropriate command line options" do
   it "should throw exception when required params are not passed" do
-    $stdout.stub!(:write) # lets not print those error messages
+    $stdout.stub(:write) # lets not print those error messages
     expect {
       Chef::Knife::GoogleServerCreate.new([ "NAME"])
     }.to raise_error(SystemExit)
