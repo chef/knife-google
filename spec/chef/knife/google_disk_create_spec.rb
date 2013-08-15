@@ -22,15 +22,15 @@ describe Chef::Knife::GoogleDiskCreate do
   end
 
   it "#run should invoke compute api to create a disk" do
-    zones = mock(Google::Compute::ListableResourceCollection)
+    zones = double(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).
       with(stored_zone.name).and_return(stored_zone)
-    disks = mock(Google::Compute::CreatableResourceCollection)
+    disks = double(Google::Compute::CreatableResourceCollection)
     disks.should_receive(:create).
       with(:zone=>stored_zone.name, :name=>stored_disk.name, :sizeGb=>"14").
       and_return(stored_zone_operation)
-    client = mock(Google::Compute::Client, :zones=>zones, :disks=>disks)
-    Google::Compute::Client.stub!(:from_json).and_return(client)
+    client = double(Google::Compute::Client, :zones=>zones, :disks=>disks)
+    Google::Compute::Client.stub(:from_json).and_return(client)
     knife_plugin.run
   end
 end

@@ -16,9 +16,9 @@ require 'spec_helper'
 describe Google::Compute::Network do
 
   before(:each) do
-    @mock_api_client=mock(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
-    @mock_api_client.stub!(:discovered_api).and_return(mock_compute)
-    Google::APIClient.stub!(:new).and_return(@mock_api_client)
+    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client.stub(:discovered_api).and_return(mock_compute)
+    Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
 
   let(:client) do
