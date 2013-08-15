@@ -57,6 +57,6 @@ module Mocks
            else
              mock_data(klass)
            end
-    mock(klass,:success? => true, :response=>mock('some',:body=>body))
+    double(klass,:success? => true, :response=>double('some',:body=>body))
   end
 end

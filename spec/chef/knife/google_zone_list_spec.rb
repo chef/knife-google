@@ -21,11 +21,11 @@ describe Chef::Knife::GoogleZoneList do
   end
 
   it "should enlist all the GCE zones when run invoked" do
-    client = mock(Google::Compute::Client)
-    Google::Compute::Client.stub!(:from_json).
+    client = double(Google::Compute::Client)
+    Google::Compute::Client.stub(:from_json).
       and_return(client)
     client.should_receive(:zones).
-      and_return(mock("zone-collection", :list=>[stored_zone]))
+      and_return(double("zone-collection", :list=>[stored_zone]))
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end
