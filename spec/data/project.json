@@ -2,7 +2,7 @@
   "kind":"compute#project",
   "id":"129922222222222",
   "creationTimestamp":"2012-09-13 18:33:49 -0700",
-  "selfLink":"https://www.googleapis.com/compute/v1beta15/projects/mock-project",
+  "selfLink":"https://www.googleapis.com/compute/v1beta16/projects/mock-project",
   "name":"mock-project",
   "description":"",
   "commonInstanceMetadata":{
