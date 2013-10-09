@@ -175,6 +175,13 @@ class Chef
         :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
         :default => "EPHEMERAL"
 
+      option :services,
+        :short => "-S scope1,scope2,scope3",
+        :long => "--service-account-scopes scope1,scope2,scope3",
+        :proc => Proc.new { |services| services.split(',') },
+        :description => "Service account scopes for this server",
+        :default => []
+
       def tcp_test_ssh(hostname, ssh_port)
         tcp_socket = TCPSocket.new(hostname, ssh_port)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -346,14 +353,30 @@ class Chef
           ui.error("Invalid public ip value : #{config[:public_ip]}")
           exit 1
         end
-        zone_operation = client.instances.create(:name=>@name_args.first, :zone=>selflink2name(zone),
-                                  :image=> image,
-                                  :machineType =>machine_type,
-                                  :disks=>disks,
-                                  :metadata=>{'items'=> metadata },
-                                  :networkInterfaces => [network_interface],
-                                  :tags=> config[:tags]
-                                )
+        if config[:services].any?
+          zone_operation = client.instances.create(:name=>@name_args.first, :zone=>selflink2name(zone),
+                                    :image=> image,
+                                    :machineType =>machine_type,
+                                    :disks=>disks,
+                                    :metadata=>{'items'=> metadata },
+                                    :networkInterfaces => [network_interface],
+                                    :tags=> config[:tags],
+                                    :serviceAccounts=> [{
+                                      'kind'=> 'compute#serviceAccount',
+                                      'email'=> 'default',
+                                      "scopes"=> config[:services]
+                                    }]
+                                  )
+        else
+          zone_operation = client.instances.create(:name=>@name_args.first, :zone=>selflink2name(zone),
+                                    :image=> image,
+                                    :machineType =>machine_type,
+                                    :disks=>disks,
+                                    :metadata=>{'items'=> metadata },
+                                    :networkInterfaces => [network_interface],
+                                    :tags=> config[:tags]
+                                  )
+        end
 
         ui.info("Waiting for the create server operation to complete")
         until zone_operation.progress.to_i == 100
