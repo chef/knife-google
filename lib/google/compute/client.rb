@@ -141,8 +141,16 @@ module Google
         DeletableResourceCollection.new(:resource_class => Google::Compute::GlobalOperation, :dispatcher=>@dispatcher)
       end
 
+      def regionOperations
+        DeletableResourceCollection.new(:resource_class => Google::Compute::RegionOperation, :dispatcher=>@dispatcher)
+      end
+
       def zoneOperations
         DeletableResourceCollection.new(:resource_class => Google::Compute::ZoneOperation, :dispatcher=>@dispatcher)
+      end
+
+      def regions
+        ListableResourceCollection.new(:resource_class => Google::Compute::Region, :dispatcher=>@dispatcher)
       end
 
       def zones
@@ -162,7 +170,7 @@ module Google
         end
 
         def compute
-          @compute ||= @api_client.discovered_api('compute','v1beta15')
+          @compute ||= @api_client.discovered_api('compute','v1beta16')
         end
         
         def dispatch(opts)

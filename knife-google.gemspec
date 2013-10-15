@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
   s.add_dependency "multi_json"
   s.add_dependency "mixlib-config"
   s.files = `git ls-files`.split($/)
-
+  #s.files = Dir['CONTRIB.md', 'Gemfile', 'LICENSE', 'README.md', 'Rakefile', 'knife-google.gemspec', 'lib/**/*', 'spec/**/*']
+  
   s.add_development_dependency "rspec"
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"

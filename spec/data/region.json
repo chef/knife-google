@@ -1,0 +1,22 @@
+{
+  "kind":"compute#region",
+  "selfLink":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/regions/mock-region",
+  "id":"7419152419915192079",
+  "creationTimestamp":"2013-10-15 22:06:55 -0800",
+  "name":"mock-region",
+  "description":"mock-region",
+  "status":"UP",
+  "zones":[""],
+  "quotas":[
+    {"metric":"CPUS","limit":24.0,"usage":1.0},
+    {"metric":"DISKS_TOTAL_GB","limit":5120.0,"usage":2.0},
+    {"metric":"STATIC_ADDRESSES","limit":7.0,"usage":1.0},
+    {"metric":"IN_USE_ADDRESSES","limit":23.0,"usage":1.0}
+  "deprecated":{
+    "state":"",
+    "replacement":"",
+    "deprecated":"",
+    "obsolete":"",
+    "deleted":""
+  }
+}
