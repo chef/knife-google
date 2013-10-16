@@ -16,13 +16,12 @@ module Google
   module Compute
     class Project < Resource
 
-      attr_reader :common_instance_metadata, :quotas, :external_ip_addresses
+      attr_reader :common_instance_metadata, :quotas
 
       def from_hash(data)
         super(data)
         @common_instance_metadata = data["commonInstanceMetadata"]
         @quotas = data["quotas"]
-        @external_ip_addresses = data["externalIpAddresses"]
       end
 
       def set_common_instance_metadata(metadata)
@@ -71,6 +70,7 @@ module Google
         end
         set_common_instance_metadata(temp_metadata)
       end
+
     end
   end
 end
