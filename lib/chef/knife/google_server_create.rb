@@ -107,6 +107,19 @@ class Chef
         :long => "--identity-file IDENTITY_FILE",
         :description => "The SSH identity file used for authentication"
 
+      option :service_account_scopes,
+        :short => "-S SCOPE1,SCOPE2,SCOPE3",
+        :long => "--service-account-scopes SCOPE1,SCOPE2,SCOPE3",
+        :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
+        :description => "Service account scopes for this server",
+        :default => []
+
+      option :service_account_email,
+        :short => "-s EMAIL@DOMAIN",
+        :long => "--service-account-email EMAIL@DOMAIN",
+        :description => "Service account email for this server; required if using service-account-scopes",
+        :default => ""
+
       option :prerelease,
         :long => "--prerelease",
         :description => "Install the pre-release chef gems"
@@ -346,15 +359,39 @@ class Chef
           ui.error("Invalid public ip value : #{config[:public_ip]}")
           exit 1
         end
-        zone_operation = client.instances.create(:name=>@name_args.first, :zone=>selflink2name(zone),
-                                  :image=> image,
-                                  :machineType =>machine_type,
-                                  :disks=>disks,
-                                  :metadata=>{'items'=> metadata },
-                                  :networkInterfaces => [network_interface],
-                                  :tags=> config[:tags]
-                                )
 
+        if config[:service_account_scopes].any?
+          begin
+            raise if config[:service_account_email].length == 0
+          rescue
+            ui.error("Email address of the service account is required when using service account scopes")
+            exit 1
+          end
+          zone_operation = client.instances.create(:name => @name_args.first, 
+                                                   :zone=> selflink2name(zone),
+                                                   :image => image,
+                                                   :machineType => machine_type,
+                                                   :disks => disks,
+                                                   :metadata => {'items'=>metadata },
+                                                   :networkInterfaces => [network_interface],
+                                                   :tags => config[:tags],
+                                                   :serviceAccounts => [{
+                                                     'kind' => 'compute#serviceAccount',
+                                                     'email' => config[:service_account_email],
+                                                     'scopes' => config[:service_account_scopes]
+                                                   }]
+                                                  )
+        else
+          zone_operation = client.instances.create(:name => @name_args.first, 
+                                                   :zone => selflink2name(zone),
+                                                   :image => image,
+                                                   :machineType => machine_type,
+                                                   :disks => disks,
+                                                   :metadata => {'items'=> metadata },
+                                                   :networkInterfaces => [network_interface],
+                                                   :tags => config[:tags]
+                                                  )
+        end
         ui.info("Waiting for the create server operation to complete")
         until zone_operation.progress.to_i == 100
           ui.info(".")
