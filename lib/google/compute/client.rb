@@ -27,7 +27,7 @@ module Google
       attr_reader :dispatcher
 
       def initialize(authorization, project, credential_file)
-        api_client = Google::APIClient.new(:application_name=>'google-compute-ruby-client')
+        api_client = Google::APIClient.new(:application_name=>'knife-google-v1beta16')
         api_client.authorization = authorization
         api_client.auto_refresh_token = true
         @project = project
@@ -65,7 +65,7 @@ module Google
           "https://www.googleapis.com/auth/userinfo.email"]
         redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
 
-        api_client = Google::APIClient.new(:application_name=>'google-compute-ruby-client')
+        api_client = Google::APIClient.new(:application_name=>'knife-google-v1beta16')
 
         api_client.authorization.scope = scope
         api_client.authorization.client_id = client_id
