@@ -29,4 +29,5 @@ describe Chef::Knife::GoogleZoneList do
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end
+
 end

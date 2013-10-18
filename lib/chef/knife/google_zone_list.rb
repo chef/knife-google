@@ -45,7 +45,10 @@ class Chef
               ui.color(status, :red)
             end
           end
-          deprecation_state = zone.deprecated.nil? ? "-" : zone.deprecated.state
+          deprecation_state = "-"
+          if zone.deprecated.respond_to?('state')
+            deprecation_state = zone.deprecated.state  
+          end 
           zone_list << deprecation_state
           unless zone.maintenance_windows.nil?
             maintenance_window = zone.maintenance_windows.map do |mw|
