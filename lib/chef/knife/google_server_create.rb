@@ -360,7 +360,17 @@ class Chef
           exit 1
         end
 
-        if config[:service_account_scopes].any?
+        if config[:service_account_scopes].nil?
+          zone_operation = client.instances.create(:name => @name_args.first,
+                                                   :zone => selflink2name(zone),
+                                                   :image => image,
+                                                   :machineType => machine_type,
+                                                   :disks => disks,
+                                                   :metadata => {'items'=> metadata },
+                                                   :networkInterfaces => [network_interface],
+                                                   :tags => config[:tags]
+                                                  )
+        else
           begin
             raise if config[:service_account_email].length == 0
           rescue
@@ -380,16 +390,6 @@ class Chef
                                                      'email' => config[:service_account_email],
                                                      'scopes' => config[:service_account_scopes]
                                                    }]
-                                                  )
-        else
-          zone_operation = client.instances.create(:name => @name_args.first, 
-                                                   :zone => selflink2name(zone),
-                                                   :image => image,
-                                                   :machineType => machine_type,
-                                                   :disks => disks,
-                                                   :metadata => {'items'=> metadata },
-                                                   :networkInterfaces => [network_interface],
-                                                   :tags => config[:tags]
                                                   )
         end
         ui.info("Waiting for the create server operation to complete")
