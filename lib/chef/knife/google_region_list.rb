@@ -56,7 +56,10 @@ class Chef
               ui.color(status, :red)
             end
           end
-          deprecation_state = region.deprecated.nil? ? "-" : region.deprecated.state
+          deprecation_state = "-"
+          if region.deprecated.respond_to?('state')
+            deprecation_state = region.deprecated.state
+          end
           region_list << deprecation_state
           cpu_usage = "0"
           cpu_limit = "0"

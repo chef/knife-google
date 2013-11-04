@@ -30,7 +30,7 @@ shared_examples Google::Compute::Resource do
     resource.id.should be_a_kind_of(Integer)
   end
 
-  it "#creation_timestamp should have a  valid creation timestamp" do
+  it "#creation_timestamp should have a valid creation timestamp" do
     unless resource.creation_timestamp.nil?
       resource.creation_timestamp.should be_a_kind_of(Time)
     end
