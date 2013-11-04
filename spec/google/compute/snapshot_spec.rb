@@ -16,7 +16,7 @@ require 'spec_helper'
 describe Google::Compute::Snapshot do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -29,8 +29,8 @@ describe Google::Compute::Snapshot do
 
   it '#get should return an individual snapshot' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.snapshots.get, 
-           :parameters=>{'snapshot'=>'mock-snapshot', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.snapshots.get,
+           :parameters => {'snapshot' => 'mock-snapshot', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Snapshot))
     snapshot = client.snapshots.get('mock-snapshot')
     snapshot.should be_a_kind_of Google::Compute::Snapshot
@@ -39,9 +39,9 @@ describe Google::Compute::Snapshot do
 
   it '#list should return an array of snapshots' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.snapshots.list, 
-           :parameters=>{:project=>'mock-project'},:body_object=>nil).
-           and_return(mock_response(Google::Compute::Snapshot,true))
+      with(:api_method => mock_compute.snapshots.list,
+           :parameters => {:project => 'mock-project'}, :body_object => nil).
+           and_return(mock_response(Google::Compute::Snapshot, true))
     snapshots = client.snapshots.list
     snapshots.should_not be_empty
     snapshots.all?{|s| s.is_a?(Google::Compute::Snapshot)}.should be_true
@@ -49,9 +49,9 @@ describe Google::Compute::Snapshot do
 
   it '#delete should delete an existing snapshot' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.snapshots.delete, 
-           :parameters=>{:project=>'mock-project','snapshot'=>'mock-snapshot'},:body_object=>nil).
+      with(:api_method => mock_compute.snapshots.delete,
+           :parameters => {:project => 'mock-project', 'snapshot' => 'mock-snapshot'}, :body_object => nil).
            and_return(mock_response(Google::Compute::GlobalOperation))
-    o =  client.snapshots.delete('mock-snapshot')
+    o = client.snapshots.delete('mock-snapshot')
   end
 end

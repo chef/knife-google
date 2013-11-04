@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 require 'spec_helper'
 
 describe Chef::Knife::GoogleDiskCreate do
-
   let(:knife_plugin) do
     Chef::Knife::GoogleDiskCreate.new(
       [stored_disk.name, "-Z"+stored_zone.name, "-s14"])
@@ -27,9 +27,9 @@ describe Chef::Knife::GoogleDiskCreate do
       with(stored_zone.name).and_return(stored_zone)
     disks = double(Google::Compute::CreatableResourceCollection)
     disks.should_receive(:create).
-      with(:zone=>stored_zone.name, :name=>stored_disk.name, :sizeGb=>"14").
+      with(:zone => stored_zone.name, :name => stored_disk.name, :sizeGb => "14").
       and_return(stored_zone_operation)
-    client = double(Google::Compute::Client, :zones=>zones, :disks=>disks)
+    client = double(Google::Compute::Client, :zones => zones, :disks => disks)
     Google::Compute::Client.stub(:from_json).and_return(client)
     knife_plugin.run
   end

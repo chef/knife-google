@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 require 'spec_helper'
 
 describe Chef::Knife::GoogleServerCreate do
-
   before(:each) do
     zones = double(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
@@ -23,12 +23,12 @@ describe Chef::Knife::GoogleServerCreate do
 
     machine_types = double(Google::Compute::ListableResourceCollection)
     machine_types.should_receive(:get).
-      with({:name=>stored_machine_type.name, :zone=>stored_zone.name}).
+      with({:name => stored_machine_type.name, :zone => stored_zone.name}).
       and_return(stored_machine_type)
 
     images = double(Google::Compute::ListableResourceCollection)
     images.should_receive(:get).
-      with({:project=>"debian-cloud", :name=>stored_image.name}).
+      with({:project => "debian-cloud", :name => stored_image.name}).
       and_return(stored_image)
 
     networks = double(Google::Compute::ListableResourceCollection)
@@ -37,22 +37,22 @@ describe Chef::Knife::GoogleServerCreate do
 
     instances = double(Google::Compute::ListableResourceCollection)
     instances.should_receive(:create).with(
-      {:name=>stored_instance.name, :image=>stored_image.self_link,
-      :machineType=>stored_machine_type.self_link, :disks=>[],
-      :metadata=>{"items"=>[]}, :zone=>stored_zone.name,
-      :networkInterfaces=>[
-        {"network"=>stored_network.self_link,
-        "accessConfigs"=>[
-          {"name"=>"External NAT", "type"=>"ONE_TO_ONE_NAT"}]}],
-      :tags=>nil}).and_return(stored_zone_operation)
+      {:name => stored_instance.name, :image => stored_image.self_link,
+      :machineType => stored_machine_type.self_link, :disks => [],
+      :metadata => {"items" => []}, :zone => stored_zone.name,
+      :networkInterfaces => [
+        {"network" => stored_network.self_link,
+        "accessConfigs" => [
+          {"name" => "External NAT", "type" => "ONE_TO_ONE_NAT"}]}],
+      :tags => nil}).and_return(stored_zone_operation)
 
     instances.should_receive(:get).
-      with(:zone=>stored_zone.name, :name=>stored_instance.name).
+      with(:zone => stored_zone.name, :name => stored_instance.name).
       and_return(stored_instance)
 
-    client = double(Google::Compute::Client, :instances=>instances,
-      :images=>images, :zones=>zones,:machine_types=>machine_types,
-      :networks=>networks)
+    client = double(Google::Compute::Client, :instances => instances,
+      :images => images, :zones => zones,:machine_types => machine_types,
+      :networks => networks)
     Google::Compute::Client.stub(:from_json).and_return(client)
   end
 
@@ -69,7 +69,7 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.stub(:wait_for_sshd)
     knife_plugin.should_receive(:bootstrap_for_node).
       with(stored_instance,'10.100.0.10').
-      and_return(double("Chef::Knife::Bootstrap",:run=>true))
+      and_return(double("Chef::Knife::Bootstrap",:run => true))
 
     knife_plugin.run
   end
@@ -87,11 +87,10 @@ describe Chef::Knife::GoogleServerCreate do
 
     knife_plugin.stub(:wait_for_sshd)
     knife_plugin.should_receive(:bootstrap_for_node).
-      with(stored_instance,'10.100.0.10').
-      and_return(double("Chef::Knife::Bootstrap",:run=>true))
+      with(stored_instance, '10.100.0.10').
+      and_return(double("Chef::Knife::Bootstrap", :run => true))
     knife_plugin.run
   end
-
 end
 
 describe "without appropriate command line options" do

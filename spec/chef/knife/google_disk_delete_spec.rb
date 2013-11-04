@@ -15,7 +15,6 @@
 require 'spec_helper'
 
 describe Chef::Knife::GoogleDiskDelete do
-
   let(:knife_plugin) do
     Chef::Knife::GoogleDiskDelete.new([stored_disk.name, "-Z"+stored_zone.name])
   end
@@ -26,11 +25,11 @@ describe Chef::Knife::GoogleDiskDelete do
       and_return(stored_zone)
     disks = double(Google::Compute::DeletableResourceCollection)
     disks.should_receive(:get).
-      with(:zone=>stored_zone.name, :disk=>stored_disk.name).
+      with(:zone => stored_zone.name, :disk => stored_disk.name).
       and_raise(Google::Compute::ResourceNotFound)
     disks.should_not_receive(:delete)
     client = double(Google::Compute::Client,
-      :disks=>disks, :zones=>zones)
+      :disks => disks, :zones => zones)
     Google::Compute::Client.stub(:from_json).and_return(client)
 
     knife_plugin.config[:yes] = true
@@ -48,12 +47,12 @@ describe Chef::Knife::GoogleDiskDelete do
       and_return(stored_zone)
     disks = double(Google::Compute::DeletableResourceCollection)
     disks.should_receive(:get).
-      with(:zone=>stored_zone.name, :disk=>stored_disk.name).
+      with(:zone => stored_zone.name, :disk => stored_disk.name).
       and_return(stored_disk)
     disks.should_receive(:delete).
-      with(:zone=>stored_zone.name, :disk=>stored_disk.name)
+      with(:zone => stored_zone.name, :disk => stored_disk.name)
     client = double(Google::Compute::Client,
-      :zones=>zones,:disks=>disks)
+      :zones => zones, :disks => disks)
     Google::Compute::Client.stub(:from_json).
       and_return(client)
     knife_plugin.config[:yes] = true

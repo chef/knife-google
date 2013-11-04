@@ -16,7 +16,7 @@ require 'spec_helper'
 describe Google::Compute::Project do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -29,8 +29,8 @@ describe Google::Compute::Project do
 
   it '#get should return an individual project' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.projects.get, 
-           :parameters=>{:project=>'mock-project','project'=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.projects.get,
+           :parameters => {:project => 'mock-project', 'project' => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Project))
     project = client.projects.get('mock-project')
     project.should be_a_kind_of Google::Compute::Project
@@ -44,28 +44,28 @@ describe Google::Compute::Project do
 
     let(:project) do
       Google::Compute::Project.new(mock_hash(Google::Compute::Project).
-                                    merge(:dispatcher=>client.dispatcher))
+                                   merge(:dispatcher => client.dispatcher))
     end
 
     it 'should be able to add common instance metadata' do
       @mock_api_client.should_receive(:execute).
-        with(:api_method=>mock_compute.projects.set_common_instance_metadata, 
-           :parameters=>{:project=>'mock-project'},
-           :body_object=>{'kind'=>'compute#metadata', 
-             'items'=>[{'key'=>'mock-key', 'value'=>'mock-value'}, 
-               {'key'=>'testKey', 'value'=>'testValue'}]}).
+        with(:api_method => mock_compute.projects.set_common_instance_metadata,
+             :parameters => {:project => 'mock-project'},
+             :body_object => {'kind' => 'compute#metadata',
+             'items' => [{'key' => 'mock-key', 'value' => 'mock-value'},
+               {'key' => 'testKey', 'value' => 'testValue'}]}).
                and_return(mock_response)
-      project.add_common_instance_metadata!('testKey'=>'testValue')
+      project.add_common_instance_metadata!('testKey' => 'testValue')
     end
 
     it 'should be able to remove common instance metadata' do
       @mock_api_client.should_receive(:execute).
-        with(:api_method=>mock_compute.projects.set_common_instance_metadata, 
-           :parameters=>{:project=>'mock-project'},
-           :body_object=>{'kind'=>'compute#metadata', 
-             'items'=>[]}).
+        with(:api_method => mock_compute.projects.set_common_instance_metadata,
+             :parameters => {:project => 'mock-project'},
+             :body_object => {'kind' => 'compute#metadata',
+             'items' => []}).
                and_return(mock_response)
-      project.remove_common_instance_metadata!('mock-key'=>'mock-value')
+      project.remove_common_instance_metadata!('mock-key' => 'mock-value')
     end
 end
 

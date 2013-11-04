@@ -16,7 +16,7 @@ require 'spec_helper'
 describe Google::Compute::Kernel do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -29,8 +29,8 @@ describe Google::Compute::Kernel do
 
   it '#get should return an individual kernel' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.kernels.get, 
-           :parameters=>{'kernel'=>'mock-kernel', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.kernels.get,
+           :parameters => {'kernel' => 'mock-kernel', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Kernel))
 
     kernel = client.kernels.get('mock-kernel')
@@ -40,8 +40,8 @@ describe Google::Compute::Kernel do
 
   it '#list should return an array of kernels' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.kernels.list, 
-           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.kernels.list,
+           :parameters => { :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Kernel, true))
     kernels = client.kernels.list
     kernels.all?{|kernel| kernel.is_a?(Google::Compute::Kernel)}.should be_true

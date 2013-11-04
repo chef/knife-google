@@ -16,7 +16,7 @@ require 'spec_helper'
 describe Google::Compute::Image do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -29,8 +29,8 @@ describe Google::Compute::Image do
 
   it '#get should return an individual image' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.images.get, 
-           :parameters=>{'image'=>'mock-image', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.images.get,
+           :parameters => {'image' => 'mock-image', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Image))
     image = client.images.get('mock-image')
     image.should be_a_kind_of Google::Compute::Image
@@ -41,8 +41,8 @@ describe Google::Compute::Image do
 
   it '#list should return an array of images' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.images.list, 
-           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.images.list,
+           :parameters => { :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Image, true))
     images = client.images.list
     images.should_not be_empty
@@ -51,23 +51,23 @@ describe Google::Compute::Image do
   it '#create should create a new image' do
     storage = 'https://www.googleapis.com/storage/projects/mock-project/bucket/object'
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.images.insert, 
-           :parameters=>{ :project=>'mock-project'},
-           :body_object=>{:name=>'mock-image',
-              :rawDisk=>{'containerType'=>'TAR','source'=>storage},
-              :sourceType=>'RAW'}).
+      with(:api_method => mock_compute.images.insert,
+           :parameters => { :project => 'mock-project'},
+           :body_object => {:name => 'mock-image',
+              :rawDisk => {'containerType' => 'TAR', 'source' => storage},
+              :sourceType => 'RAW'}).
            and_return(mock_response(Google::Compute::GlobalOperation))
-    o = client.images.create(:name=>'mock-image',
-              :rawDisk=>{'containerType'=>'TAR','source'=>storage},
-              :sourceType=>'RAW')
+    o = client.images.create(:name => 'mock-image',
+              :rawDisk => {'containerType' => 'TAR', 'source' => storage},
+              :sourceType => 'RAW')
 
     o.should be_a_kind_of Google::Compute::GlobalOperation
   end
 
   it '#delete should delete an existing image' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.images.delete, 
-           :parameters=>{ :project=>'mock-project','image'=>'mock-image'},:body_object =>nil).
+      with(:api_method => mock_compute.images.delete,
+           :parameters => { :project => 'mock-project', 'image' => 'mock-image'}, :body_object => nil).
            and_return(mock_response(Google::Compute::GlobalOperation))
     o = client.images.delete('mock-image')
     o.should be_a_kind_of Google::Compute::GlobalOperation

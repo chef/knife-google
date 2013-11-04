@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 require 'spec_helper'
 
 describe Chef::Knife::GoogleRegionList do
-
   let(:knife_plugin) do
     Chef::Knife::GoogleRegionList.new([])
   end
@@ -25,9 +25,8 @@ describe Chef::Knife::GoogleRegionList do
     Google::Compute::Client.stub(:from_json).
       and_return(client)
     client.should_receive(:regions).
-      and_return(double("region-collection", :list=>[stored_region]))
+      and_return(double("region-collection", :list => [stored_region]))
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end
-
 end

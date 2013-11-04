@@ -17,7 +17,7 @@ require 'spec_helper'
 describe Google::Compute::Region do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -30,8 +30,8 @@ describe Google::Compute::Region do
 
   it '#get should return an individual region' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.regions.get, 
-           :parameters=>{"region"=>"mock-region", :project=>"mock-project"},:body_object=>nil).
+      with(:api_method => mock_compute.regions.get,
+           :parameters => {"region" => "mock-region", :project => "mock-project"}, :body_object => nil).
            and_return(mock_response(Google::Compute::Region))
     region = client.regions.get('mock-region')
     region.should be_a_kind_of Google::Compute::Region
@@ -40,8 +40,8 @@ describe Google::Compute::Region do
 
   it '#list should return an array of regions' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.regions.list, 
-           :parameters=>{:project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.regions.list,
+           :parameters => {:project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Region, true))
     regions = client.regions.list
     regions.should_not be_empty

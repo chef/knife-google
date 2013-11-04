@@ -33,7 +33,7 @@ describe Chef::Knife::GoogleBase do
   it "#msg_pair should invoke ui.info with labe : value string" do
     knife_plugin.ui.should_receive(:info).
       with("#{knife_plugin.ui.color("label", :cyan)}: value")
-    knife_plugin.msg_pair("label","value")
+    knife_plugin.msg_pair("label", "value")
   end
 
   it "#private_ips should extract private ip as an array from a GCE server" do

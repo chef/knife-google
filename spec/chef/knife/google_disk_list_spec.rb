@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 require 'spec_helper'
 
 describe Chef::Knife::GoogleDiskList do
-
   let(:knife_plugin) do
     Chef::Knife::GoogleDiskList.new(["-Z"+stored_zone.name])
   end
@@ -25,10 +25,10 @@ describe Chef::Knife::GoogleDiskList do
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
     disks = double(Google::Compute::ListableResourceCollection)
-    disks.should_receive(:list).with(:zone=>stored_zone.name).
+    disks.should_receive(:list).with(:zone => stored_zone.name).
       and_return([stored_disk])
 
-    client = double(Google::Compute::Client, :disks=>disks, :zones=>zones)
+    client = double(Google::Compute::Client, :disks => disks, :zones => zones)
     Google::Compute::Client.stub(:from_json).and_return(client)
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
