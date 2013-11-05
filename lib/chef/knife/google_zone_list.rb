@@ -27,10 +27,10 @@ class Chef
         $stdout.sync = true
 
         zone_list = [
-          ui.color("Name", :bold),
-          ui.color('Status', :bold),
-          ui.color('Deprecation', :bold),
-          ui.color('Maintainance Window',:bold)].flatten.compact
+          ui.color("name", :bold),
+          ui.color('status', :bold),
+          ui.color('deprecation', :bold),
+          ui.color('maintainance window', :bold)].flatten.compact
 
         output_column_count = zone_list.length
 

@@ -39,11 +39,11 @@ class Chef
         end
 
         disk_list = [
-          ui.color("Name", :bold),
-          ui.color('Zone', :bold),
-          ui.color('Source Snapshot', :bold),
-          ui.color('Size (In GB)', :bold),
-          ui.color('Status', :bold)].flatten.compact
+          ui.color("name", :bold),
+          ui.color('zone', :bold),
+          ui.color('source snapshot', :bold),
+          ui.color('size (in GB)', :bold),
+          ui.color('status', :bold)].flatten.compact
 
         output_column_count = disk_list.length
 

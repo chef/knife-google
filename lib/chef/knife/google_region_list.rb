@@ -35,9 +35,9 @@ class Chef
         $stdout.sync = true
 
         region_list = [
-          ui.color("Name", :bold),
-          ui.color('Status', :bold),
-          ui.color('Deprecation', :bold),
+          ui.color("name", :bold),
+          ui.color('status', :bold),
+          ui.color('deprecation', :bold),
           ui.color('cpus', :bold),
           ui.color('disks-total-gb', :bold),
           ui.color('in-use-addresses', :bold),
