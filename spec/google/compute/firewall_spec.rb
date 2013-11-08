@@ -17,7 +17,7 @@ require 'spec_helper'
 describe Google::Compute::Firewall do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -27,11 +27,11 @@ describe Google::Compute::Firewall do
   end
 
   it_should_behave_like Google::Compute::Resource
-  
+
   it "#get should return an individual firewall" do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.firewalls.get, 
-           :parameters=>{'firewall'=>'mock-firewall', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.firewalls.get,
+           :parameters => {'firewall' => 'mock-firewall', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Firewall))
     fw = client.firewalls.get('mock-firewall')
     fw.should be_a_kind_of Google::Compute::Firewall
@@ -40,38 +40,38 @@ describe Google::Compute::Firewall do
 
   it '#list should return an array of firewalls' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.firewalls.list, 
-           :parameters=>{:project=>'mock-project'},:body_object=>nil).
-           and_return(mock_response(Google::Compute::Firewall,true))
+      with(:api_method => mock_compute.firewalls.list,
+           :parameters => {:project => 'mock-project'}, :body_object => nil).
+           and_return(mock_response(Google::Compute::Firewall, true))
     fws = client.firewalls.list
     fws.should_not be_empty
     fws.all?{|f| f.is_a?(Google::Compute::Firewall)}.should be_true
   end
 
   it '#create should create a new firewall' do
-    network = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/networks/mock-network'
-    ingress= {'IPProtocol'=>'tcp','ports'=>['80']}
+    network = 'https://www.googleapis.com/compute/v1beta16/projects/mock-project/networks/mock-network'
+    ingress= {'IPProtocol' => 'tcp', 'ports' => ['80']}
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.firewalls.insert, 
-           :parameters=>{:project=>'mock-project'},
-           :body_object=>{:name =>'mock-firewall',
-              :network=>network,
-              :sourceRanges=>['10.12.0.0/24'],
-              :allowed=>[ingress]}).
+      with(:api_method => mock_compute.firewalls.insert,
+           :parameters => {:project => 'mock-project'},
+           :body_object => {:name => 'mock-firewall',
+              :network => network,
+              :sourceRanges => ['10.12.0.0/24'],
+              :allowed => [ingress]}).
            and_return(mock_response(Google::Compute::GlobalOperation))
 
-    o = client.firewalls.create(:name=>'mock-firewall',
-                                :network=>network,
-                                :sourceRanges=>['10.12.0.0/24'],
-                                :allowed=>[ingress]
+    o = client.firewalls.create(:name => 'mock-firewall',
+                                :network => network,
+                                :sourceRanges => ['10.12.0.0/24'],
+                                :allowed => [ingress]
                                 )
     o.should be_a_kind_of Google::Compute::GlobalOperation
   end
 
   it '#delete should delete an existing firewall' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.firewalls.delete, 
-           :parameters=>{:project=>'mock-project','firewall'=>'mock-firewall'},:body_object=>nil).
+      with(:api_method => mock_compute.firewalls.delete,
+           :parameters => {:project => 'mock-project', 'firewall' => 'mock-firewall'}, :body_object => nil).
            and_return(mock_response(Google::Compute::GlobalOperation))
     o = client.firewalls.delete('mock-firewall')
   end
@@ -84,14 +84,14 @@ describe Google::Compute::Firewall do
 
     let(:firewall) do
       Google::Compute::Firewall.new(mock_hash(Google::Compute::Firewall).
-                                    merge(:dispatcher=>client.dispatcher))
+                                    merge(:dispatcher => client.dispatcher))
     end
 
     it '#source_tags= should update the source tags' do
       @mock_api_client.should_receive(:execute).
-        with(:api_method=>mock_compute.firewalls.patch, 
-           :parameters=>{:project=>'mock-project',:firewall=>'mock-firewall'},
-           :body_object=>{:sourceTags=>['all'], :name=>'mock-firewall', :network=>firewall.network}).
+        with(:api_method => mock_compute.firewalls.patch,
+           :parameters => {:project => 'mock-project', :firewall => 'mock-firewall'},
+           :body_object => {:sourceTags => ['all'], :name => 'mock-firewall', :network => firewall.network}).
            and_return(mock_response(Google::Compute::GlobalOperation))
 
       firewall.source_tags= ['all']
@@ -99,28 +99,28 @@ describe Google::Compute::Firewall do
 
     it '#target_tags= should update the target tags' do
       @mock_api_client.should_receive(:execute).
-        with(:api_method=>mock_compute.firewalls.patch, 
-           :parameters=>{:project=>'mock-project',:firewall=>'mock-firewall'},
-           :body_object=>{:targetTags=>['all'], :name=>'mock-firewall', :network=>firewall.network}).
+        with(:api_method => mock_compute.firewalls.patch,
+           :parameters => {:project => 'mock-project', :firewall => 'mock-firewall'},
+           :body_object => {:targetTags => ['all'], :name => 'mock-firewall', :network => firewall.network}).
            and_return(mock_response(Google::Compute::GlobalOperation))
       firewall.target_tags= ['all']
     end
 
     it '#source_ranges= should update the source ranges' do
       @mock_api_client.should_receive(:execute).
-        with(:api_method=>mock_compute.firewalls.patch, 
-           :parameters=>{:project=>'mock-project',:firewall=>'mock-firewall'},
-           :body_object=>{:sourceRanges=>['10.10.12.0/24'], :name=>'mock-firewall', :network=>firewall.network}).
+        with(:api_method => mock_compute.firewalls.patch,
+           :parameters => {:project => 'mock-project', :firewall => 'mock-firewall'},
+           :body_object => {:sourceRanges => ['10.10.12.0/24'], :name => 'mock-firewall', :network => firewall.network}).
            and_return(mock_response(Google::Compute::GlobalOperation))
       firewall.source_ranges= ['10.10.12.0/24']
     end
 
     it '#allowed= should update the source allowed traffic' do
-      ingress= {'IPProtocol'=>'udp','ports'=>['53']}
+      ingress= {'IPProtocol' => 'udp', 'ports' => ['53']}
       @mock_api_client.should_receive(:execute).
-        with(:api_method=>mock_compute.firewalls.patch, 
-           :parameters=>{:project=>'mock-project',:firewall=>'mock-firewall'},
-           :body_object=>{:allowed=>[ingress], :name=>'mock-firewall', :network=>firewall.network}).
+        with(:api_method => mock_compute.firewalls.patch,
+           :parameters => {:project => 'mock-project', :firewall => 'mock-firewall'},
+           :body_object => {:allowed => [ingress], :name => 'mock-firewall', :network => firewall.network}).
            and_return(mock_response(Google::Compute::GlobalOperation))
       firewall.allowed= [ingress]
     end

@@ -2,11 +2,11 @@
   "kind":"compute#image",
   "id":"129434444445535318",
   "creationTimestamp":"2012-07-16 15:16:13 -0700",
-  "selfLink":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/global/images/mock-image",
+  "selfLink":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/global/images/mock-image",
   "name":"mock-image",
   "description":" CentOS 6.2 image",
   "sourceType":"RAW",
-  "preferredKernel":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/global/kernels/mock-kernel",
+  "preferredKernel":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/global/kernels/mock-kernel",
   "rawDisk":{"source":"","containerType":"TAR","sha1Checksum":""},
   "deprecated":{"state":"","replacement":"","deprecated":"","obsolete":"","deleted":""}
 }

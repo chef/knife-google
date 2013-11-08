@@ -16,7 +16,7 @@ require 'spec_helper'
 describe Google::Compute::GlobalOperation do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -29,8 +29,8 @@ describe Google::Compute::GlobalOperation do
 
   it '#list should return an array of global operations' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.global_operations.list, 
-           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.global_operations.list,
+           :parameters => { :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::GlobalOperation, true))
 
     operations = client.globalOperations.list
@@ -40,8 +40,8 @@ describe Google::Compute::GlobalOperation do
 
   it '#get should return an individual global operation' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.global_operations.get, 
-           :parameters=>{'globalOperation'=>'mock-global-operation', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.global_operations.get,
+           :parameters => {'globalOperation' => 'mock-global-operation', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::GlobalOperation))
 
     operation = client.globalOperations.get('mock-global-operation')
@@ -53,8 +53,8 @@ describe Google::Compute::GlobalOperation do
 
   it '#delete should delete an existing global operation' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.global_operations.delete, 
-           :parameters=>{'globalOperation'=>'mock-global-operation', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.global_operations.delete,
+           :parameters => {'globalOperation' => 'mock-global-operation', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response)
 
     client.globalOperations.delete('mock-global-operation')

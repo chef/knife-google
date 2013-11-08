@@ -16,7 +16,7 @@ require 'spec_helper'
 describe Google::Compute::Disk do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -29,10 +29,10 @@ describe Google::Compute::Disk do
 
   it "#get should return an individual disk by name" do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.disks.get, 
-           :parameters=>{"disk"=>"mock-disk", :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
+      with(:api_method => mock_compute.disks.get,
+           :parameters => {"disk" => "mock-disk", :project => "mock-project", :zone => "mock-zone"},:body_object => nil).
            and_return(mock_response(Google::Compute::Disk))
-    disk = client.disks.get(:name=>"mock-disk", :zone=>"mock-zone")
+    disk = client.disks.get(:name => "mock-disk", :zone => "mock-zone")
     disk.should be_a_kind_of Google::Compute::Disk
     disk.name.should eq("mock-disk")
   end
@@ -40,76 +40,76 @@ describe Google::Compute::Disk do
 #  TODO(erjohnso): come back to this and see about fixing it
 #  it "#get return an individual disk by passing the disk object also" do
 #    @mock_api_client.should_receive(:execute).
-#      with(:api_method=>mock_compute.disks.get, 
-#           :parameters=>{"disk"=>"mock-disk", :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
+#      with(:api_method => mock_compute.disks.get,
+#           :parameters => {"disk" => "mock-disk", :project => "mock-project", :zone => "mock-zone"},:body_object => nil).
 #           and_return(mock_response(Google::Compute::Disk))
 #
-#    disk = client.disks.get(:disk=>instance_from_mock_data(Google::Compute::Disk), :zone=>instance_from_mock_data(Google::Compute::Zone))
+#    disk = client.disks.get(:disk => instance_from_mock_data(Google::Compute::Disk), :zone => instance_from_mock_data(Google::Compute::Zone))
 #    disk.should be_a_kind_of Google::Compute::Disk
 #    disk.name.should eq('mock-disk')
 #  end
 
   it "#get should return an individual disk by passing a hash with name key also" do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.disks.get, 
-           :parameters=>{"disk"=>"mock-disk", :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
+      with(:api_method => mock_compute.disks.get,
+           :parameters => {"disk" => "mock-disk", :project => "mock-project", :zone => "mock-zone"},:body_object => nil).
            and_return(mock_response(Google::Compute::Disk))
 
-    disk = client.disks.get(:name=>'mock-disk', :zone=>"mock-zone")
+    disk = client.disks.get(:name => 'mock-disk', :zone => "mock-zone")
     disk.should be_a_kind_of Google::Compute::Disk
     disk.name.should eq('mock-disk')
   end
 
   it "#list should return an array of disks" do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.disks.list, 
-           :parameters=>{ :project=>"mock-project", :zone=>"mock-zone"},:body_object=>nil).
+      with(:api_method => mock_compute.disks.list,
+           :parameters => {:project => "mock-project", :zone => "mock-zone"},:body_object => nil).
            and_return(mock_response(Google::Compute::Disk, true))
-    disks = client.disks.list(:zone=>"mock-zone")
+    disks = client.disks.list(:zone => "mock-zone")
     disks.all?{|disk| disk.is_a?(Google::Compute::Disk)}.should be_true
   end
 
   it "#create should create a new disk" do
-    #zone = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone'
+    #zone = 'https://www.googleapis.com/compute/v1beta16/projects/mock-project/zones/mock-zone'
     zone = 'mock-zone'
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.disks.insert, 
-           :parameters=>{ :project=>"mock-project", :zone=>"mock-zone"},
-           :body_object=>{:name=>"xxx", :sizeGb=>2, :zone=>"mock-zone"}).
+      with(:api_method => mock_compute.disks.insert,
+           :parameters => {:project => "mock-project", :zone => "mock-zone"},
+           :body_object => {:name => "xxx", :sizeGb => 2, :zone => "mock-zone"}).
            and_return(mock_response(Google::Compute::ZoneOperation))
-    o = client.disks.create(:name=>'xxx', :sizeGb=>2, :zone=>zone)
+    o = client.disks.create(:name => 'xxx', :sizeGb => 2, :zone => zone)
     o.should be_a_kind_of Google::Compute::ZoneOperation
   end
 
   it "#insert should create a new disk also" do
-    #zone = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone'
+    #zone = 'https://www.googleapis.com/compute/v1beta16/projects/mock-project/zones/mock-zone'
     zone = 'mock-zone'
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.disks.insert, 
-           :parameters=>{ :project=>"mock-project", :zone=>"mock-zone"},
-           :body_object=>{:name=>"xxx", :sizeGb=>2, :zone=>"mock-zone"}).
+      with(:api_method => mock_compute.disks.insert,
+           :parameters => {:project => "mock-project", :zone => "mock-zone"},
+           :body_object => {:name => "xxx", :sizeGb => 2, :zone => "mock-zone"}).
            and_return(mock_response(Google::Compute::ZoneOperation))
-    o = client.disks.insert(:name=>'xxx', :sizeGb=>2, :zone=>zone)
+    o = client.disks.insert(:name => 'xxx', :sizeGb => 2, :zone => zone)
     o.should be_a_kind_of Google::Compute::ZoneOperation
   end
 
   it "#delete should delete an existing disk" do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.disks.delete, 
-           :parameters=>{ :project=>"mock-project","disk"=>"mock-disk", :zone=>"mock-zone"},:body_object =>nil).
+      with(:api_method => mock_compute.disks.delete,
+           :parameters => {:project => "mock-project","disk" => "mock-disk", :zone => "mock-zone"},:body_object => nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
-    o = client.disks.delete("disk"=>"mock-disk", :zone=>"mock-zone")
+    o = client.disks.delete("disk" => "mock-disk", :zone => "mock-zone")
     o.should be_a_kind_of Google::Compute::ZoneOperation
   end
 
   it "#createSnapshot should create a new snapshot" do
     zone = 'mock-zone'
-    disk = 'https://www.googleapis.com/compute/v1beta15/projects/mock-project/disks/mock-disk'
+    disk = 'https://www.googleapis.com/compute/v1beta16/projects/mock-project/disks/mock-disk'
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.disks.create_snapshot,
-           :parameters=>{:project=>"mock-project", :zone=>zone, :disk=>disk}, :body_object=>nil).
+      with(:api_method => mock_compute.disks.create_snapshot,
+           :parameters => {:project => "mock-project", :zone => zone, :disk => disk}, :body_object => nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
-    o = client.disks.create_snapshot(:project=>"mock-project", :zone=>zone, :disk=>disk)
+    o = client.disks.create_snapshot(:project => "mock-project", :zone => zone, :disk => disk)
     o.should be_a_kind_of Google::Compute::ZoneOperation
   end
 end

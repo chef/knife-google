@@ -65,10 +65,12 @@ or, for Gemfile:
     gem 'knife-google'
 ```
 
-There is a long standing issue in Ruby where the net/http library by default does not check the validity of an SSL certificate during a TLS handshake.
+There is a long standing issue in Ruby where the net/http library by default
+does not check the validity of an SSL certificate during a TLS handshake.
 
 To configure Windows system to validate SSL certificate please download
-[cacert.pem](http://curl.haxx.se/ca/cacert.pem) file and save to C: drive. Now make ruby aware of your certificate authority by setting SSL_CERT_FILE.
+[cacert.pem](http://curl.haxx.se/ca/cacert.pem) file and save to C: drive.
+Now make ruby aware of your certificate authority by setting SSL_CERT_FILE.
 
 To set this in your current command prompt session, type:
 
@@ -141,6 +143,9 @@ Some usage examples follow:
   # Create a server
   $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe
 
+  # Create a server with service account scopes
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe -S https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control -s 123845678986@project.gserviceaccount.com
+
   # Delete a server (along with Chef node and API client via --purge)
   $ knife google server delete www1 --purge -Z us-central2-a
   ```
@@ -151,14 +156,16 @@ For a full list of commands, run `knife google` without additional arguments:
   $ knife google
 
   ** GOOGLE COMMANDS **
-  knife google disk list --google-compute-zone ZONE (options)
-  knife google zone list (options)
-  knife google server delete SERVER [SERVER] --google-compute-zone ZONE (options)
-  knife google server create NAME --google-compute-zone ZONE (options)
-  knife google disk create NAME --google-disk-size N --google-compute-zone ZONE (options)
-  knife google setup
-  knife google server list --google-compute-zone ZONE (options)
+  knife google disk create NAME --google-disk-sizeGb N --google-compute-zone ZONE (options)
   knife google disk delete NAME --google-compute-zone ZONE
+  knife google disk list --google-compute-zone ZONE (options)
+  knife google project list (options)
+  knife google region list (options)
+  knife google server create NAME -m MACHINE_TYPE -I IMAGE -Z ZONE (options)
+  knife google server delete SERVER [SERVER] --google-compute-zone ZONE (options)
+  knife google server list --google-compute-zone ZONE (options)
+  knife google setup
+  knife google zone list (options)
   ```
 
 More detailed help can be obtained by specifying sub-commands.  For
@@ -167,24 +174,26 @@ instance,
   ```sh
   $ knife google server list -Z foo --help
   knife google server list --google-compute-zone ZONE (options)
-      -s, --server-url URL             Chef Server URL
-      -k, --key KEY                    API Client Key
-          --[no-]color                 Use colored output, defaults to enabled
-      -f CREDENTIAL_FILE,              Google Compute credential file (google setup can create this)
-          --google-compute-credential-file
-      -c, --config CONFIG              The configuration file to use
-          --defaults                   Accept default values for all questions
-      -d, --disable-editing            Do not open EDITOR, just accept the data as is
-      -e, --editor EDITOR              Set the editor to use for interactive commands
-      -E, --environment ENVIRONMENT    Set the Chef environment
-      -F, --format FORMAT              Which format to use for output
-      -u, --user USER                  API Client Username
-          --print-after                Show the data after a destructive operation
-      -V, --verbose                    More verbose output. Use twice for max verbosity
-      -v, --version                    Show chef version
-      -y, --yes                        Say yes to all prompts for confirmation
-      -Z, --google-compute-zone ZONE   The Zone for this server (required)
-      -h, --help                       Show this message
+    -s, --server-url URL             Chef Server URL
+        --chef-zero-port PORT        Port to start chef-zero on
+    -k, --key KEY                    API Client Key
+        --[no-]color                 Use colored output, defaults to false on Windows, true otherwise
+    -f CREDENTIAL_FILE,              Google Compute credential file (google setup can create this)
+        --compute-credential-file
+    -c, --config CONFIG              The configuration file to use
+        --defaults                   Accept default values for all questions
+    -d, --disable-editing            Do not open EDITOR, just accept the data as is
+    -e, --editor EDITOR              Set the editor to use for interactive commands
+    -E, --environment ENVIRONMENT    Set the Chef environment
+    -F, --format FORMAT              Which format to use for output
+    -z, --local-mode                 Point knife commands at local repository instead of server
+    -u, --user USER                  API Client Username
+        --print-after                Show the data after a destructive operation
+    -V, --verbose                    More verbose output. Use twice for max verbosity
+    -v, --version                    Show chef version
+    -y, --yes                        Say yes to all prompts for confirmation
+    -Z, --google-compute-zone ZONE   The Zone for this server
+    -h, --help                       Show this message
   ```
 
 ## Sub-commands
@@ -198,19 +207,44 @@ When prompted, make sure to specify the "Project ID" (and not the name or
 number) or you will see 404/not found errors even if the setup command
 completes successfully.
 
+### knife google project list
+
+Use this command to list out your Google Compute Engine project. You can
+find the project's current snapshots, networks, firewalls, images, routes,
+forwarding-rules, target-pools and health-checks. The output should look
+similar to:
+
+  ```
+  name                         snapshots  networks  firewalls  images  routes  forwarding-rules  target-pools  health-checks
+  my-project                   2          1         1          1       1       1                 1             1
+  ```
+
+### knife google region list
+
+Use this command to list out the available Google Compute Engine regions.
+You can find the region's current status, cpus, disks-total-gb,
+in-use-addresses and static-addresses. The output should look similar to:
+
+  ```
+  Name          Status  Deprecation  cpus  disks-total-gb  in-use-addresses  static-addresses
+  europe-west1  up      -            1     100             1                 1
+  us-central1   up      -            0     0               0                 0
+  us-central2   up      -            1     50              1                 1
+  ```
+
 ### knife google zone list
 
 Use this command to list out the available Google Compute Engine zones.
-You can find a zone's current status, number of deployed servers, disks,
-and upcoming maintenance windows.  The output should look similar to:
+You can find a zone's current status and upcoming maintenance windows.
+The output should look similar to:
 
   ```
-  Name            Status  Servers  Disks  Maintainance Window                                   
-  europe-west1-a  up      0        0      2013-08-03 19:00:00 +0000 to 2013-08-18 19:00:00 +0000
-  europe-west1-b  up      0        0      2013-05-11 19:00:00 +0000 to 2013-05-26 19:00:00 +0000
-  us-central1-a   up      0        1      2013-08-17 19:00:00 +0000 to 2013-09-01 19:00:00 +0000
-  us-central1-b   up      0        0      2013-06-08 19:00:00 +0000 to 2013-06-23 19:00:00 +0000
-  us-central2-a   up      10       6      2013-05-25 19:00:00 +0000 to 2013-06-09 19:00:00 +0000
+  name            status  deprecation  maintainance window
+  europe-west1-a  up      -            2013-08-03 19:00:00 +0000 to 2013-08-18 19:00:00 +0000
+  europe-west1-b  up      -            -
+  us-central1-a   up      -            -
+  us-central1-b   up      -            -
+  us-central2-a   up      -            -
   ```
 
 ### knife google server create

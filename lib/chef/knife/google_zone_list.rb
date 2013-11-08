@@ -27,11 +27,10 @@ class Chef
         $stdout.sync = true
 
         zone_list = [
-          ui.color("Name", :bold),
-          ui.color('Status', :bold),
-          ui.color('Servers', :bold),
-          ui.color('Disks', :bold),
-          ui.color('Maintainance Window',:bold)].flatten.compact
+          ui.color("name", :bold),
+          ui.color('status', :bold),
+          ui.color('deprecation', :bold),
+          ui.color('maintainance window', :bold)].flatten.compact
 
         output_column_count = zone_list.length
 
@@ -46,30 +45,25 @@ class Chef
               ui.color(status, :red)
             end
           end
-          instance_quota = "0"
-          zone.quotas.each do |quota|
-            if quota["metric"] == "INSTANCES"
-              instance_quota = "#{quota["usage"].to_i}"
-            end
+          deprecation_state = "-"
+          if zone.deprecated.respond_to?('state')
+            deprecation_state = zone.deprecated.state  
+          end 
+          zone_list << deprecation_state
+          unless zone.maintenance_windows.nil?
+            maintenance_window = zone.maintenance_windows.map do |mw|
+              begin_time = Time.parse(mw["beginTime"])
+              end_time = Time.parse(mw["endTime"])
+              if (Time.now >= begin_time) and (Time.now <= end_time)
+                ui.color("#{begin_time} to #{end_time}",:red)
+              else
+                ui.color("#{begin_time} to #{end_time}",:green)
+              end
+            end.join(",")
+            zone_list << maintenance_window
+          else
+            zone_list << "-"
           end
-          zone_list << instance_quota
-          disk_quota = "0"
-          zone.quotas.each do |quota|
-            if quota["metric"] == "DISKS"
-              disk_quota = "#{quota["usage"].to_i}"
-            end
-          end
-          zone_list << disk_quota
-          maintenance_window = zone.maintenance_windows.map do |mw|
-            begin_time = Time.parse(mw["beginTime"])
-            end_time = Time.parse(mw["endTime"])
-            if (Time.now >= begin_time) and (Time.now <= end_time)
-              ui.color("#{begin_time} to #{end_time}",:red)
-            else
-              ui.color("#{begin_time} to #{end_time}",:green)
-            end
-          end.join(",")
-          zone_list << maintenance_window
         end
         ui.info(ui.list(zone_list, :uneven_columns_across, output_column_count))
       end

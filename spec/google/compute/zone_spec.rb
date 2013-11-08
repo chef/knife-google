@@ -17,7 +17,7 @@ require 'spec_helper'
 describe Google::Compute::Zone do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -30,8 +30,8 @@ describe Google::Compute::Zone do
 
   it '#get should return an individual zone' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.zones.get, 
-           :parameters=>{'zone'=>'mock-zone', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.zones.get,
+           :parameters => {'zone' => 'mock-zone', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Zone))
     zone = client.zones.get('mock-zone')
     zone.should be_a_kind_of Google::Compute::Zone
@@ -40,8 +40,8 @@ describe Google::Compute::Zone do
 
   it '#list should return an array of zones' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.zones.list, 
-           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.zones.list,
+           :parameters => { :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::Zone, true))
     zones = client.zones.list
     zones.should_not be_empty

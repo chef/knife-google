@@ -18,7 +18,7 @@ require 'spec_helper'
 describe Google::Compute::MachineType do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -32,8 +32,8 @@ describe Google::Compute::MachineType do
   it '#get should return an individual machine types' do
 
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.machine_types.get, 
-           :parameters=>{'machineType'=>'mock-machine-type', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.machine_types.get,
+           :parameters => {'machineType' => 'mock-machine-type', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::MachineType))
 
     machine_type = client.machine_types.get('mock-machine-type')
@@ -43,8 +43,8 @@ describe Google::Compute::MachineType do
   end
   it '#list should return an array of machine types' do
   @mock_api_client.should_receive(:execute).
-    with(:api_method=>mock_compute.machine_types.list, 
-         :parameters=>{ :project=>'mock-project'},:body_object=>nil).
+    with(:api_method => mock_compute.machine_types.list,
+         :parameters => { :project => 'mock-project'}, :body_object => nil).
          and_return(mock_response(Google::Compute::MachineType, true))
     mts = client.machine_types.list
     mts.should_not be_empty

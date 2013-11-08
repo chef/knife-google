@@ -2,9 +2,9 @@
   "kind":"compute#operation",
   "id":"10333333339017",
   "creationTimestamp":"2013-01-24 11:21:00 -0800",
-  "selfLink":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/global/operations/mock-global-operation",
+  "selfLink":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/global/operations/mock-global-operation",
   "name":"mock-global-operation",
-  "targetLink":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/global/networks/mock-network",
+  "targetLink":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/global/networks/mock-network",
   "targetId":"12991111436062",
   "clientOperationId":"",
   "status":"DONE",
@@ -32,5 +32,5 @@
     "message":""
   }],
   "operationType":"addDisk",
-  "zone":"https://www.googleapis.com/compute/v1beta15/projects/mock-project/zones/mock-zone"
+  "zone":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/zones/mock-zone"
 }
