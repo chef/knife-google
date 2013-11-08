@@ -65,10 +65,12 @@ or, for Gemfile:
     gem 'knife-google'
 ```
 
-There is a long standing issue in Ruby where the net/http library by default does not check the validity of an SSL certificate during a TLS handshake.
+There is a long standing issue in Ruby where the net/http library by default
+does not check the validity of an SSL certificate during a TLS handshake.
 
 To configure Windows system to validate SSL certificate please download
-[cacert.pem](http://curl.haxx.se/ca/cacert.pem) file and save to C: drive. Now make ruby aware of your certificate authority by setting SSL_CERT_FILE.
+[cacert.pem](http://curl.haxx.se/ca/cacert.pem) file and save to C: drive.
+Now make ruby aware of your certificate authority by setting SSL_CERT_FILE.
 
 To set this in your current command prompt session, type:
 
@@ -140,6 +142,9 @@ Some usage examples follow:
 
   # Create a server
   $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe
+
+  # Create a server with service account scopes
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe -S https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control -s 123845678986@project.gserviceaccount.com
 
   # Delete a server (along with Chef node and API client via --purge)
   $ knife google server delete www1 --purge -Z us-central2-a

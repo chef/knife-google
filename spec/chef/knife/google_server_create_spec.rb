@@ -44,6 +44,13 @@ describe Chef::Knife::GoogleServerCreate do
         {"network" => stored_network.self_link,
         "accessConfigs" => [
           {"name" => "External NAT", "type" => "ONE_TO_ONE_NAT"}]}],
+      :serviceAccounts => [
+        {"kind" => "compute#serviceAccount",
+        "email" => "123845678986@project.gserviceaccount.com",
+        "scopes" => [
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/compute",
+          "https://www.googleapis.com/auth/devstorage.full_control"]}],
       :tags => nil}).and_return(stored_zone_operation)
 
     instances.should_receive(:get).
@@ -56,11 +63,16 @@ describe Chef::Knife::GoogleServerCreate do
     Google::Compute::Client.stub(:from_json).and_return(client)
   end
 
-  it "#run should invoke compute api to create an server" do
-    knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
-      "-I"+stored_image.name, "-J"+"debian-cloud",
+  it "#run should invoke compute api to create an server with a service account" do
+    knife_plugin = Chef::Knife::GoogleServerCreate.new([
+      "-m"+stored_machine_type.name,
+      "-I"+stored_image.name,
+      "-J"+"debian-cloud",
       "-n"+stored_network.name,
-      "-Z"+stored_zone.name, stored_instance.name])
+      "-Z"+stored_zone.name, 
+      "-S"+"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control",
+      "-s"+"123845678986@project.gserviceaccount.com",
+      stored_instance.name])
     knife_plugin.config[:disks]=[]
     knife_plugin.config[:metadata]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
@@ -77,7 +89,10 @@ describe Chef::Knife::GoogleServerCreate do
   it "should read zone value from knife config file." do
     Chef::Config[:knife][:google_compute_zone] = stored_zone.name
     knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
-      "-I"+stored_image.name, "-J"+"debian-cloud",
+      "-I"+stored_image.name,
+      "-J"+"debian-cloud",
+      "-S"+"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control",
+      "-s"+"123845678986@project.gserviceaccount.com",
       "-n"+stored_network.name,
        stored_instance.name])
     knife_plugin.config[:disks]=[]

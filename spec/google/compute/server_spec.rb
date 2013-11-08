@@ -66,23 +66,16 @@ describe Google::Compute::Server do
              :zone => 'mock-zone',
              :disks => [disk],
              :machineType => machine_type,
-             :metadata => {'items' => [{'key' => 'someKey','value' => 'someValue'}]},
-                 :networkInterfaces => [{'network' => network,
-                 'accessConfigs' => [access_config]
-                  }]
-             }).
-           and_return(mock_response(Google::Compute::ZoneOperation))
-
+             :metadata => {'items' => [{'key' => 'someKey', 'value' => 'someValue'}]},
+             :networkInterfaces => [{'network' => network, 'accessConfigs' => [access_config]}]
+           }).and_return(mock_response(Google::Compute::ZoneOperation))
     o = client.instances.create(:name => 'mock-instance',
                                 :image => image,
-                                :machineType => machine_type,
-                                :disks => [disk],
-                                :metadata => {'items' => [{'key' => 'someKey','value' => 'someValue'}]},
                                 :zone => 'mock-zone',
-                                :networkInterfaces => [{'network' => network,
-                                  'accessConfigs' => [access_config]
-                                  }]
-                              )
+                                :disks => [disk],
+                                :machineType => machine_type,
+                                :metadata => {'items' => [{'key' => 'someKey', 'value' => 'someValue'}]},
+                                :networkInterfaces => [{'network' => network, 'accessConfigs' => [access_config]}])
   end
 
   it '#delete should delete an server' do

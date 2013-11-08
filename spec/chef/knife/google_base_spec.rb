@@ -30,7 +30,7 @@ describe Chef::Knife::GoogleBase do
       should eq('resource')
   end
 
-  it "#msg_pair should invoke ui.info with labe : value string" do
+  it "#msg_pair should invoke ui.info with label : value string" do
     knife_plugin.ui.should_receive(:info).
       with("#{knife_plugin.ui.color("label", :cyan)}: value")
     knife_plugin.msg_pair("label", "value")

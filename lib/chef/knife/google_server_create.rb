@@ -360,7 +360,7 @@ class Chef
           exit 1
         end
 
-        if config[:service_account_scopes].nil?
+        if !config[:service_account_scopes].any?
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
                                                    :image => image,
@@ -378,18 +378,18 @@ class Chef
             exit 1
           end
           zone_operation = client.instances.create(:name => @name_args.first, 
-                                                   :zone=> selflink2name(zone),
                                                    :image => image,
                                                    :machineType => machine_type,
                                                    :disks => disks,
                                                    :metadata => {'items'=>metadata },
+                                                   :zone=> selflink2name(zone),
                                                    :networkInterfaces => [network_interface],
-                                                   :tags => config[:tags],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
                                                      'email' => config[:service_account_email],
                                                      'scopes' => config[:service_account_scopes]
-                                                   }]
+                                                   }],
+                                                   :tags => config[:tags]
                                                   )
         end
         ui.info("Waiting for the create server operation to complete")
