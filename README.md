@@ -202,49 +202,80 @@ instance,
 
 Use this command to initially set up authorization (see above for more
 details).  Note that if you override the default credential file with the
-`-f` parameter, you'll need to use the `-f` switch for *all* sub-commands.
+`-f` switch, you'll need to use the `-f` switch for *all* sub-commands.
 When prompted, make sure to specify the "Project ID" (and not the name or
 number) or you will see 404/not found errors even if the setup command
 completes successfully.
 
-### knife google project list
-
-Use this command to list out your Google Compute Engine project. You can
-find the project's current snapshots, networks, firewalls, images, routes,
-forwarding-rules, target-pools and health-checks. The output should look
-similar to:
-
-  ```
-  name                         snapshots  networks  firewalls  images  routes  forwarding-rules  target-pools  health-checks
-  my-project                   2          1         1          1       1       1                 1             1
-  ```
-
-### knife google region list
-
-Use this command to list out the available Google Compute Engine regions.
-You can find the region's current status, cpus, disks-total-gb,
-in-use-addresses and static-addresses. The output should look similar to:
-
-  ```
-  Name          Status  Deprecation  cpus  disks-total-gb  in-use-addresses  static-addresses
-  europe-west1  up      -            1     100             1                 1
-  us-central1   up      -            0     0               0                 0
-  us-central2   up      -            1     50              1                 1
-  ```
-
 ### knife google zone list
+
+A zone is an isolated location within a region that is independent of
+other zones in the same region. Zones are designed to support instances
+or applications that have high availability requirements. Zones are
+designed to be fault-tolerant, so that you can distribute instances
+and resources across multiple zones to protect against the system
+failure of a single zone. This keeps your application available even
+in the face of expected and unexpected failures. The fully-qualified
+name is made up of `<region>/<zone>`. For example, the fully-qualified
+name for zone `a` in region `us-east1` is `us-east1-a`. Depending on
+how widely you want to distribute your resources, you may choose to
+create instances across multiple zones within one region or across
+multiple regions and multiple zones.
 
 Use this command to list out the available Google Compute Engine zones.
 You can find a zone's current status and upcoming maintenance windows.
-The output should look similar to:
+
+The output for `knife google zone list` should look similar to:
 
   ```
-  name            status  deprecation  maintainance window
+  name            status  deprecation  maintenance window
   europe-west1-a  up      -            2013-08-03 19:00:00 +0000 to 2013-08-18 19:00:00 +0000
   europe-west1-b  up      -            -
   us-central1-a   up      -            -
   us-central1-b   up      -            -
-  us-central2-a   up      -            -
+  ```
+
+### knife google region list
+
+Each region in Google Compute Engine contains any number of zones.
+The region describes the geographic location where your resources
+are stored. For example, a zone named `us-east1-a` is in region `us-east1`.
+A region contains one or more zones.
+
+Choose a region that makes sense for your scenario. For example, if you
+only have customers on the east coast of the US, or if you have specific
+needs that require your data to live in the US, it makes sense to store
+your resources in a zone with a us-east region.
+
+Use this command to list out the available Google Compute Engine regions.
+You can find the region's current status, cpus, disks-total-gb,
+in-use-addresses and static-addresses. Use the `-L` switch to also list
+the quota limit for each resource.
+
+The output for `knife google region list -L` should look similar to:
+
+  ```
+  Name          status  deprecation  cpus  disks-total-gb  in-use-addresses  static-addresses
+  europe-west1  up      -            1/10  100/100000      1/10              1/7
+  us-central1   up      -            0/10  0/100000        0/10              0/7
+  us-central2   up      -            1/10  50/100000       1/10              1/7
+  ```
+
+### knife google project list
+
+A project resource is the root collection and settings resource for
+all Google Compute Engine resources.
+
+Use this command to list out your project's current usage of snapshots,
+networks, firewalls, images, routes, forwarding-rules, target-pools and
+health-checks. Use the `-L` switch to also list the quota limit for
+each resource.
+
+The output for `knife google project list -L` should look similar to:
+
+  ```
+  name                         snapshots  networks  firewalls  images  routes  forwarding-rules  target-pools  health-checks
+  my-project                   2/100      1/5       1/10       1/10    1/10    1/50              1/50          1/50
   ```
 
 ### knife google server create
