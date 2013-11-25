@@ -22,16 +22,16 @@ module Google
     class AttachedDisk
       include Utils
 
-      attr_reader :kind, :type, :mode, :source
-      attr_reader :device_name, :index, :boot
+      attr_reader :kind, :index, :type, :mode
+      attr_reader :source, :device_name, :boot
       
       def initialize(data)
         @kind = data["kind"]
+        @index = data["index"]
         @type = data["type"]
         @mode= data["mode"]
         @source = data["source"]
         @device_name = data["deviceName"] 
-        @index = data["index"]
         @boot = data["boot"]
       end
     end

@@ -343,7 +343,6 @@ class Chef
           exit 1
         end
 
-        disks = config[:disks].collect{|disk| client.disks.get(:disk=>disk, :zone=>selflink2name(zone)).self_link}
         metadata = config[:metadata].collect{|pair| Hash[*pair.split('=')] }
         network_interface = {'network'=>network}
 
@@ -360,13 +359,39 @@ class Chef
           exit 1
         end
 
+        # TODO: if disk size is less than 10gb, set disk to 10gb
+
+        disk_operation = client.disks.insert(:sourceImage => image,
+                                             :zone => selflink2name(zone),
+                                             :name => @name_args.first,
+                                             :sizeGb => '14')
+
+        ui.info("Waiting for the disk insert operation to complete")
+        until disk_operation.status == 'DONE'
+          ui.info(".")
+          sleep 1
+          disk_operation = client.zoneOperations.get(:name=>disk_operation,
+                                                     :operation=>disk_operation.name,
+                                                     :zone=>selflink2name(zone))
+        end
+
+        #disk = client.disks.get(:disk => selflink2name(bootdisk.target_link),
+        #                        :zone => config[:zone])
+        #disk.status
+
         if !config[:service_account_scopes].any?
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
-                                                   :image => image,
                                                    :machineType => machine_type,
-                                                   :disks => disks,
-                                                   :metadata => {'items'=> metadata },
+                                                   :kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
+                                                   :disks => [{
+                                                     'boot' => true,
+                                                     'type' => 'PERSISTENT',
+                                                     'mode' => 'READ_WRITE',
+                                                     'deviceName' => selflink2name(disk_operation.target_link),
+                                                     'source' => disk_operation.target_link
+                                                   }],
+                                                   :metadata => { 'items' => metadata },
                                                    :networkInterfaces => [network_interface],
                                                    :tags => config[:tags]
                                                   )
@@ -378,10 +403,16 @@ class Chef
             exit 1
           end
           zone_operation = client.instances.create(:name => @name_args.first, 
-                                                   :image => image,
                                                    :machineType => machine_type,
-                                                   :disks => disks,
-                                                   :metadata => {'items'=>metadata },
+                                                   :kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
+                                                   :disks => [{
+                                                     'boot' => true,
+                                                     'type' => 'PERSISTENT',
+                                                     'mode' => 'READ_WRITE',
+                                                     'deviceName' => selflink2name(disk_operation.target_link),
+                                                     'source' => disk_operation.target_link
+                                                   }],
+                                                   :metadata => { 'items'=>metadata },
                                                    :zone=> selflink2name(zone),
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
@@ -398,6 +429,7 @@ class Chef
           sleep 1
           zone_operation = client.zoneOperations.get(:name=>zone_operation, :operation=>zone_operation.name, :zone=>selflink2name(zone))
         end
+
         ui.info("Waiting for the servers to be in running state")
 
         @instance = client.instances.get(:name=>@name_args.first, :zone=>selflink2name(zone))

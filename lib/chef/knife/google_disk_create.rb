@@ -53,7 +53,8 @@ class Chef
         end
 
         zone_operation = client.disks.create(:name=>@name_args.first,
-          :sizeGb=>config[:sizeGb], :zone=>zone.name)
+                                             :sizeGb=>config[:sizeGb],
+                                             :zone=>zone.name)
       end
     end
   end
