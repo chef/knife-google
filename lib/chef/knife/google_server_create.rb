@@ -391,8 +391,12 @@ class Chef
                                                      'deviceName' => selflink2name(disk_operation.target_link),
                                                      'source' => disk_operation.target_link
                                                    }],
-                                                   :metadata => { 'items' => metadata },
                                                    :networkInterfaces => [network_interface],
+                                                   :scheduling => {
+                                                     'onHostMaintenance' => 'TERMINATE',
+                                                     'automaticRestart' => true
+                                                   },
+                                                   :metadata => { 'items' => metadata },
                                                    :tags => config[:tags]
                                                   )
         else
@@ -403,6 +407,7 @@ class Chef
             exit 1
           end
           zone_operation = client.instances.create(:name => @name_args.first, 
+                                                   :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
                                                    :kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
                                                    :disks => [{
@@ -412,14 +417,17 @@ class Chef
                                                      'deviceName' => selflink2name(disk_operation.target_link),
                                                      'source' => disk_operation.target_link
                                                    }],
-                                                   :metadata => { 'items'=>metadata },
-                                                   :zone=> selflink2name(zone),
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
                                                      'email' => config[:service_account_email],
                                                      'scopes' => config[:service_account_scopes]
                                                    }],
+                                                   :scheduling => {
+                                                     'onHostMaintenance' => 'TERMINATE',
+                                                     'automaticRestart' => true
+                                                   },
+                                                   :metadata => { 'items'=>metadata },
                                                    :tags => config[:tags]
                                                   )
         end

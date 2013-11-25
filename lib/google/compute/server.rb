@@ -22,6 +22,7 @@ module Google
 
       attr_reader  :tags, :image, :machine_type, :status, :status_message, :zone
       attr_reader  :network_interfaces, :disks, :metadata, :service_accounts
+      attr_reader  :scheduling
 
       def from_hash(data)
         super(data)
@@ -45,6 +46,7 @@ module Google
         end  
         @metadata = data["metadata"]
         @service_accounts = data["service_accounts"]
+        @scheduling = data["scheduling"]
       end
 
       def serial_port_output
