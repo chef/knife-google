@@ -16,7 +16,7 @@ require 'spec_helper'
 describe Google::Compute::ZoneOperation do
 
   before(:each) do
-    @mock_api_client=double(Google::APIClient, :authorization= =>{}, :auto_refresh_token= =>{})
+    @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
     @mock_api_client.stub(:discovered_api).and_return(mock_compute)
     Google::APIClient.stub(:new).and_return(@mock_api_client)
   end
@@ -29,8 +29,8 @@ describe Google::Compute::ZoneOperation do
 
   it '#list should return an array of zone operations' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.zone_operations.list, 
-           :parameters=>{ :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.zone_operations.list,
+           :parameters => { :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::ZoneOperation, true))
 
     operations = client.zoneOperations.list
@@ -40,8 +40,8 @@ describe Google::Compute::ZoneOperation do
 
   it '#get should return an individual zone operation' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.zone_operations.get, 
-           :parameters=>{'zoneOperation'=>'mock-zone-operation', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.zone_operations.get,
+           :parameters => {'zoneOperation' => 'mock-zone-operation', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
 
     operation = client.zoneOperations.get('mock-zone-operation')
@@ -53,8 +53,8 @@ describe Google::Compute::ZoneOperation do
 
   it '#delete should delete an existing zone operation' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method=>mock_compute.zone_operations.delete, 
-           :parameters=>{'zoneOperation'=>'mock-zone-operation', :project=>'mock-project'},:body_object=>nil).
+      with(:api_method => mock_compute.zone_operations.delete,
+           :parameters => {'zoneOperation' => 'mock-zone-operation', :project => 'mock-project'}, :body_object => nil).
            and_return(mock_response)
 
     client.zoneOperations.delete('mock-zone-operation')

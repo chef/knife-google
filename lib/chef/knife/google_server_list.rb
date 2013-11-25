@@ -40,7 +40,7 @@ class Chef
           exit 1
         end
 
-        instance_label = ['Name', 'Type', 'Image', 'Public IP', 'Private IP', 'Disks', 'Zone', 'Status']
+        instance_label = ['name', 'type', 'image', 'public ip', 'private ip', 'disks', 'zone', 'status']
         instance_list = (instance_label.map {|label| ui.color(label, :bold)}).flatten.compact
 
         output_column_count = instance_list.length

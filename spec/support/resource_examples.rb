@@ -1,11 +1,11 @@
 # Copyright 2013 Google Inc. All Rights Reserved.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,14 +30,14 @@ shared_examples Google::Compute::Resource do
     resource.id.should be_a_kind_of(Integer)
   end
 
-  it "#creation_timestamp should have a  valid creation timestamp" do
+  it "#creation_timestamp should have a valid creation timestamp" do
     unless resource.creation_timestamp.nil?
       resource.creation_timestamp.should be_a_kind_of(Time)
     end
   end
 
   it "#type should have same type is class" do
-    # TODO(erjohnso): {global,zone}operations are not resources
+    # TODO(erjohnso): {global, zone}operations are not resources
     #                 and instances are servers
     if ["globaloperation", "zoneoperation"].include? resource.class.class_name
       resource.type.downcase.should eq("operation")
@@ -49,8 +49,8 @@ shared_examples Google::Compute::Resource do
   end
 
   it "should have a valid description" do
-    # TODO(erjohnso): {global,zone}operations are not resources
-    # mock-{zone,global}-operation
+    # TODO(erjohnso): {global, zone}operations are not resources
+    # mock-{zone, global}-operation
     unless resource.name.split('-').last == "operation"
       resource.description.should_not be_nil
     end

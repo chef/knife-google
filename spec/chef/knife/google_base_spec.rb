@@ -26,14 +26,14 @@ describe Chef::Knife::GoogleBase do
 
   it "#selflink2name should return name from a seleflink url" do
     knife_plugin.selflink2name(
-      'https://www.googleapis.com/compute/v1beta15/projects/mock-project/category/resource').
+      'https://www.googleapis.com/compute/v1beta16/projects/mock-project/category/resource').
       should eq('resource')
   end
 
-  it "#msg_pair should invoke ui.info with labe : value string" do
+  it "#msg_pair should invoke ui.info with label : value string" do
     knife_plugin.ui.should_receive(:info).
       with("#{knife_plugin.ui.color("label", :cyan)}: value")
-    knife_plugin.msg_pair("label","value")
+    knife_plugin.msg_pair("label", "value")
   end
 
   it "#private_ips should extract private ip as an array from a GCE server" do

@@ -17,7 +17,6 @@
 require 'spec_helper'
 
 describe Chef::Knife::GoogleServerDelete do
-
   let(:knife_plugin) do
     Chef::Knife::GoogleServerDelete.new(
       [stored_instance.name, "-Z"+stored_zone.name])
@@ -30,12 +29,12 @@ describe Chef::Knife::GoogleServerDelete do
 
     instances = double(Google::Compute::DeletableResourceCollection)
     instances.should_receive(:get).
-      with(:name=>stored_instance.name, :zone=>stored_zone.name).
+      with(:name => stored_instance.name, :zone => stored_zone.name).
       and_raise(Google::Compute::ResourceNotFound)
     instances.should_not_receive(:delete)
 
     client = double(Google::Compute::Client,
-      :instances=>instances, :zones=>zones)
+      :instances => instances, :zones => zones)
     Google::Compute::Client.stub(:from_json).and_return(client)
 
     knife_plugin.config[:yes] = true
@@ -54,13 +53,13 @@ describe Chef::Knife::GoogleServerDelete do
 
       instances = double(Google::Compute::DeletableResourceCollection)
       instances.should_receive(:get).
-        with(:name=>stored_instance.name, :zone=>stored_zone.name).
+        with(:name => stored_instance.name, :zone => stored_zone.name).
         and_return(stored_instance)
       instances.should_receive(:delete).
-        with(:instance=>stored_instance.name, :zone=>stored_zone.name)
+        with(:instance => stored_instance.name, :zone => stored_zone.name)
 
       client = double(Google::Compute::Client,
-        :zones=>zones, :instances=>instances)
+        :zones => zones, :instances => instances)
       Google::Compute::Client.stub(:from_json).and_return(client)
       knife_plugin.config[:yes] = true
       knife_plugin.ui.should_receive(:warn).twice
@@ -82,13 +81,13 @@ describe Chef::Knife::GoogleServerDelete do
 
       instances = double(Google::Compute::DeletableResourceCollection)
       instances.should_receive(:get).
-        with(:name=>stored_instance.name, :zone=>stored_zone.name).
+        with(:name => stored_instance.name, :zone => stored_zone.name).
         and_return(stored_instance)
       instances.should_receive(:delete).
-        with(:instance=>stored_instance.name, :zone=>stored_zone.name)
+        with(:instance => stored_instance.name, :zone => stored_zone.name)
 
       client = double(Google::Compute::Client,
-        :zones=>zones, :instances=>instances)
+        :zones => zones, :instances => instances)
       Google::Compute::Client.stub(:from_json).and_return(client)
 
       knife_plugin.config[:yes] = true
@@ -112,16 +111,15 @@ describe Chef::Knife::GoogleServerDelete do
     zones.should_receive(:get).with(stored_zone.name).and_return(stored_zone)
 
     instances = double(Google::Compute::DeletableResourceCollection)
-    instances.should_receive(:get).with(:name=>stored_instance.name, :zone=>stored_zone.name).
+    instances.should_receive(:get).with(:name => stored_instance.name, :zone => stored_zone.name).
         and_return(stored_instance)
-    instances.should_receive(:delete).with(:instance=>stored_instance.name, :zone=>stored_zone.name)
+    instances.should_receive(:delete).with(:instance => stored_instance.name, :zone => stored_zone.name)
 
-    client = double(Google::Compute::Client, :zones=>zones, :instances=>instances)
+    client = double(Google::Compute::Client, :zones => zones, :instances => instances)
     Google::Compute::Client.stub(:from_json).and_return(client)
     knife_plugin.config[:yes] = true
     knife_plugin.ui.should_receive(:warn).twice
     knife_plugin.stub(:msg_pair)
     knife_plugin.run
-    
   end
 end

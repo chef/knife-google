@@ -34,6 +34,10 @@ module SpecData
     @disk ||= Google::Compute::Disk.new(load_json("disk.json"))
   end
 
+  def stored_region
+    @region ||= Google::Compute::Region.new(load_json("region.json"))
+  end
+
   def stored_zone
     @zone ||= Google::Compute::Zone.new(load_json("zone.json"))
   end

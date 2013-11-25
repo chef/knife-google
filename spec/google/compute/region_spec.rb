@@ -11,9 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 require 'spec_helper'
 
-describe Google::Compute::Kernel do
+describe Google::Compute::Region do
 
   before(:each) do
     @mock_api_client=double(Google::APIClient, :authorization= => {}, :auto_refresh_token= => {})
@@ -27,23 +28,24 @@ describe Google::Compute::Kernel do
 
   it_should_behave_like Google::Compute::Resource
 
-  it '#get should return an individual kernel' do
+  it '#get should return an individual region' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method => mock_compute.kernels.get,
-           :parameters => {'kernel' => 'mock-kernel', :project => 'mock-project'}, :body_object => nil).
-           and_return(mock_response(Google::Compute::Kernel))
-
-    kernel = client.kernels.get('mock-kernel')
-    kernel.should be_a_kind_of Google::Compute::Kernel
-    kernel.name.should eq('mock-kernel')
+      with(:api_method => mock_compute.regions.get,
+           :parameters => {"region" => "mock-region", :project => "mock-project"}, :body_object => nil).
+           and_return(mock_response(Google::Compute::Region))
+    region = client.regions.get('mock-region')
+    region.should be_a_kind_of Google::Compute::Region
+    region.name.should eq('mock-region')
   end
 
-  it '#list should return an array of kernels' do
+  it '#list should return an array of regions' do
     @mock_api_client.should_receive(:execute).
-      with(:api_method => mock_compute.kernels.list,
-           :parameters => { :project => 'mock-project'}, :body_object => nil).
-           and_return(mock_response(Google::Compute::Kernel, true))
-    kernels = client.kernels.list
-    kernels.all?{|kernel| kernel.is_a?(Google::Compute::Kernel)}.should be_true
+      with(:api_method => mock_compute.regions.list,
+           :parameters => {:project => 'mock-project'}, :body_object => nil).
+           and_return(mock_response(Google::Compute::Region, true))
+    regions = client.regions.list
+    regions.should_not be_empty
+    regions.all?{|region| region.is_a?(Google::Compute::Region)}.should be_true
   end
+
 end

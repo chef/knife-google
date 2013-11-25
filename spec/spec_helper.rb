@@ -33,6 +33,7 @@ require 'chef/knife/google_server_list'
 require 'chef/knife/google_disk_list'
 require 'chef/knife/google_disk_create'
 require 'chef/knife/google_disk_delete'
+require 'chef/knife/google_region_list'
 require 'chef/knife/google_zone_list'
 require 'chef/knife/google_setup'
 

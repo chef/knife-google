@@ -18,7 +18,7 @@ require 'timeout'
 
 module Google
   module Compute
-    class ZoneOperation < Resource
+    class RegionOperation < Resource
 
       attr_reader :zone, :client_operation_id, :operation_type
       attr_reader :target_link, :target_id, :status

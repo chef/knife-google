@@ -12,20 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#require 'google/compute/resource'
+#require 'google/compute/region'
+
 module Google
   module Compute
     class Zone < Resource
 
-      attr_reader :maintenance_windows, :available_machine_type, :status
-      attr_reader :quotas, :deprecated
+      attr_reader :status, :maintenance_windows
+      attr_reader :deprecated, :region
 
       def from_hash(zone_data)
         super(zone_data)
         @status = zone_data["status"] 
         @maintenance_windows = zone_data["maintenanceWindows"]
-        @available_machine_type = zone_data["availableMachineType"]
-        @quotas = zone_data["quotas"]
         @deprecated = zone_data["deprecated"]
+        @region = zone_data["region"]
       end
     end
   end

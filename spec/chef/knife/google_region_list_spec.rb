@@ -15,10 +15,18 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::GoogleSetup do
-  let(:knife_plugin) { Chef::Knife::GoogleSetup.new(["-f credential.json"]) }
-  it "should invoke the google-compute-client-ruby setup process" do
-    Google::Compute::Client.should_receive(:setup)
+describe Chef::Knife::GoogleRegionList do
+  let(:knife_plugin) do
+    Chef::Knife::GoogleRegionList.new([])
+  end
+
+  it "should enlist all the GCE regions when run invoked" do
+    client = double(Google::Compute::Client)
+    Google::Compute::Client.stub(:from_json).
+      and_return(client)
+    client.should_receive(:regions).
+      and_return(double("region-collection", :list => [stored_region]))
+    $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end
 end

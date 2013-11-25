@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 require 'spec_helper'
 
 describe Chef::Knife::GoogleServerList do
@@ -19,8 +20,8 @@ describe Chef::Knife::GoogleServerList do
     zones = double(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).and_return(stored_zone)
     instances = double(Google::Compute::DeletableResourceCollection)
-    instances.should_receive(:list).with(:zone=>stored_zone.name).and_return([stored_instance])
-    client = double(Google::Compute::Client, :instances=>instances, :zones=>zones)
+    instances.should_receive(:list).with(:zone => stored_zone.name).and_return([stored_instance])
+    client = double(Google::Compute::Client, :instances => instances, :zones => zones)
     Google::Compute::Client.stub(:from_json).and_return(client)
   end
 
@@ -29,7 +30,7 @@ describe Chef::Knife::GoogleServerList do
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end
-  
+
   it "should list all the GCE servers when zone is set in knife.rb" do
     knife_plugin = Chef::Knife::GoogleServerList.new([Chef::Config[:knife][:google_compute_zone] = stored_zone.name])
     $stdout.should_receive(:write).with(kind_of(String))

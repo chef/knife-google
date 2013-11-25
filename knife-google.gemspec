@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version = Knife::Google::VERSION
   s.platform = Gem::Platform::RUBY
   s.authors = ["Chiraq Jog", "Ranjib Dey", "James Tucker", "Paul Rossman", "Eric Johnson"]
-  s.email = "raggi@google.com"
+  s.email = "paulrossman@google.com"
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.md", "LICENSE", "CONTRIB.md" ]
   s.summary = "Manage Google Compute Engine servers, disks, and zones"
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "multi_json"
   s.add_dependency "mixlib-config"
   s.files = `git ls-files`.split($/)
+  #s.files = Dir['CONTRIB.md', 'Gemfile', 'LICENSE', 'README.md', 'Rakefile', 'knife-google.gemspec', 'lib/**/*', 'spec/**/*']
 
   s.add_development_dependency "rspec"
   s.add_development_dependency "rake"

@@ -27,7 +27,7 @@ module Google
       attr_reader :dispatcher
 
       def initialize(authorization, project, credential_file)
-        api_client = Google::APIClient.new(:application_name=>'google-compute-ruby-client')
+        api_client = Google::APIClient.new(:application_name=>'knife-google-v1beta16')
         api_client.authorization = authorization
         api_client.auto_refresh_token = true
         @project = project
@@ -65,7 +65,7 @@ module Google
           "https://www.googleapis.com/auth/userinfo.email"]
         redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
 
-        api_client = Google::APIClient.new(:application_name=>'google-compute-ruby-client')
+        api_client = Google::APIClient.new(:application_name=>'knife-google-v1beta16')
 
         api_client.authorization.scope = scope
         api_client.authorization.client_id = client_id
@@ -141,8 +141,16 @@ module Google
         DeletableResourceCollection.new(:resource_class => Google::Compute::GlobalOperation, :dispatcher=>@dispatcher)
       end
 
+      def regionOperations
+        DeletableResourceCollection.new(:resource_class => Google::Compute::RegionOperation, :dispatcher=>@dispatcher)
+      end
+
       def zoneOperations
         DeletableResourceCollection.new(:resource_class => Google::Compute::ZoneOperation, :dispatcher=>@dispatcher)
+      end
+
+      def regions
+        ListableResourceCollection.new(:resource_class => Google::Compute::Region, :dispatcher=>@dispatcher)
       end
 
       def zones
@@ -162,7 +170,7 @@ module Google
         end
 
         def compute
-          @compute ||= @api_client.discovered_api('compute','v1beta15')
+          @compute ||= @api_client.discovered_api('compute','v1beta16')
         end
         
         def dispatch(opts)
