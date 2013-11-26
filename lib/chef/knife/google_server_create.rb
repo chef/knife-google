@@ -14,6 +14,8 @@
 #
 require 'chef/knife/google_base'
 
+require 'pry'
+
 class Chef
   class Knife
     class GoogleServerCreate < Knife
@@ -54,6 +56,16 @@ class Chef
         :short => "-Z ZONE",
         :long => "--google-compute-zone ZONE",
         :description => "The Zone for this server"
+
+      option :boot_disk_name,
+        :long=> "--gce-boot-disk-name DISK",
+        :description => "Name of persistent boot disk; default is to use the server name",
+        :default => ""
+
+      option :boot_disk_size,
+        :long=> "--gce-boot-disk-size SIZE",
+        :description => "Size of the persistent boot disk between 10 and 10000 GB, specified in GB; default is '10' GB",
+        :default => "10"
 
       option :network,
         :short => "-n NETWORK",
@@ -177,12 +189,6 @@ class Chef
         :description => "Whether to use PUBLIC or PRIVATE address to connect; default is 'PUBLIC'",
         :default => 'PUBLIC'
 
-      option :disks,
-        :long=> "--google-compute-disks DISK1,DISK2",
-        :proc => Proc.new { |metadata| metadata.split(',') },
-        :description => "Disks to be attached",
-        :default => []
-
       option :public_ip,
         :long=> "--google-compute-public-ip IP_ADDRESS",
         :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
@@ -278,14 +284,14 @@ class Chef
       def run
         $stdout.sync = true
         unless @name_args.size > 0
-          ui.error("Please provide the name of the new server")
+          ui.error("Please provide the name of the new server.")
           exit 1
         end
 
         begin
           zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone]).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone]}' not found")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone]}' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
@@ -293,10 +299,37 @@ class Chef
         end
 
         begin
-          machine_type = client.machine_types.get(:name=>config[:machine_type], :zone=>selflink2name(zone)).self_link
+          machine_type = client.machine_types.get(:name => config[:machine_type],
+                                                  :zone => selflink2name(zone)).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("MachineType '#{config[:machine_type]}' not found")
           exit 1
+        end
+
+        begin
+          boot_disk_size = config[:boot_disk_size].to_i
+          raise if !boot_disk_size.between?(10, 10000) 
+        rescue
+          ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")
+          exit 1
+        end
+
+        # if client.disks.get errors with a Google::Compute::ResourceNotFound
+        # then the disk does not exist and can be created
+        begin
+          client.disks.get(:disk => boot_disk_name, :zone => selflink2name(zone))
+        rescue Google::Compute::ResourceNotFound
+          # disk does not exist
+          # continue provisioning
+        else
+          ui.error("Persistent boot disk already exists.")
+          exit 1
+        end
+
+        if !config[:boot_disk_name].empty? then
+          boot_disk_name = config[:boot_disk_name]
+        else
+          boot_disk_name = @name_args.first
         end
 
         (checked_custom, checked_all) = false
@@ -359,25 +392,20 @@ class Chef
           exit 1
         end
 
-        # TODO: if disk size is less than 10gb, set disk to 10gb
-
-        disk_operation = client.disks.insert(:sourceImage => image,
-                                             :zone => selflink2name(zone),
-                                             :name => @name_args.first,
-                                             :sizeGb => '14')
+        disk_insert = client.disks.insert(:sourceImage => image,
+                                          :zone => selflink2name(zone),
+                                          :name => boot_disk_name,
+                                          :sizeGb => boot_disk_size)
 
         ui.info("Waiting for the disk insert operation to complete")
-        until disk_operation.status == 'DONE'
+        until disk_insert.status == 'DONE'
           ui.info(".")
           sleep 1
-          disk_operation = client.zoneOperations.get(:name=>disk_operation,
-                                                     :operation=>disk_operation.name,
-                                                     :zone=>selflink2name(zone))
+          disk_insert = client.zoneOperations.get(:name => disk_insert,
+                                                  :operation => disk_insert.name,
+                                                  :zone => selflink2name(zone))
         end
 
-        #disk = client.disks.get(:disk => selflink2name(bootdisk.target_link),
-        #                        :zone => config[:zone])
-        #disk.status
 
         if !config[:service_account_scopes].any?
           zone_operation = client.instances.create(:name => @name_args.first,
