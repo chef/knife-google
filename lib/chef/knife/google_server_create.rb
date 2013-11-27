@@ -314,6 +314,12 @@ class Chef
           exit 1
         end
 
+        if config[:boot_disk_name].empty? then
+          boot_disk_name = @name_args.first
+        else
+          boot_disk_name = config[:boot_disk_name]
+        end
+
         # if client.disks.get errors with a Google::Compute::ResourceNotFound
         # then the disk does not exist and can be created
         begin
@@ -326,16 +332,11 @@ class Chef
           exit 1
         end
 
-        if !config[:boot_disk_name].empty? then
-          boot_disk_name = config[:boot_disk_name]
-        else
-          boot_disk_name = @name_args.first
-        end
-
         (checked_custom, checked_all) = false
         begin
           image_project = config[:image_project_id]
-          machine_type=~Regexp.new('/projects/(.*?)/')
+          # use zone url to determine project name
+          zone =~ Regexp.new('/projects/(.*?)/')
           project = $1
           if image_project.empty?
             unless checked_custom
@@ -411,13 +412,13 @@ class Chef
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
                                                    :machineType => machine_type,
-                                                   :kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
+                                                   #:kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
                                                    :disks => [{
                                                      'boot' => true,
                                                      'type' => 'PERSISTENT',
                                                      'mode' => 'READ_WRITE',
-                                                     'deviceName' => selflink2name(disk_operation.target_link),
-                                                     'source' => disk_operation.target_link
+                                                     'deviceName' => selflink2name(disk_insert.target_link),
+                                                     'source' => disk_insert.target_link
                                                    }],
                                                    :networkInterfaces => [network_interface],
                                                    :scheduling => {
@@ -437,13 +438,13 @@ class Chef
           zone_operation = client.instances.create(:name => @name_args.first, 
                                                    :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
-                                                   :kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
+                                                   #:kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
                                                    :disks => [{
                                                      'boot' => true,
                                                      'type' => 'PERSISTENT',
                                                      'mode' => 'READ_WRITE',
-                                                     'deviceName' => selflink2name(disk_operation.target_link),
-                                                     'source' => disk_operation.target_link
+                                                     'deviceName' => selflink2name(disk_insert.target_link),
+                                                     'source' => disk_insert.target_link
                                                    }],
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
