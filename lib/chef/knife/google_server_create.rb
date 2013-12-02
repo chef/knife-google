@@ -57,14 +57,26 @@ class Chef
         :description => "The Zone for this server"
 
       option :boot_disk_name,
-        :long=> "--gce-boot-disk-name DISK",
+        :long => "--gce-boot-disk-name DISK",
         :description => "Name of persistent boot disk; default is to use the server name",
         :default => ""
 
       option :boot_disk_size,
-        :long=> "--gce-boot-disk-size SIZE",
+        :long => "--gce-boot-disk-size SIZE",
         :description => "Size of the persistent boot disk between 10 and 10000 GB, specified in GB; default is '10' GB",
         :default => "10"
+
+      option :auto_restart,
+        :long => "--[no-]gce-auto-server-restart",
+        :description => "Compute Engine can automatically restart your VM instance if it is terminated for non-user-initiated reasons; enabled by default.",
+        :boolean => true,
+        :default => true
+
+      option :auto_migrate,
+        :long => "--[no-]gce-auto-server-migrate",
+        :description => "Compute Engine can migrate your VM instance to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
+        :boolean => true,
+        :default => true
 
       option :network,
         :short => "-n NETWORK",
