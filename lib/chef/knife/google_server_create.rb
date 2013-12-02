@@ -36,25 +36,24 @@ class Chef
 
       option :machine_type,
         :short => "-m MACHINE_TYPE",
-        :long => "--google-compute-machine MACHINE_TYPE",
+        :long => "--gce-machine-type MACHINE_TYPE",
         :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)",
         :required => true
 
       option :image,
         :short => "-I IMAGE",
-        :long => "--google-compute-image IMAGE",
+        :long => "--gce-image IMAGE",
         :description => "The Image for the server",
         :required => true
 
       option :image_project_id,
-        :short => "-J IMAGE_PROJECT_ID",
-        :long => "--google-compute-image-project-id IMAGE_PROJECT_ID",
+        :long => "--gce-image-project-id IMAGE_PROJECT_ID",
         :description => "The project-id containing the Image (debian-cloud, centos-cloud, etc)",
         :default => "" 
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
 
       option :boot_disk_name,
@@ -69,23 +68,43 @@ class Chef
 
       option :network,
         :short => "-n NETWORK",
-        :long => "--google-compute-network NETWORK",
+        :long => "--gce-network NETWORK",
         :description => "The network for this server; default is 'default'",
         :default => "default"
 
       option :tags,
         :short => "-T TAG1,TAG2,TAG3",
-        :long => "--google-compute-tags TAG1,TAG2,TAG3",
+        :long => "--gce-tags TAG1,TAG2,TAG3",
         :description => "Tags for this server",
         :proc => Proc.new { |tags| tags.split(',') },
         :default => []
 
       option :metadata,
-        :short => "-M K=V[,K=V,...]",
-        :long => "--google-compute-metadata Key=Value[,Key=Value...]",
-        :description => "The metadata for this server",
+        :long => "--gce-metadata Key=Value[,Key=Value...]",
+        :description => "Additional metadata for this server",
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
+
+      option :service_account_scopes,
+        :long => "--gce-service-account-scopes SCOPE1,SCOPE2,SCOPE3",
+        :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
+        :description => "Service account scopes for this server",
+        :default => []
+
+      option :service_account_email,
+        :long => "--gce-service-account-email EMAIL@DOMAIN",
+        :description => "Service account email for this server; required if using service-account-scopes",
+        :default => ""
+
+      option :instance_connect_ip,
+        :long => "--gce-server-connect-ip INTERFACE",
+        :description => "Whether to use PUBLIC or PRIVATE interface/address to connect; default is 'PUBLIC'",
+        :default => 'PUBLIC'
+
+      option :public_ip,
+        :long=> "--gce-public-ip IP_ADDRESS",
+        :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
+        :default => "EPHEMERAL"
 
       option :chef_node_name,
         :short => "-N NAME",
@@ -118,19 +137,6 @@ class Chef
         :short => "-i IDENTITY_FILE",
         :long => "--identity-file IDENTITY_FILE",
         :description => "The SSH identity file used for authentication"
-
-      option :service_account_scopes,
-        :short => "-S SCOPE1,SCOPE2,SCOPE3",
-        :long => "--service-account-scopes SCOPE1,SCOPE2,SCOPE3",
-        :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
-        :description => "Service account scopes for this server",
-        :default => []
-
-      option :service_account_email,
-        :short => "-s EMAIL@DOMAIN",
-        :long => "--service-account-email EMAIL@DOMAIN",
-        :description => "Service account email for this server; required if using service-account-scopes",
-        :default => ""
 
       option :prerelease,
         :long => "--prerelease",
@@ -182,17 +188,6 @@ class Chef
            name, path = h.split("=")
            Chef::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new
         }
-
-      option :instance_connect_ip,
-        :long => "--google-compute-server-connect-ip PUBLIC",
-        :short => "-a PUBLIC",
-        :description => "Whether to use PUBLIC or PRIVATE address to connect; default is 'PUBLIC'",
-        :default => 'PUBLIC'
-
-      option :public_ip,
-        :long=> "--google-compute-public-ip IP_ADDRESS",
-        :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
-        :default => "EPHEMERAL"
 
       def tcp_test_ssh(hostname, ssh_port)
         tcp_socket = TCPSocket.new(hostname, ssh_port)
@@ -308,7 +303,7 @@ class Chef
 
         begin
           boot_disk_size = config[:boot_disk_size].to_i
-          raise if !boot_disk_size.between?(10, 10000) 
+          raise if !boot_disk_size.between?(10, 10000)
         rescue
           ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")
           exit 1
@@ -412,7 +407,6 @@ class Chef
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
                                                    :machineType => machine_type,
-                                                   #:kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
                                                    :disks => [{
                                                      'boot' => true,
                                                      'type' => 'PERSISTENT',
@@ -438,7 +432,6 @@ class Chef
           zone_operation = client.instances.create(:name => @name_args.first, 
                                                    :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
-                                                   #:kernel => 'https://www.googleapis.com/compute/v1beta16/projects/google/global/kernels/gce-v20130813',
                                                    :disks => [{
                                                      'boot' => true,
                                                      'type' => 'PERSISTENT',
