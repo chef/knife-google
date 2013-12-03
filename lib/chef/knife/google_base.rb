@@ -30,7 +30,7 @@ class Chef
 
           option :compute_credential_file,
             :short => "-f CREDENTIAL_FILE",
-            :long => "--compute-credential-file CREDENTIAL_FILE",
+            :long => "--gce-credential-file CREDENTIAL_FILE",
             :description => "Google Compute credential file (google setup can create this)"
         end
       end

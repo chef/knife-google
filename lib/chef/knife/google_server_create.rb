@@ -414,6 +414,18 @@ class Chef
                                                   :zone => selflink2name(zone))
         end
 
+        # this parameter is a string during the post and boolean otherwise
+        if config[:auto_restart] then
+          auto_restart = 'true'
+        else
+          auto_restart = 'false'
+        end
+
+        if config[:auto_migrate] then
+          auto_migrate = 'MIGRATE'
+        else
+          auto_migrate = 'TERMINATE'
+        end
 
         if !config[:service_account_scopes].any?
           zone_operation = client.instances.create(:name => @name_args.first,
@@ -428,8 +440,8 @@ class Chef
                                                    }],
                                                    :networkInterfaces => [network_interface],
                                                    :scheduling => {
-                                                     'onHostMaintenance' => 'TERMINATE',
-                                                     'automaticRestart' => true
+                                                     'automaticRestart' => auto_restart,
+                                                     'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items' => metadata },
                                                    :tags => config[:tags]
@@ -458,8 +470,8 @@ class Chef
                                                      'scopes' => config[:service_account_scopes]
                                                    }],
                                                    :scheduling => {
-                                                     'onHostMaintenance' => 'TERMINATE',
-                                                     'automaticRestart' => true
+                                                     'automaticRestart' => auto_restart,
+                                                     'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items'=>metadata },
                                                    :tags => config[:tags]
