@@ -74,7 +74,7 @@ describe Google::Compute::Disk do
     zone = 'mock-zone'
     @mock_api_client.should_receive(:execute).
       with(:api_method => mock_compute.disks.insert,
-           :parameters => {:project => "mock-project", :zone => "mock-zone"},
+           :parameters => {:project => "mock-project", :zone => "mock-zone", :sourceImage => nil},
            :body_object => {:name => "xxx", :sizeGb => 2, :zone => "mock-zone"}).
            and_return(mock_response(Google::Compute::ZoneOperation))
     o = client.disks.create(:name => 'xxx', :sizeGb => 2, :zone => zone)
@@ -86,7 +86,7 @@ describe Google::Compute::Disk do
     zone = 'mock-zone'
     @mock_api_client.should_receive(:execute).
       with(:api_method => mock_compute.disks.insert,
-           :parameters => {:project => "mock-project", :zone => "mock-zone"},
+           :parameters => {:project => "mock-project", :zone => "mock-zone", :sourceImage => nil},
            :body_object => {:name => "xxx", :sizeGb => 2, :zone => "mock-zone"}).
            and_return(mock_response(Google::Compute::ZoneOperation))
     o = client.disks.insert(:name => 'xxx', :sizeGb => 2, :zone => zone)

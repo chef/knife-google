@@ -226,7 +226,7 @@ class Chef
 
       def wait_for_tunnelled_sshd(hostname)
         print(".")
-        print(".") until tunnel_test_ssh(ssh_connect_host) {
+        print(".") until tunnel_test_ssh(hostname) {
           sleep @initial_sleep_delay ||= 40
           puts("done")
         }
@@ -263,7 +263,30 @@ class Chef
         end
       end
 
-      def bootstrap_for_node(instance,ssh_host)
+      def disk_exists(disk, zone)
+        # if client.disks.get errors with a Google::Compute::ResourceNotFound
+        # then the disk does not exist and can be created
+        client.disks.get(:disk => disk, :zone => selflink2name(zone))
+      rescue Google::Compute::ResourceNotFound
+        # disk does not exist
+        # continue provisioning
+        false
+      else
+        true
+      end
+
+      def wait_for_disk(disk, operation, zone)
+        until disk.status == 'DONE'
+          ui.info(".")
+          sleep 1
+          disk = client.zoneOperations.get(:name => disk,
+                                           :operation => operation,
+                                           :zone => selflink2name(zone))
+        end
+        disk.target_link
+      end
+
+      def bootstrap_for_node(instance, ssh_host)
         bootstrap = Chef::Knife::Bootstrap.new
         bootstrap.name_args = [ssh_host]
         bootstrap.config[:run_list] = config[:run_list]
@@ -313,30 +336,17 @@ class Chef
           exit 1
         end
 
-        begin
-          boot_disk_size = config[:boot_disk_size].to_i
-          raise if !boot_disk_size.between?(10, 10000)
-        rescue
-          ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")
-          exit 1
+        # this parameter is a string during the post and boolean otherwise
+        if config[:auto_restart] then
+          auto_restart = 'true'
+        else
+          auto_restart = 'false'
         end
 
-        if config[:boot_disk_name].empty? then
-          boot_disk_name = @name_args.first
+        if config[:auto_migrate] then
+          auto_migrate = 'MIGRATE'
         else
-          boot_disk_name = config[:boot_disk_name]
-        end
-
-        # if client.disks.get errors with a Google::Compute::ResourceNotFound
-        # then the disk does not exist and can be created
-        begin
-          client.disks.get(:disk => boot_disk_name, :zone => selflink2name(zone))
-        rescue Google::Compute::ResourceNotFound
-          # disk does not exist
-          # continue provisioning
-        else
-          ui.error("Persistent boot disk already exists.")
-          exit 1
+          auto_migrate = 'TERMINATE'
         end
 
         (checked_custom, checked_all) = false
@@ -345,7 +355,7 @@ class Chef
           # use zone url to determine project name
           zone =~ Regexp.new('/projects/(.*?)/')
           project = $1
-          if image_project.empty?
+          if image_project.to_s.empty?
             unless checked_custom
               checked_custom = true
               ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
@@ -378,6 +388,27 @@ class Chef
         end
 
         begin
+          boot_disk_size = config[:boot_disk_size].to_i
+          raise if !boot_disk_size.between?(10, 10000)
+        rescue
+          ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")
+          exit 1
+        end
+
+        if config[:boot_disk_name].to_s.empty? then
+          boot_disk_name = @name_args.first
+        else
+          boot_disk_name = config[:boot_disk_name]
+        end
+
+        ui.info("Waiting for the disk insert operation to complete")
+        boot_disk_insert = client.disks.insert(:sourceImage => image,
+                                               :zone => selflink2name(zone),
+                                               :name => boot_disk_name,
+                                               :sizeGb => boot_disk_size)
+        boot_disk_target_link = wait_for_disk(boot_disk_insert, boot_disk_insert.name, zone)
+
+        begin
           network = client.networks.get(config[:network]).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("Network '#{config[:network]}' not found")
@@ -400,33 +431,7 @@ class Chef
           exit 1
         end
 
-        disk_insert = client.disks.insert(:sourceImage => image,
-                                          :zone => selflink2name(zone),
-                                          :name => boot_disk_name,
-                                          :sizeGb => boot_disk_size)
-
-        ui.info("Waiting for the disk insert operation to complete")
-        until disk_insert.status == 'DONE'
-          ui.info(".")
-          sleep 1
-          disk_insert = client.zoneOperations.get(:name => disk_insert,
-                                                  :operation => disk_insert.name,
-                                                  :zone => selflink2name(zone))
-        end
-
-        # this parameter is a string during the post and boolean otherwise
-        if config[:auto_restart] then
-          auto_restart = 'true'
-        else
-          auto_restart = 'false'
-        end
-
-        if config[:auto_migrate] then
-          auto_migrate = 'MIGRATE'
-        else
-          auto_migrate = 'TERMINATE'
-        end
-
+        ui.info("Waiting for the create server operation to complete")
         if !config[:service_account_scopes].any?
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
@@ -435,8 +440,8 @@ class Chef
                                                      'boot' => true,
                                                      'type' => 'PERSISTENT',
                                                      'mode' => 'READ_WRITE',
-                                                     'deviceName' => selflink2name(disk_insert.target_link),
-                                                     'source' => disk_insert.target_link
+                                                     'deviceName' => selflink2name(boot_disk_target_link),
+                                                     'source' => boot_disk_target_link 
                                                    }],
                                                    :networkInterfaces => [network_interface],
                                                    :scheduling => {
@@ -460,8 +465,8 @@ class Chef
                                                      'boot' => true,
                                                      'type' => 'PERSISTENT',
                                                      'mode' => 'READ_WRITE',
-                                                     'deviceName' => selflink2name(disk_insert.target_link),
-                                                     'source' => disk_insert.target_link
+                                                     'deviceName' => selflink2name(boot_disk_target_link),
+                                                     'source' => boot_disk_target_link
                                                    }],
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
@@ -477,7 +482,7 @@ class Chef
                                                    :tags => config[:tags]
                                                   )
         end
-        ui.info("Waiting for the create server operation to complete")
+
         until zone_operation.progress.to_i == 100
           ui.info(".")
           sleep 1
