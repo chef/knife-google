@@ -12,6 +12,12 @@ delete, and manage
 [Google Compute Engine](https://cloud.google.com/products/compute-engine)
 servers and disks.
 
+### Compatibility
+
+This plugin utilizes Google Compute Engine API v1. Please review API v1
+[release notes](https://developers.google.com/compute/docs/release-notes#december032013)
+for additional information.
+
 ### Nomenclature
 
 This plugin conforms to the nomenclature used by similar plugins and uses
@@ -25,7 +31,7 @@ Before getting started with this plugin, you must first create a
 [Google Cloud Platform](https://cloud.google.com/) "project" and add the
 Google Compute Engine service to your project.  Once you have created your
 project, you will have access to other Google Cloud Platform services such as
-[App Egnine](https://developers.google.com/appengine/),
+[App Engine](https://developers.google.com/appengine/),
 [Cloud Storage](https://developers.google.com/storage/),
 [Cloud SQL](https://developers.google.com/cloud-sql/)
 and others, but this plugin only requires you enable Google Compute Engine in
@@ -374,9 +380,9 @@ Standard rake commands for building, installing, testing, and uninstalling the m
   # Uninstall
   $ rake uninstall
   ```
+
 ## Contributing
   * See [CONTRIB.md](https://github.com/opscode/knife-google/blob/master/CONTRIB.md)
 
 ## Licensing
   * See [LICENSE](https://raw.github.com/opscode/knife-google/master/LICENSE)
-
