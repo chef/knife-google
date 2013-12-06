@@ -16,12 +16,11 @@ module Google
   module Compute
     class Image < Resource
 
-      attr_reader :source_type, :preferred_kernel, :raw_disk, :deprecated
+      attr_reader :source_type, :raw_disk, :deprecated
 
       def from_hash(data)
         super(data)
         @source_type = data["sourceType"]
-        @preferred_kernel = data["preferredKernel"]
         @raw_disk = data["rawDisk"]
         @deprecated = data["deprecated"]
       end

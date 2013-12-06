@@ -126,10 +126,6 @@ module Google
         CreatableResourceCollection.new(:resource_class => Google::Compute::Server, :dispatcher=>@dispatcher)
       end
 
-      def kernels
-        ListableResourceCollection.new(:resource_class => Google::Compute::Kernel,:dispatcher=>@dispatcher)
-      end
-
       def machine_types
         ListableResourceCollection.new(:resource_class => Google::Compute::MachineType,:dispatcher=>@dispatcher)
       end
