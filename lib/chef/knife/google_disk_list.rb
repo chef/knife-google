@@ -53,7 +53,7 @@ class Chef
           if disk.source_snapshot.nil?
             disk_list << " "
           else
-            selflink2name(disk.source_snapshot)
+            disk_list << selflink2name(disk.source_snapshot)
           end
           disk_list << disk.size_gb
           disk_list << begin
