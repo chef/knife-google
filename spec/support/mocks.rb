@@ -43,8 +43,8 @@ module Mocks
   def mock_compute
     @compute ||=
       begin
-        data_file = File.join(SPEC_DATA_FOLDER, 'compute-v1beta16.json')
-        u = Addressable::URI.parse('URI:https://www.googleapis.com/discovery/v1/apis/compute/v1beta16/rest')
+        data_file = File.join(SPEC_DATA_FOLDER, 'compute-v1.json')
+        u = Addressable::URI.parse('URI:https://www.googleapis.com/discovery/v1/apis/compute/v1/rest')
         compute = Google::APIClient::API.new(u, MultiJson.load(File.read(data_file)))
       end
   end

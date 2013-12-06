@@ -2,7 +2,7 @@
   "kind":"compute#network",
   "id":"444444233333",
   "creationTimestamp":"2013-01-24 23:46:54 -0800",
-  "selfLink":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/global/networks/mock-network",
+  "selfLink":"https://www.googleapis.com/compute/v1/projects/mock-project/global/networks/mock-network",
   "name":"mock-network",
   "description":"",
   "ipV4Range":"10.12.0.0/16",

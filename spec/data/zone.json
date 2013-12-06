@@ -1,6 +1,6 @@
 {
   "kind":"compute#zone",
-  "selfLink":"https://www.googleapis.com/compute/v1beta16/projects/mock-project/zones/mock-zone",
+  "selfLink":"https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone",
   "id":"130430234345556",
   "creationTimestamp":"2013-10-09 12:00:00 -0800",
   "name":"mock-zone",

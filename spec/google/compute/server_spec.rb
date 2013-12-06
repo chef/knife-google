@@ -50,11 +50,11 @@ describe Google::Compute::Server do
   end
 
   it '#create should create an server' do
-    project_url ='https://www.googleapis.com/compute/v1beta16/projects/mock-project'
+    project_url ='https://www.googleapis.com/compute/v1/projects/mock-project'
     zone = project_url + '/zones/europe-west1-a'
     disk = project_url + zone + '/disks/mock-disk'
     machine_type = project_url + '/global/machineTypes/n1-highcpu-2'
-    image = 'https://www.googleapis.com/compute/v1beta16/projects/debian-cloud/global/images/debian-7'
+    image = 'https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7'
     network = project_url + '/global/networks/api-network'
     access_config = {'name' => 'External NAT', 'type' => 'ONE_TO_ONE_NAT'}
 
@@ -105,7 +105,7 @@ describe Google::Compute::Server do
     end
 
     it '#serialPort should return serial port output of an existing server' do
-      zone = 'https://www.googleapis.com/compute/v1beta16/projects/mock-project/zones/mock-zone'
+      zone = 'https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone'
       @mock_api_client.should_receive(:execute).
         with(:api_method => mock_compute.instances.get_serial_port_output,
              :parameters => {:project => 'mock-project', :instance => 'mock-instance', :zone => zone},

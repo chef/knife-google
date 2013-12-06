@@ -49,7 +49,7 @@ describe Google::Compute::Firewall do
   end
 
   it '#create should create a new firewall' do
-    network = 'https://www.googleapis.com/compute/v1beta16/projects/mock-project/networks/mock-network'
+    network = 'https://www.googleapis.com/compute/v1/projects/mock-project/networks/mock-network'
     ingress= {'IPProtocol' => 'tcp', 'ports' => ['80']}
     @mock_api_client.should_receive(:execute).
       with(:api_method => mock_compute.firewalls.insert,
