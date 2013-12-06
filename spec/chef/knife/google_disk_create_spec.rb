@@ -18,7 +18,7 @@ require 'spec_helper'
 describe Chef::Knife::GoogleDiskCreate do
   let(:knife_plugin) do
     Chef::Knife::GoogleDiskCreate.new(
-      [stored_disk.name, "-Z"+stored_zone.name, "-s14"])
+      [stored_disk.name, "-Z"+stored_zone.name])
   end
 
   it "#run should invoke compute api to create a disk" do
@@ -27,10 +27,11 @@ describe Chef::Knife::GoogleDiskCreate do
       with(stored_zone.name).and_return(stored_zone)
     disks = double(Google::Compute::CreatableResourceCollection)
     disks.should_receive(:create).
-      with(:zone => stored_zone.name, :name => stored_disk.name, :sizeGb => "14").
+      with(:name => stored_disk.name, :sizeGb => 10, :zone => stored_zone.name).
       and_return(stored_zone_operation)
     client = double(Google::Compute::Client, :zones => zones, :disks => disks)
     Google::Compute::Client.stub(:from_json).and_return(client)
+    knife_plugin.config[:disk_size] = 10
     knife_plugin.run
   end
 end

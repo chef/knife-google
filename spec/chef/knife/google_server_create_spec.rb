@@ -90,7 +90,6 @@ describe Chef::Knife::GoogleServerCreate do
       "-n"+stored_network.name,
       "-Z"+stored_zone.name, 
       stored_instance.name])
-    #knife_plugin.config[:disks]=[]
     knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
     knife_plugin.config[:service_account_email]='123845678986@project.gserviceaccount.com'
     knife_plugin.config[:boot_disk_size]='10'
@@ -106,13 +105,12 @@ describe Chef::Knife::GoogleServerCreate do
   end
 
   it "should read zone value from knife config file." do
-    Chef::Config[:knife][:google_compute_zone] = stored_zone.name
+    Chef::Config[:knife][:gce_zone] = stored_zone.name
     knife_plugin = Chef::Knife::GoogleServerCreate.new([
       "-m"+stored_machine_type.name,
       "-I"+stored_image.name,
       "-n"+stored_network.name,
       stored_instance.name])
-    #knife_plugin.config[:disks]=[]
     knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
     knife_plugin.config[:service_account_email]='123845678986@project.gserviceaccount.com'
     knife_plugin.config[:boot_disk_size]='10'

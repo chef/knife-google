@@ -20,20 +20,20 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google server list --google-compute-zone ZONE (options)"
+      banner "knife google server list -Z ZONE (options)"
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
 
       def run
         $stdout.sync = true
         
         begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone])
+          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone])
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone] }' not found.")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone] }' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")

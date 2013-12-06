@@ -14,8 +14,6 @@
 #
 require 'chef/knife/google_base'
 
-require 'pry'
-
 class Chef
   class Knife
     class GoogleServerCreate < Knife
@@ -319,9 +317,9 @@ class Chef
         end
 
         begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone]).self_link
+          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone]).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone]}' not found.")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone]}' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")

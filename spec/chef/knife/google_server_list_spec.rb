@@ -32,7 +32,7 @@ describe Chef::Knife::GoogleServerList do
   end
 
   it "should list all the GCE servers when zone is set in knife.rb" do
-    knife_plugin = Chef::Knife::GoogleServerList.new([Chef::Config[:knife][:google_compute_zone] = stored_zone.name])
+    knife_plugin = Chef::Knife::GoogleServerList.new([Chef::Config[:knife][:gce_zone] = stored_zone.name])
     $stdout.should_receive(:write).with(kind_of(String))
     knife_plugin.run
   end

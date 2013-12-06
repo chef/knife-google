@@ -20,11 +20,11 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk list --google-compute-zone ZONE (options)"
+      banner "knife google disk list -Z ZONE (options)"
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for disk listing",
         :required => true
 

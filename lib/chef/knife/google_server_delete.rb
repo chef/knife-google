@@ -25,13 +25,13 @@ class Chef
         require 'google/compute'
       end
 
-      banner "knife google server delete SERVER [SERVER] --google-compute-zone ZONE (options)"
+      banner "knife google server delete SERVER [SERVER] -Z ZONE (options)"
 
       attr_reader :instances
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
 
       option :purge,
@@ -60,9 +60,9 @@ class Chef
 
       def run
         begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone]).self_link
+          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone]).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone]}' not found")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone]}' not found")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
