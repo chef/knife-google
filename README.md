@@ -199,7 +199,8 @@ instance,
     -v, --version                    Show chef version
     -y, --yes                        Say yes to all prompts for confirmation
     -Z, --gce-zone ZONE              The Zone for this server (required)
-    -h, --help                       Show this message  ```
+    -h, --help                       Show this message
+  ```
 
 ## Sub-commands
 
