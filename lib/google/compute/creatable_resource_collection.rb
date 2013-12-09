@@ -23,9 +23,15 @@ module Google
                            :body_object => options )
           ZoneOperation.new(data.merge!(:dispatcher=>@dispatcher))
         elsif ["Disk"].include? self.resource_class_name
-          data = @dispatcher.dispatch(:api_method => api_resource.insert,
+          if options[:sourceImage].nil?
+            data = @dispatcher.dispatch(:api_method => api_resource.insert,
+                           :parameters=>{:project=>project, :zone=>options[:zone]},
+                           :body_object => options)
+          else
+            data = @dispatcher.dispatch(:api_method => api_resource.insert,
                            :parameters=>{:project=>project, :zone=>options[:zone], :sourceImage=>options[:sourceImage]},
-                           :body_object => options )
+                           :body_object => options)
+          end
           ZoneOperation.new(data.merge!(:dispatcher=>@dispatcher))
         else
           data = @dispatcher.dispatch(:api_method => api_resource.insert, 
