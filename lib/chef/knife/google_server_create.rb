@@ -491,8 +491,8 @@ class Chef
 
         @instance = client.instances.get(:name=>@name_args.first, :zone=>selflink2name(zone))
         msg_pair("Instance Name", @instance.name)
-        msg_pair("MachineType", selflink2name(@instance.machine_type))
-        msg_pair("Image", selflink2name(@instance.image))
+        msg_pair("Machine Type", selflink2name(@instance.machine_type))
+        msg_pair("Image", selflink2name(config[:image]))
         msg_pair("Zone", selflink2name(@instance.zone))
         msg_pair("Tags", @instance.tags.has_key?("items") ? @instance.tags["items"].join(",") : "None")
         until @instance.status == "RUNNING"

@@ -76,7 +76,6 @@ class Chef
             @instances << instance
             msg_pair("Name", instance.name)
             msg_pair("MachineType", selflink2name(instance.machine_type))
-            msg_pair("Image", selflink2name(instance.image))
             msg_pair("Zone", selflink2name(instance.zone))
             msg_pair("Tags", instance.tags.has_key?("items") ? instance.tags["items"].join(',') : "None")
             msg_pair("Public IP Address", public_ips(instance).join(','))

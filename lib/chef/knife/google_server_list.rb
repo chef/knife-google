@@ -40,7 +40,7 @@ class Chef
           exit 1
         end
 
-        instance_label = ['name', 'type', 'image', 'public ip', 'private ip', 'disks', 'zone', 'status']
+        instance_label = ['name', 'type', 'public ip', 'private ip', 'disks', 'zone', 'status']
         instance_list = (instance_label.map {|label| ui.color(label, :bold)}).flatten.compact
 
         output_column_count = instance_list.length
@@ -48,7 +48,6 @@ class Chef
         client.instances.list(:zone=>zone.name).each do |instance|
           instance_list << instance.name
           instance_list << selflink2name(instance.machine_type.to_s)
-          instance_list << selflink2name(instance.image.to_s)
           instance_list << public_ips(instance).join(',')
           instance_list << private_ips(instance).join(',')
           instance_list << disks(instance).join(',')
