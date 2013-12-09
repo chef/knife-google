@@ -147,10 +147,10 @@ Some usage examples follow:
   $ knife google server list -Z us-central2-a
 
   # Create a server
-  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
 
   # Create a server with service account scopes
-  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe -S https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control -s 123845678986@project.gserviceaccount.com
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe -S https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control -s 123845678986@project.gserviceaccount.com
 
   # Delete a server (along with Chef node and API client via --purge)
   $ knife google server delete www1 --purge -Z us-central2-a
@@ -327,14 +327,14 @@ include servers that are *not* managed by Chef. Your output should
 look something like:
 
   ```
-  name              type             image               public ip        private ip      disks               zone           status
-  chef-server       n1-standard-1                        103.59.80.113    10.240.45.78    chef-server         us-central1-a  running
-  chef-workstation  n1-standard-1                        103.59.85.188    10.240.9.140    chef-workstation    us-central1-a  running
-  fuse-dev          n1-standard-1                        103.59.80.147    10.240.166.18   fuse-dev            us-central1-a  running
-  magfs-c1          n1-standard-2                        103.59.87.217    10.240.61.92    magfs-c1            us-central1-a  running
-  magfs-c2          n1-standard-2                        103.59.80.161    10.240.175.240  magfs-c2            us-central1-a  running
-  magfs-c3          n1-standard-2                        178.255.120.69   10.240.34.197   magfs-c3            us-central1-a  running
-  magfs-svr         n1-standard-4                        103.59.80.178    10.240.81.25    magfs-svr           us-central1-a  running
+  name              type             public ip        private ip      disks               zone           status
+  chef-server       n1-standard-1    103.59.80.113    10.240.45.78    chef-server         us-central1-a  running
+  chef-workstation  n1-standard-1    103.59.85.188    10.240.9.140    chef-workstation    us-central1-a  running
+  fuse-dev          n1-standard-1    103.59.80.147    10.240.166.18   fuse-dev            us-central1-a  running
+  magfs-c1          n1-standard-2    103.59.87.217    10.240.61.92    magfs-c1            us-central1-a  running
+  magfs-c2          n1-standard-2    103.59.80.161    10.240.175.240  magfs-c2            us-central1-a  running
+  magfs-c3          n1-standard-2    178.255.120.69   10.240.34.197   magfs-c3            us-central1-a  running
+  magfs-svr         n1-standard-4    103.59.80.178    10.240.81.25    magfs-svr           us-central1-a  running
   ```
 
 ### knife google disk create
