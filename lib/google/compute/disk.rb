@@ -23,7 +23,6 @@ module Google
 
       attr_reader :zone, :size_gb, :status, :options
       attr_reader :source_snapshot, :source_snapshot_id
-      attr_reader :source_image
 
       def from_hash(disk_data)
         super(disk_data)
@@ -33,7 +32,6 @@ module Google
         @options = disk_data["options"]
         @source_snapshot = disk_data["sourceSnapshot"]
         @source_snapshot_id = disk_data["sourceSnapshotId"] 
-        @source_image = disk_data["sourceImage"] 
       end
     end
   end

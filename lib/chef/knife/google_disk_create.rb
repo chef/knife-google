@@ -20,7 +20,7 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk create NAME --google-disk-sizeGb N --google-compute-zone ZONE (options)"
+      banner "knife google disk create NAME --gce-disk-size N -Z ZONE (options)"
 
       deps do
         require 'google/compute'
@@ -28,15 +28,14 @@ class Chef
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this disk",
         :required => true
 
-      option :sizeGb,
-        :short => "-s SIZE",
-        :long => "--google-disk-sizeGb SIZE",
-        :description => "Disk size in GB",
-        :required => true
+      option :disk_size,
+        :long => "--gce-disk-size SIZE",
+        :description => "Size of the persistent disk between 1 and 10000 GB, specified in GB; default is '1' GB",
+        :default => "1"
 
       def run
         $stdout.sync = true
@@ -52,8 +51,17 @@ class Chef
           exit 1
         end
 
-        zone_operation = client.disks.create(:name=>@name_args.first,
-          :sizeGb=>config[:sizeGb], :zone=>zone.name)
+        begin
+          disk_size = config[:disk_size].to_i
+          raise if !disk_size.between?(1, 10000)
+        rescue
+          ui.error("Size of the persistent disk must be between 1 and 10000 GB.")
+          exit 1
+        end
+
+        zone_operation = client.disks.create(:name => @name_args.first,
+                                             :sizeGb => config[:disk_size],
+                                             :zone => zone.name)
       end
     end
   end

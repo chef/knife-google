@@ -20,27 +20,27 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google server list --google-compute-zone ZONE (options)"
+      banner "knife google server list -Z ZONE (options)"
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
 
       def run
         $stdout.sync = true
         
         begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone])
+          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone])
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone] }' not found.")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone] }' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
           exit 1
         end
 
-        instance_label = ['name', 'type', 'image', 'public ip', 'private ip', 'disks', 'zone', 'status']
+        instance_label = ['name', 'type', 'public ip', 'private ip', 'disks', 'zone', 'status']
         instance_list = (instance_label.map {|label| ui.color(label, :bold)}).flatten.compact
 
         output_column_count = instance_list.length
@@ -48,7 +48,6 @@ class Chef
         client.instances.list(:zone=>zone.name).each do |instance|
           instance_list << instance.name
           instance_list << selflink2name(instance.machine_type.to_s)
-          instance_list << selflink2name(instance.image.to_s)
           instance_list << public_ips(instance).join(',')
           instance_list << private_ips(instance).join(',')
           instance_list << disks(instance).join(',')

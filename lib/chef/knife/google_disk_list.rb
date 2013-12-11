@@ -20,11 +20,11 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk list --google-compute-zone ZONE (options)"
+      banner "knife google disk list -Z ZONE (options)"
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for disk listing",
         :required => true
 
@@ -53,7 +53,7 @@ class Chef
           if disk.source_snapshot.nil?
             disk_list << " "
           else
-            selflink2name(disk.source_snapshot)
+            disk_list << selflink2name(disk.source_snapshot)
           end
           disk_list << disk.size_gb
           disk_list << begin

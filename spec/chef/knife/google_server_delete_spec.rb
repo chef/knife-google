@@ -105,7 +105,7 @@ end
 
 describe Chef::Knife::GoogleServerDelete do
   it "should read zone value from knife config file." do
-    Chef::Config[:knife][:google_compute_zone] = stored_zone.name
+    Chef::Config[:knife][:gce_zone] = stored_zone.name
     knife_plugin = Chef::Knife::GoogleServerDelete.new([stored_instance.name])
     zones = double(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).and_return(stored_zone)

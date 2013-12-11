@@ -17,6 +17,7 @@ require 'spec_helper'
 
 describe Chef::Knife::GoogleServerCreate do
   before(:each) do
+
     zones = double(Google::Compute::ListableResourceCollection)
     zones.should_receive(:get).with(stored_zone.name).
       and_return(stored_zone)
@@ -28,29 +29,48 @@ describe Chef::Knife::GoogleServerCreate do
 
     images = double(Google::Compute::ListableResourceCollection)
     images.should_receive(:get).
-      with({:project => "debian-cloud", :name => stored_image.name}).
+      with({:project => "mock-project", :name => stored_image.name}).
       and_return(stored_image)
+
+    sizeGb = 10
+    disks = double(Google::Compute::ListableResourceCollection)
+    disks.should_receive(:insert).
+      with({:sourceImage => stored_image.self_link, :zone => stored_zone.name,
+            :name => stored_instance.name, :sizeGb => sizeGb}).
+      and_return(stored_disk)
 
     networks = double(Google::Compute::ListableResourceCollection)
     networks.should_receive(:get).with(stored_network.name).
       and_return(stored_network)
 
     instances = double(Google::Compute::ListableResourceCollection)
-    instances.should_receive(:create).with(
-      {:name => stored_instance.name, :image => stored_image.self_link,
-      :machineType => stored_machine_type.self_link, :disks => [],
-      :metadata => {"items" => []}, :zone => stored_zone.name,
-      :networkInterfaces => [
-        {"network" => stored_network.self_link,
-        "accessConfigs" => [
-          {"name" => "External NAT", "type" => "ONE_TO_ONE_NAT"}]}],
-      :serviceAccounts => [
-        {"kind" => "compute#serviceAccount",
+    instances.should_receive(:create).with({
+      :name => stored_instance.name,
+      :zone => stored_zone.name,
+      :machineType => stored_machine_type.self_link,
+      #:image => stored_image.self_link,
+      :disks => [{
+        "boot" => true,
+        "type" => "PERSISTENT",
+        "mode" => "READ_WRITE",
+        "deviceName" => "",
+        "source" => nil}],
+      :networkInterfaces => [{
+        "network" => stored_network.self_link,
+        "accessConfigs" => [{
+          "name" => "External NAT",
+          "type" => "ONE_TO_ONE_NAT"}]}],
+      :serviceAccounts => [{
+        "kind" => "compute#serviceAccount",
         "email" => "123845678986@project.gserviceaccount.com",
         "scopes" => [
           "https://www.googleapis.com/auth/userinfo.email",
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/devstorage.full_control"]}],
+      :scheduling=>{
+        "automaticRestart" => "false",
+        "onHostMaintenance" => "TERMINATE"},
+      :metadata => {"items" => []},
       :tags => nil}).and_return(stored_zone_operation)
 
     instances.should_receive(:get).
@@ -59,7 +79,7 @@ describe Chef::Knife::GoogleServerCreate do
 
     client = double(Google::Compute::Client, :instances => instances,
       :images => images, :zones => zones,:machine_types => machine_types,
-      :networks => networks)
+      :networks => networks, :disks => disks)
     Google::Compute::Client.stub(:from_json).and_return(client)
   end
 
@@ -67,39 +87,37 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin = Chef::Knife::GoogleServerCreate.new([
       "-m"+stored_machine_type.name,
       "-I"+stored_image.name,
-      "-J"+"debian-cloud",
       "-n"+stored_network.name,
       "-Z"+stored_zone.name, 
-      "-S"+"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control",
-      "-s"+"123845678986@project.gserviceaccount.com",
       stored_instance.name])
-    knife_plugin.config[:disks]=[]
+    knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
+    knife_plugin.config[:service_account_email]='123845678986@project.gserviceaccount.com'
+    knife_plugin.config[:boot_disk_size]='10'
     knife_plugin.config[:metadata]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
     knife_plugin.ui.stub(:info)
-
+    knife_plugin.stub(:wait_for_disk)
     knife_plugin.stub(:wait_for_sshd)
     knife_plugin.should_receive(:bootstrap_for_node).
       with(stored_instance,'10.100.0.10').
       and_return(double("Chef::Knife::Bootstrap",:run => true))
-
     knife_plugin.run
   end
 
   it "should read zone value from knife config file." do
-    Chef::Config[:knife][:google_compute_zone] = stored_zone.name
-    knife_plugin = Chef::Knife::GoogleServerCreate.new(["-m"+stored_machine_type.name,
+    Chef::Config[:knife][:gce_zone] = stored_zone.name
+    knife_plugin = Chef::Knife::GoogleServerCreate.new([
+      "-m"+stored_machine_type.name,
       "-I"+stored_image.name,
-      "-J"+"debian-cloud",
-      "-S"+"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control",
-      "-s"+"123845678986@project.gserviceaccount.com",
       "-n"+stored_network.name,
-       stored_instance.name])
-    knife_plugin.config[:disks]=[]
+      stored_instance.name])
+    knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
+    knife_plugin.config[:service_account_email]='123845678986@project.gserviceaccount.com'
+    knife_plugin.config[:boot_disk_size]='10'
     knife_plugin.config[:metadata]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
     knife_plugin.ui.stub(:info)
-
+    knife_plugin.stub(:wait_for_disk)
     knife_plugin.stub(:wait_for_sshd)
     knife_plugin.should_receive(:bootstrap_for_node).
       with(stored_instance, '10.100.0.10').

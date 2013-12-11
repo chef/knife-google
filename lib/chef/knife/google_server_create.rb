@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'timeout'
 require 'chef/knife/google_base'
 
 class Chef
@@ -34,46 +35,87 @@ class Chef
 
       option :machine_type,
         :short => "-m MACHINE_TYPE",
-        :long => "--google-compute-machine MACHINE_TYPE",
+        :long => "--gce-machine-type MACHINE_TYPE",
         :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)",
         :required => true
 
       option :image,
         :short => "-I IMAGE",
-        :long => "--google-compute-image IMAGE",
+        :long => "--gce-image IMAGE",
         :description => "The Image for the server",
         :required => true
 
       option :image_project_id,
-        :short => "-J IMAGE_PROJECT_ID",
-        :long => "--google-compute-image-project-id IMAGE_PROJECT_ID",
+        :long => "--gce-image-project-id IMAGE_PROJECT_ID",
         :description => "The project-id containing the Image (debian-cloud, centos-cloud, etc)",
         :default => "" 
 
       option :zone,
         :short => "-Z ZONE",
-        :long => "--google-compute-zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
+
+      option :boot_disk_name,
+        :long => "--gce-boot-disk-name DISK",
+        :description => "Name of persistent boot disk; default is to use the server name",
+        :default => ""
+
+      option :boot_disk_size,
+        :long => "--gce-boot-disk-size SIZE",
+        :description => "Size of the persistent boot disk between 10 and 10000 GB, specified in GB; default is '10' GB",
+        :default => "10"
+
+      option :auto_restart,
+        :long => "--[no-]gce-auto-server-restart",
+        :description => "Compute Engine can automatically restart your VM instance if it is terminated for non-user-initiated reasons; enabled by default.",
+        :boolean => true,
+        :default => true
+
+      option :auto_migrate,
+        :long => "--[no-]gce-auto-server-migrate",
+        :description => "Compute Engine can migrate your VM instance to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
+        :boolean => true,
+        :default => true
 
       option :network,
         :short => "-n NETWORK",
-        :long => "--google-compute-network NETWORK",
+        :long => "--gce-network NETWORK",
         :description => "The network for this server; default is 'default'",
         :default => "default"
 
       option :tags,
         :short => "-T TAG1,TAG2,TAG3",
-        :long => "--google-compute-tags TAG1,TAG2,TAG3",
+        :long => "--gce-tags TAG1,TAG2,TAG3",
         :description => "Tags for this server",
         :proc => Proc.new { |tags| tags.split(',') },
         :default => []
 
       option :metadata,
-        :short => "-M K=V[,K=V,...]",
-        :long => "--google-compute-metadata Key=Value[,Key=Value...]",
-        :description => "The metadata for this server",
+        :long => "--gce-metadata Key=Value[,Key=Value...]",
+        :description => "Additional metadata for this server",
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
+
+      option :service_account_scopes,
+        :long => "--gce-service-account-scopes SCOPE1,SCOPE2,SCOPE3",
+        :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
+        :description => "Service account scopes for this server",
+        :default => []
+
+      option :service_account_email,
+        :long => "--gce-service-account-email EMAIL@DOMAIN",
+        :description => "Service account email for this server; required if using service-account-scopes",
+        :default => ""
+
+      option :instance_connect_ip,
+        :long => "--gce-server-connect-ip INTERFACE",
+        :description => "Whether to use PUBLIC or PRIVATE interface/address to connect; default is 'PUBLIC'",
+        :default => 'PUBLIC'
+
+      option :public_ip,
+        :long=> "--gce-public-ip IP_ADDRESS",
+        :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
+        :default => "EPHEMERAL"
 
       option :chef_node_name,
         :short => "-N NAME",
@@ -106,19 +148,6 @@ class Chef
         :short => "-i IDENTITY_FILE",
         :long => "--identity-file IDENTITY_FILE",
         :description => "The SSH identity file used for authentication"
-
-      option :service_account_scopes,
-        :short => "-S SCOPE1,SCOPE2,SCOPE3",
-        :long => "--service-account-scopes SCOPE1,SCOPE2,SCOPE3",
-        :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
-        :description => "Service account scopes for this server",
-        :default => []
-
-      option :service_account_email,
-        :short => "-s EMAIL@DOMAIN",
-        :long => "--service-account-email EMAIL@DOMAIN",
-        :description => "Service account email for this server; required if using service-account-scopes",
-        :default => ""
 
       option :prerelease,
         :long => "--prerelease",
@@ -171,23 +200,6 @@ class Chef
            Chef::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new
         }
 
-      option :instance_connect_ip,
-        :long => "--google-compute-server-connect-ip PUBLIC",
-        :short => "-a PUBLIC",
-        :description => "Whether to use PUBLIC or PRIVATE address to connect; default is 'PUBLIC'",
-        :default => 'PUBLIC'
-
-      option :disks,
-        :long=> "--google-compute-disks DISK1,DISK2",
-        :proc => Proc.new { |metadata| metadata.split(',') },
-        :description => "Disks to be attached",
-        :default => []
-
-      option :public_ip,
-        :long=> "--google-compute-public-ip IP_ADDRESS",
-        :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
-        :default => "EPHEMERAL"
-
       def tcp_test_ssh(hostname, ssh_port)
         tcp_socket = TCPSocket.new(hostname, ssh_port)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -213,7 +225,7 @@ class Chef
 
       def wait_for_tunnelled_sshd(hostname)
         print(".")
-        print(".") until tunnel_test_ssh(ssh_connect_host) {
+        print(".") until tunnel_test_ssh(hostname) {
           sleep @initial_sleep_delay ||= 40
           puts("done")
         }
@@ -250,7 +262,35 @@ class Chef
         end
       end
 
-      def bootstrap_for_node(instance,ssh_host)
+      def disk_exists(disk, zone)
+        # if client.disks.get errors with a Google::Compute::ResourceNotFound
+        # then the disk does not exist and can be created
+        client.disks.get(:disk => disk, :zone => selflink2name(zone))
+      rescue Google::Compute::ResourceNotFound
+        # disk does not exist
+        # continue provisioning
+        false
+      else
+        true
+      end
+
+      def wait_for_disk(disk, operation, zone)
+        Timeout::timeout(300) do
+          until disk.status == 'DONE'
+            ui.info(".")
+            sleep 1
+            disk = client.zoneOperations.get(:name => disk,
+                                             :operation => operation,
+                                             :zone => selflink2name(zone))
+          end
+          disk.target_link
+        end
+      rescue Timeout::Error
+        ui.error("Timeout exceeded with disk status: " + disk.status)
+        exit 1
+      end
+
+      def bootstrap_for_node(instance, ssh_host)
         bootstrap = Chef::Knife::Bootstrap.new
         bootstrap.name_args = [ssh_host]
         bootstrap.config[:run_list] = config[:run_list]
@@ -278,14 +318,14 @@ class Chef
       def run
         $stdout.sync = true
         unless @name_args.size > 0
-          ui.error("Please provide the name of the new server")
+          ui.error("Please provide the name of the new server.")
           exit 1
         end
 
         begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:google_compute_zone]).self_link
+          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone]).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:google_compute_zone]}' not found")
+          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone]}' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
@@ -293,18 +333,33 @@ class Chef
         end
 
         begin
-          machine_type = client.machine_types.get(:name=>config[:machine_type], :zone=>selflink2name(zone)).self_link
+          machine_type = client.machine_types.get(:name => config[:machine_type],
+                                                  :zone => selflink2name(zone)).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("MachineType '#{config[:machine_type]}' not found")
           exit 1
         end
 
+        # this parameter is a string during the post and boolean otherwise
+        if config[:auto_restart] then
+          auto_restart = 'true'
+        else
+          auto_restart = 'false'
+        end
+
+        if config[:auto_migrate] then
+          auto_migrate = 'MIGRATE'
+        else
+          auto_migrate = 'TERMINATE'
+        end
+
         (checked_custom, checked_all) = false
         begin
           image_project = config[:image_project_id]
-          machine_type=~Regexp.new('/projects/(.*?)/')
+          # use zone url to determine project name
+          zone =~ Regexp.new('/projects/(.*?)/')
           project = $1
-          if image_project.empty?
+          if image_project.to_s.empty?
             unless checked_custom
               checked_custom = true
               ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
@@ -337,13 +392,33 @@ class Chef
         end
 
         begin
+          boot_disk_size = config[:boot_disk_size].to_i
+          raise if !boot_disk_size.between?(10, 10000)
+        rescue
+          ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")
+          exit 1
+        end
+
+        if config[:boot_disk_name].to_s.empty? then
+          boot_disk_name = @name_args.first
+        else
+          boot_disk_name = config[:boot_disk_name]
+        end
+
+        ui.info("Waiting for the disk insert operation to complete")
+        boot_disk_insert = client.disks.insert(:sourceImage => image,
+                                               :zone => selflink2name(zone),
+                                               :name => boot_disk_name,
+                                               :sizeGb => boot_disk_size)
+        boot_disk_target_link = wait_for_disk(boot_disk_insert, boot_disk_insert.name, zone)
+
+        begin
           network = client.networks.get(config[:network]).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("Network '#{config[:network]}' not found")
           exit 1
         end
 
-        disks = config[:disks].collect{|disk| client.disks.get(:disk=>disk, :zone=>selflink2name(zone)).self_link}
         metadata = config[:metadata].collect{|pair| Hash[*pair.split('=')] }
         network_interface = {'network'=>network}
 
@@ -360,14 +435,24 @@ class Chef
           exit 1
         end
 
+        ui.info("Waiting for the create server operation to complete")
         if !config[:service_account_scopes].any?
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
-                                                   :image => image,
                                                    :machineType => machine_type,
-                                                   :disks => disks,
-                                                   :metadata => {'items'=> metadata },
+                                                   :disks => [{
+                                                     'boot' => true,
+                                                     'type' => 'PERSISTENT',
+                                                     'mode' => 'READ_WRITE',
+                                                     'deviceName' => selflink2name(boot_disk_target_link),
+                                                     'source' => boot_disk_target_link 
+                                                   }],
                                                    :networkInterfaces => [network_interface],
+                                                   :scheduling => {
+                                                     'automaticRestart' => auto_restart,
+                                                     'onHostMaintenance' => auto_migrate
+                                                   },
+                                                   :metadata => { 'items' => metadata },
                                                    :tags => config[:tags]
                                                   )
         else
@@ -378,32 +463,42 @@ class Chef
             exit 1
           end
           zone_operation = client.instances.create(:name => @name_args.first, 
-                                                   :image => image,
-                                                   :machineType => machine_type,
-                                                   :disks => disks,
-                                                   :metadata => {'items'=>metadata },
                                                    :zone=> selflink2name(zone),
+                                                   :machineType => machine_type,
+                                                   :disks => [{
+                                                     'boot' => true,
+                                                     'type' => 'PERSISTENT',
+                                                     'mode' => 'READ_WRITE',
+                                                     'deviceName' => selflink2name(boot_disk_target_link),
+                                                     'source' => boot_disk_target_link
+                                                   }],
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
                                                      'email' => config[:service_account_email],
                                                      'scopes' => config[:service_account_scopes]
                                                    }],
+                                                   :scheduling => {
+                                                     'automaticRestart' => auto_restart,
+                                                     'onHostMaintenance' => auto_migrate
+                                                   },
+                                                   :metadata => { 'items'=>metadata },
                                                    :tags => config[:tags]
                                                   )
         end
-        ui.info("Waiting for the create server operation to complete")
+
         until zone_operation.progress.to_i == 100
           ui.info(".")
           sleep 1
           zone_operation = client.zoneOperations.get(:name=>zone_operation, :operation=>zone_operation.name, :zone=>selflink2name(zone))
         end
+
         ui.info("Waiting for the servers to be in running state")
 
         @instance = client.instances.get(:name=>@name_args.first, :zone=>selflink2name(zone))
         msg_pair("Instance Name", @instance.name)
-        msg_pair("MachineType", selflink2name(@instance.machine_type))
-        msg_pair("Image", selflink2name(@instance.image))
+        msg_pair("Machine Type", selflink2name(@instance.machine_type))
+        msg_pair("Image", selflink2name(config[:image]))
         msg_pair("Zone", selflink2name(@instance.zone))
         msg_pair("Tags", @instance.tags.has_key?("items") ? @instance.tags["items"].join(",") : "None")
         until @instance.status == "RUNNING"

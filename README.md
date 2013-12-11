@@ -12,10 +12,20 @@ delete, and manage
 [Google Compute Engine](https://cloud.google.com/products/compute-engine)
 servers and disks.
 
+### Compatibility
+
+This plugin utilizes Google Compute Engine API v1. Please review API v1
+[release notes](https://developers.google.com/compute/docs/release-notes#december032013)
+for additional information.
+
+With knife-google 1.3.0 options have changed. Several GCE specific short
+options have been deprecated and GCE specific long options now start
+with '--gce-'.
+
 ### Nomenclature
 
 This plugin conforms to the nomenclature used by similar plugins and uses
-the term "server" when referencing nodes managed by the plugin.  But in
+the term "server" when referencing nodes managed by the plugin.  In
 Google Compute Engine parlance, this is equivalent to an "instance" or
 "virtual machine instance".
 
@@ -25,7 +35,7 @@ Before getting started with this plugin, you must first create a
 [Google Cloud Platform](https://cloud.google.com/) "project" and add the
 Google Compute Engine service to your project.  Once you have created your
 project, you will have access to other Google Cloud Platform services such as
-[App Egnine](https://developers.google.com/appengine/),
+[App Engine](https://developers.google.com/appengine/),
 [Cloud Storage](https://developers.google.com/storage/),
 [Cloud SQL](https://developers.google.com/cloud-sql/)
 and others, but this plugin only requires you enable Google Compute Engine in
@@ -141,10 +151,10 @@ Some usage examples follow:
   $ knife google server list -Z us-central2-a
 
   # Create a server
-  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
 
   # Create a server with service account scopes
-  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20130723 -Z us-central2-a -i ~/.ssh/id_rsa -x jdoe -S https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control -s 123845678986@project.gserviceaccount.com
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe -S https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control -s 123845678986@project.gserviceaccount.com
 
   # Delete a server (along with Chef node and API client via --purge)
   $ knife google server delete www1 --purge -Z us-central2-a
@@ -156,14 +166,14 @@ For a full list of commands, run `knife google` without additional arguments:
   $ knife google
 
   ** GOOGLE COMMANDS **
-  knife google disk create NAME --google-disk-sizeGb N --google-compute-zone ZONE (options)
-  knife google disk delete NAME --google-compute-zone ZONE
-  knife google disk list --google-compute-zone ZONE (options)
+  knife google disk create NAME --gce-disk-size N -Z ZONE (options)
+  knife google disk delete NAME -Z ZONE (options)
+  knife google disk list -Z ZONE (options)
   knife google project list (options)
   knife google region list (options)
   knife google server create NAME -m MACHINE_TYPE -I IMAGE -Z ZONE (options)
-  knife google server delete SERVER [SERVER] --google-compute-zone ZONE (options)
-  knife google server list --google-compute-zone ZONE (options)
+  knife google server delete SERVER [SERVER] -Z ZONE (options)
+  knife google server list -Z ZONE (options)
   knife google setup
   knife google zone list (options)
   ```
@@ -172,14 +182,14 @@ More detailed help can be obtained by specifying sub-commands.  For
 instance,
 
   ```sh
-  $ knife google server list -Z foo --help
-  knife google server list --google-compute-zone ZONE (options)
+  $ knife google server list -Z us-central1-a --help
+  knife google server list -Z ZONE (options)
     -s, --server-url URL             Chef Server URL
         --chef-zero-port PORT        Port to start chef-zero on
     -k, --key KEY                    API Client Key
         --[no-]color                 Use colored output, defaults to false on Windows, true otherwise
     -f CREDENTIAL_FILE,              Google Compute credential file (google setup can create this)
-        --compute-credential-file
+        --gce-credential-file
     -c, --config CONFIG              The configuration file to use
         --defaults                   Accept default values for all questions
     -d, --disable-editing            Do not open EDITOR, just accept the data as is
@@ -192,7 +202,7 @@ instance,
     -V, --verbose                    More verbose output. Use twice for max verbosity
     -v, --version                    Show chef version
     -y, --yes                        Say yes to all prompts for confirmation
-    -Z, --google-compute-zone ZONE   The Zone for this server
+    -Z, --gce-zone ZONE              The Zone for this server (required)
     -h, --help                       Show this message
   ```
 
@@ -217,7 +227,7 @@ and resources across multiple zones to protect against the system
 failure of a single zone. This keeps your application available even
 in the face of expected and unexpected failures. The fully-qualified
 name is made up of `<region>/<zone>`. For example, the fully-qualified
-name for zone `a` in region `us-east1` is `us-east1-a`. Depending on
+name for zone `a` in region `us-central1` is `us-central1-a`. Depending on
 how widely you want to distribute your resources, you may choose to
 create instances across multiple zones within one region or across
 multiple regions and multiple zones.
@@ -228,11 +238,12 @@ You can find a zone's current status and upcoming maintenance windows.
 The output for `knife google zone list` should look similar to:
 
   ```
-  name            status  deprecation  maintenance window
-  europe-west1-a  up      -            2013-08-03 19:00:00 +0000 to 2013-08-18 19:00:00 +0000
-  europe-west1-b  up      -            -
+  name            status  deprecation  maintainance window
+  europe-west1-a  up      -            2014-01-18 12:00:00 -0800 to 2014-02-02 12:00:00 -0800
+  europe-west1-b  up      -            2014-03-15 12:00:00 -0700 to 2014-03-30 12:00:00 -0700
   us-central1-a   up      -            -
   us-central1-b   up      -            -
+  us-central2-a   up      -            2013-12-31 12:00:00 -0800 to 2014-07-01 12:00:00 -0700
   ```
 
 ### knife google region list
@@ -274,8 +285,10 @@ each resource.
 The output for `knife google project list -L` should look similar to:
 
   ```
-  name                         snapshots  networks  firewalls  images  routes  forwarding-rules  target-pools  health-checks
-  my-project                   2/100      1/5       1/10       1/10    1/10    1/50              1/50          1/50
+  name          status  deprecation  cpus  disks-total-gb  in-use-addresses  static-addresses
+  europe-west1  up      -            0     0               0                 0
+  us-central1   up      -            100   1000            10                1
+  us-central2   up      -            0     0               0                 0
   ```
 
 ### knife google server create
@@ -287,14 +300,14 @@ convention:
 
   ```
   debian-7-wheezy-vYYYYMMDD
-  debian-6-squeeze-vYYYYMMDD
   centos-6-vYYYYMMDD
   ```
 
 By default, the plugin will look for the specified image in the instance's
 primary project first and then consult GCE's officially supported image
-locations. The `-J IMAGE_PROJECT_ID` option can be specified to force the
-plugin to look for the image in an alternate project location.
+locations. The `--gce-image-project-id IMAGE_PROJECT_ID` option can be 
+specified to force the plugin to look for the image in an alternate project
+location.
 
 Note that if you are bootstrapping the node, make sure to follow the 
 preparation instructions earlier and use the `-x` and `-i` commands 
@@ -314,40 +327,41 @@ delete --help` for other options.
 ### knife google server list
 
 Get a list of servers in the specified zone.  Note that this may
-include servers that are *not* managed by Chef.  Your output should
+include servers that are *not* managed by Chef. Your output should
 look something like:
 
   ```
-  Name              Type           Image                 Public IP        Private IP      Disks               Zone           Status 
-  chef-svr          n1-standard-1  gcel-12-04-v20130325  103.59.80.113    10.240.45.78                        us-central2-a  running
-  chef-workstation  n1-standard-1  gcel-12-04-v20130325  103.59.85.188    10.240.9.140                        us-central2-a  running
-  fuse-dev          n1-standard-1  gcel-12-04-v20130225  103.59.80.147    10.240.166.18   pd-fuse             us-central2-a  running
-  magfs-c1          n1-standard-2  gcel-12-04-v20130225  103.59.87.217    10.240.61.92                        us-central2-a  running
-  magfs-c2          n1-standard-2  gcel-12-04-v20130225  103.59.80.161    10.240.175.240                      us-central2-a  running
-  magfs-c3          n1-standard-2  gcel-12-04-v20130325  178.255.120.69   10.240.34.197   jay-scratch         us-central2-a  running
-  magfs-svr         n1-standard-4  gcel-12-04-v20130225  103.59.80.178    10.240.81.25    pd28g               us-central2-a  running
+  name              type             public ip        private ip      disks               zone           status
+  chef-server       n1-standard-1    103.59.80.113    10.240.45.78    chef-server         us-central1-a  running
+  chef-workstation  n1-standard-1    103.59.85.188    10.240.9.140    chef-workstation    us-central1-a  running
+  fuse-dev          n1-standard-1    103.59.80.147    10.240.166.18   fuse-dev            us-central1-a  running
+  magfs-c1          n1-standard-2    103.59.87.217    10.240.61.92    magfs-c1            us-central1-a  running
+  magfs-c2          n1-standard-2    103.59.80.161    10.240.175.240  magfs-c2            us-central1-a  running
+  magfs-c3          n1-standard-2    178.255.120.69   10.240.34.197   magfs-c3            us-central1-a  running
+  magfs-svr         n1-standard-4    103.59.80.178    10.240.81.25    magfs-svr           us-central1-a  running
   ```
 
 ### knife google disk create
 
-Create a new persistent disk.  You must provide a name, size in
+Create a new persistent disk. You must provide a name, size in
 gigabytes, and the desired zone.
 
 ### knife google disk delete
 
-Delete an existing disk in the specified zone.  Note that the
+Delete an existing disk in the specified zone. Note that the
 disk will *not* be deleted if it is currently attached to a
 running server.
 
 ### knife google disk list
 
-See a listing of disks defined for a specific zone.  For example,
+See a listing of disks defined for a specific zone. Your output should
+look something like:
 
   ```
-  Name                Zone           Source Snapshot  Size (In GB)  Status
-  jay-scratch         us-central2-a                   10            ready 
-  pd-fuse             us-central2-a                   10            ready 
-  pd28g               us-central2-a                   28            ready 
+  name              zone            source snapshot   size (in GB)   status
+  dev-1             us-central1-a                     10             ready 
+  dev-2             us-central1-a                     10             ready 
+  test-1            us-central1-a                     20             ready 
   ```
 
 ## Troubleshooting
@@ -371,9 +385,9 @@ Standard rake commands for building, installing, testing, and uninstalling the m
   # Uninstall
   $ rake uninstall
   ```
+
 ## Contributing
   * See [CONTRIB.md](https://github.com/opscode/knife-google/blob/master/CONTRIB.md)
 
 ## Licensing
   * See [LICENSE](https://raw.github.com/opscode/knife-google/master/LICENSE)
-

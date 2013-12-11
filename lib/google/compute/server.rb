@@ -20,13 +20,13 @@ module Google
   module Compute
     class Server < Resource
 
-      attr_reader  :tags, :image, :machine_type, :status, :status_message, :zone
+      attr_reader  :tags, :machine_type, :status, :status_message, :zone
       attr_reader  :network_interfaces, :disks, :metadata, :service_accounts
+      attr_reader  :scheduling
 
       def from_hash(data)
         super(data)
         @tags = data["tags"]
-        @image = data["image"]
         @machine_type = data["machineType"]
         @status = data["status"]
         @status_message = data["statusMessage"]
@@ -45,6 +45,7 @@ module Google
         end  
         @metadata = data["metadata"]
         @service_accounts = data["service_accounts"]
+        @scheduling = data["scheduling"]
       end
 
       def serial_port_output
