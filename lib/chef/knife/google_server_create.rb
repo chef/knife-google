@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+require 'timeout'
 require 'chef/knife/google_base'
 
 class Chef
@@ -274,14 +275,19 @@ class Chef
       end
 
       def wait_for_disk(disk, operation, zone)
-        until disk.status == 'DONE'
-          ui.info(".")
-          sleep 1
-          disk = client.zoneOperations.get(:name => disk,
-                                           :operation => operation,
-                                           :zone => selflink2name(zone))
+        Timeout::timeout(300) do
+          until disk.status == 'DONE'
+            ui.info(".")
+            sleep 1
+            disk = client.zoneOperations.get(:name => disk,
+                                             :operation => operation,
+                                             :zone => selflink2name(zone))
+          end
+          disk.target_link
         end
-        disk.target_link
+      rescue Timeout::Error
+        ui.error("Timeout exceeded with disk status: " + disk.status)
+        exit 1
       end
 
       def bootstrap_for_node(instance, ssh_host)
