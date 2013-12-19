@@ -80,14 +80,11 @@ class Chef
             msg_pair("Tags", instance.tags.has_key?("items") ? instance.tags["items"].join(',') : "None")
             msg_pair("Public IP Address", public_ips(instance).join(','))
             msg_pair("Private IP Address", private_ips(instance).join(','))
-
             puts "\n"
+            ui.warn("Persistent disks attached to this instance are not deleted with this operation")
             ui.confirm("Do you really want to delete server '#{selflink2name(zone)}:#{instance.name}'")
-
             client.instances.delete(:instance=>instance.name, :zone=>selflink2name(zone))
-
             ui.warn("Deleted server '#{selflink2name(zone)}:#{instance.name}'")
-
             if config[:purge]
               destroy_item(Chef::Node, instance.name, "node")
               destroy_item(Chef::ApiClient, instance.name, "client")

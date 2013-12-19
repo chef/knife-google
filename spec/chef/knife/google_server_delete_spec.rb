@@ -61,6 +61,7 @@ describe Chef::Knife::GoogleServerDelete do
       client = double(Google::Compute::Client,
         :zones => zones, :instances => instances)
       Google::Compute::Client.stub(:from_json).and_return(client)
+      knife_plugin.ui.should_receive(:warn)
       knife_plugin.config[:yes] = true
       knife_plugin.ui.should_receive(:warn).twice
       knife_plugin.stub(:msg_pair)
@@ -117,6 +118,7 @@ describe Chef::Knife::GoogleServerDelete do
 
     client = double(Google::Compute::Client, :zones => zones, :instances => instances)
     Google::Compute::Client.stub(:from_json).and_return(client)
+    knife_plugin.ui.should_receive(:warn)
     knife_plugin.config[:yes] = true
     knife_plugin.ui.should_receive(:warn).twice
     knife_plugin.stub(:msg_pair)
