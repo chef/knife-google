@@ -294,9 +294,9 @@ The output for `knife google project list -L` should look similar to:
 ### knife google server create
 
 Use this command to create a new Google Compute Engine server (a.k.a.
-instance).  You must specify a name, the machine type, the zone, and 
-the the image name. Images provided by Google follow this naming 
-convention:
+instance) with a persistent boot disk. You must specify a name, the
+machine type, the zone, and the the image name. Images provided by
+Google follow this naming convention:
 
   ```
   debian-7-wheezy-vYYYYMMDD
@@ -321,8 +321,13 @@ See the extended options that also allow bootstrapping the node with
 ### knife google server delete
 
 This command terminates and deletes a server.  Use the `--purge`
-option to also remove it from Chef.  Use `knife google server
-delete --help` for other options.
+option to also remove it from Chef.
+
+Note that persistent disks associated with the server, including the
+boot disk, are not deleted with this operation. To delete persistent
+disks use `knife google disk delete`.
+
+Use `knife google server delete --help` for other options.
 
 ### knife google server list
 
