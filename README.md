@@ -154,7 +154,7 @@ Some usage examples follow:
   $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
 
   # Create a server with service account scopes
-  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe -S https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control -s 123845678986@project.gserviceaccount.com
+  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe --gce-service-account-scopes https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control
 
   # Delete a server (along with Chef node and API client via --purge)
   $ knife google server delete www1 --purge -Z us-central2-a
@@ -314,6 +314,11 @@ preparation instructions earlier and use the `-x` and `-i` commands
 to specify the username and the identity file for that user.  Make sure 
 to use the private key file (e.g. `~/.ssh/id_rsa`) for the identity 
 file and *not* the public key file.
+
+If you would like to set up your server with a service account, provide
+the --gce-service-account-scopes argument during server creation. The service
+account associated with your project will be used by default unless otherwise
+specified with the optional --gce-service-account-name argument.
 
 See the extended options that also allow bootstrapping the node with
 `knife google server create --help`.

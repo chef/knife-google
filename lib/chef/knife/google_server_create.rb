@@ -102,10 +102,11 @@ class Chef
         :description => "Service account scopes for this server",
         :default => []
 
-      option :service_account_email,
-        :long => "--gce-service-account-email EMAIL@DOMAIN",
-        :description => "Service account email for this server; required if using service-account-scopes",
-        :default => ""
+      # GCE documentation uses the term 'service account name', the api uses the term 'email'
+      option :service_account_name,
+        :long => "--gce-service-account-name NAME",
+        :description => "Service account name for this server, typically in the form of '123845678986@project.gserviceaccount.com'; default is 'default'",
+        :default => "default"
 
       option :instance_connect_ip,
         :long => "--gce-server-connect-ip INTERFACE",
@@ -456,12 +457,6 @@ class Chef
                                                    :tags => config[:tags]
                                                   )
         else
-          begin
-            raise if config[:service_account_email].length == 0
-          rescue
-            ui.error("Email address of the service account is required when using service account scopes")
-            exit 1
-          end
           zone_operation = client.instances.create(:name => @name_args.first, 
                                                    :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
@@ -475,7 +470,7 @@ class Chef
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
-                                                     'email' => config[:service_account_email],
+                                                     'email' => config[:service_account_name],
                                                      'scopes' => config[:service_account_scopes]
                                                    }],
                                                    :scheduling => {
