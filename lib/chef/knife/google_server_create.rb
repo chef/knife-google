@@ -312,6 +312,7 @@ class Chef
         # Modify global configuration state to ensure hint gets set by
         # knife-bootstrap
         Chef::Config[:knife][:hints] ||= {}
+        Chef::Config[:knife][:hints]["gce"] ||= {}
         Chef::Config[:knife][:hints]["google"] ||= {}
         bootstrap
       end
