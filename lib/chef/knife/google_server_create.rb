@@ -455,7 +455,7 @@ class Chef
                                                      'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items' => metadata },
-                                                   :tags => config[:tags]
+                                                   :tags => { 'items' => config[:tags] }
                                                   )
         else
           zone_operation = client.instances.create(:name => @name_args.first, 
@@ -479,7 +479,7 @@ class Chef
                                                      'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items'=>metadata },
-                                                   :tags => config[:tags]
+                                                   :tags => { 'items' => config[:tags] }
                                                   )
         end
 
