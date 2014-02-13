@@ -312,6 +312,7 @@ class Chef
         # Modify global configuration state to ensure hint gets set by
         # knife-bootstrap
         Chef::Config[:knife][:hints] ||= {}
+        Chef::Config[:knife][:hints]["gce"] ||= {}
         Chef::Config[:knife][:hints]["google"] ||= {}
         bootstrap
       end
@@ -454,7 +455,7 @@ class Chef
                                                      'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items' => metadata },
-                                                   :tags => config[:tags]
+                                                   :tags => { 'items' => config[:tags] }
                                                   )
         else
           zone_operation = client.instances.create(:name => @name_args.first, 
@@ -478,7 +479,7 @@ class Chef
                                                      'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items'=>metadata },
-                                                   :tags => config[:tags]
+                                                   :tags => { 'items' => config[:tags] }
                                                   )
         end
 

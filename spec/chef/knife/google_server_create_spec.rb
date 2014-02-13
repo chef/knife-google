@@ -71,7 +71,7 @@ describe Chef::Knife::GoogleServerCreate do
         "automaticRestart" => "false",
         "onHostMaintenance" => "TERMINATE"},
       :metadata => {"items" => []},
-      :tags => nil}).and_return(stored_zone_operation)
+      :tags => {"items" => []}}).and_return(stored_zone_operation)
 
     instances.should_receive(:get).
       with(:zone => stored_zone.name, :name => stored_instance.name).
@@ -94,6 +94,7 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
     knife_plugin.config[:boot_disk_size]='10'
     knife_plugin.config[:metadata]=[]
+    knife_plugin.config[:tags]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
     knife_plugin.ui.stub(:info)
     knife_plugin.stub(:wait_for_disk)
@@ -115,6 +116,7 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
     knife_plugin.config[:boot_disk_size]='10'
     knife_plugin.config[:metadata]=[]
+    knife_plugin.config[:tags]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
     knife_plugin.ui.stub(:info)
     knife_plugin.stub(:wait_for_disk)
