@@ -14,6 +14,6 @@
 #
 module Knife
   module Google
-    VERSION = "1.3.3"
+    VERSION = "1.2.0"
   end
 end
