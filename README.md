@@ -396,6 +396,18 @@ Standard rake commands for building, installing, testing, and uninstalling the m
   $ rake uninstall
   ```
 
+## Versioning and Release Protocol
+
+Knife-google is released by the maintainer of this source repository to the gem
+repository at [RubyGems](https://rubygems.org). Releases are versioned
+according to [SemVer](http://semver.org) as much as possible, with a specific
+provision for GCE API changes:
+
+* When the implementation of knife-google switches to a new GCE API revision,
+  the minor version **MUST** be incremented.
+
+The version number of the release is simply the gem version. All releases to RubyGems **MUST** be tagged in git with the version number of the release.
+
 ## Contributing
   * See [CONTRIB.md](https://github.com/opscode/knife-google/blob/master/CONTRIB.md)
 
