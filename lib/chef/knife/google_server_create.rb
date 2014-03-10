@@ -201,6 +201,17 @@ class Chef
            Chef::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new
         }
 
+      option :secret,
+        :short => "-s SECRET",
+        :long => "--secret ",
+        :description => "The secret key to use to encrypt data bag item values",
+        :proc => lambda { |s| Chef::Config[:knife][:secret] = s }
+
+      option :secret_file,
+        :long => "--secret-file SECRET_FILE",
+        :description => "A file containing the secret key to use to encrypt data bag item values",
+        :proc => lambda { |sf| Chef::Config[:knife][:secret_file] = sf }
+
       def tcp_test_ssh(hostname, ssh_port)
         tcp_socket = TCPSocket.new(hostname, ssh_port)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -307,6 +318,12 @@ class Chef
         bootstrap.config[:use_sudo] = true unless config[:ssh_user] == 'root'
         bootstrap.config[:template_file] = config[:template_file]
         bootstrap.config[:environment] = config[:environment]
+        bootstrap.config[:first_boot_attributes] = locate_config_value(:json_attributes) || {}
+        bootstrap.config[:encrypted_data_bag_secret] = locate_config_value(:encrypted_data_bag_secret)
+        bootstrap.config[:encrypted_data_bag_secret_file] = locate_config_value(:encrypted_data_bag_secret_file)
+        bootstrap.config[:secret] = locate_config_value(:secret)
+        bootstrap.config[:secret_file] = locate_config_value(:secret_file)
+
         # may be needed for vpc_mode
         bootstrap.config[:host_key_verify] = config[:host_key_verify]
         # Modify global configuration state to ensure hint gets set by

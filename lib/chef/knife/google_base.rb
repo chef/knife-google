@@ -67,6 +67,10 @@ class Chef
         }.flatten.compact
       end
 
+      def locate_config_value(key)
+        key = key.to_sym
+        config[key] || Chef::Config[:knife][key]
+      end
     end
   end
 end
