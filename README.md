@@ -148,7 +148,7 @@ Some usage examples follow:
   $ knife google zone list
 
   # List all servers (including those that may not be managed by Chef)
-  $ knife google server list -Z us-central2-a
+  $ knife google server list -Z us-central1-a
 
   # Create a server
   $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
@@ -157,7 +157,7 @@ Some usage examples follow:
   $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe --gce-service-account-scopes https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control
 
   # Delete a server (along with Chef node and API client via --purge)
-  $ knife google server delete www1 --purge -Z us-central2-a
+  $ knife google server delete www1 --purge -Z us-central1-a
   ```
 
 For a full list of commands, run `knife google` without additional arguments:
@@ -243,7 +243,6 @@ The output for `knife google zone list` should look similar to:
   europe-west1-b  up      -            2014-03-15 12:00:00 -0700 to 2014-03-30 12:00:00 -0700
   us-central1-a   up      -            -
   us-central1-b   up      -            -
-  us-central2-a   up      -            2013-12-31 12:00:00 -0800 to 2014-07-01 12:00:00 -0700
   ```
 
 ### knife google region list
