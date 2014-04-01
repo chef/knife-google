@@ -32,14 +32,18 @@ module Google
         api_client.authorization = authorization
         api_client.auto_refresh_token = true
         @project = project
-        @credential_file = credential_file
-        @dispatcher = APIDispatcher.new(:project=>project,:api_client=>api_client)
+        if !credential_file
+          @credential_file = File.expand_path(DEFAULT_FILE)
+        else
+          @credential_file = File.expand_path(credential_file)
+        end
+        @dispatcher = APIDispatcher.new(:project=>project, :api_client=>api_client, :credential_file=>@credential_file)
       end
 
       def self.from_json(filename = nil)
         filename ||= File.expand_path(DEFAULT_FILE)
         begin
-		credential_data = MultiJson.load(File.read(filename))
+          credential_data = MultiJson.load(File.read(filename))
         rescue
           $stdout.print "Error reading CREDENTIAL_FILE, please run 'knife google setup'\n"
           exit 1
@@ -49,6 +53,7 @@ module Google
       end
 
       def self.setup
+        credential_file ||= File.expand_path(DEFAULT_FILE)
         $stdout.print "Enter project ID (not name or number): "
         project = $stdin.gets.chomp
         $stdout.print "Enter client id: "
@@ -82,27 +87,30 @@ module Google
           api_client.authorization.fetch_access_token!
         rescue Faraday::Error::ConnectionFailed => e
           raise ConnectionFail,
-            "The SSL certificates validation may not configured for this system. Please refer README to configured SSL certificates validation"\
-              if e.message.include? "SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed"
-        else
-          access_token = api_client.authorization.access_token
-          refresh_token = api_client.authorization.refresh_token
-          id_token = api_client.authorization.id_token
-          expires_in = api_client.authorization.expires_in
-          issued_at = api_client.authorization.issued_at.to_s
-          if !@credential_file
-              filepath = File.expand_path(DEFAULT_FILE)
-          else
-              filepath = File.expand_path(@credential_file)
-          end
-          File.open(filepath,'w+') do |f|
-            f.write(MultiJson.dump({"authorization_uri" => authorization_uri,
-              "token_credential_uri"=>"https://accounts.google.com/o/oauth2/token",
-              "scope"=>scope,"redirect_uri"=>redirect_uri, "client_id"=>client_id,
-              "client_secret"=>client_secret, "access_token"=>access_token,
-              "expires_in"=>expires_in,"refresh_token"=> refresh_token, "id_token"=>id_token,
-              "issued_at"=>issued_at,"project"=>project }, :pretty=>true))
-          end
+            "The SSL certificates validation may not configured for this system. Please refer README to configured SSL certificates validation"
+        end
+        save_credentials(project, api_client, credential_file)
+      end
+
+      def self.save_credentials(project, api_client, credential_file)
+        scope = api_client.authorization.scope
+        client_id = api_client.authorization.client_id
+        client_secret = api_client.authorization.client_secret
+        redirect_uri = api_client.authorization.redirect_uri
+        authorization_uri = "https://accounts.google.com/o/oauth2/auth"
+        access_token = api_client.authorization.access_token
+        refresh_token = api_client.authorization.refresh_token
+        id_token = api_client.authorization.id_token
+        expires_in = api_client.authorization.expires_in
+        issued_at = api_client.authorization.issued_at.to_s
+
+        File.open(credential_file,'w+') do |f|
+          f.write(MultiJson.dump({"authorization_uri" => authorization_uri,
+            "token_credential_uri"=>"https://accounts.google.com/o/oauth2/token",
+            "scope"=>scope,"redirect_uri"=>redirect_uri, "client_id"=>client_id,
+            "client_secret"=>client_secret, "access_token"=>access_token,
+            "expires_in"=>expires_in,"refresh_token"=> refresh_token, "id_token"=>id_token,
+            "issued_at"=>issued_at,"project"=>project }, :pretty=>true))
         end
       end
 
@@ -159,11 +167,12 @@ module Google
       end
 
       class APIDispatcher
-        attr_reader :project, :api_client
+        attr_reader :project, :api_client, :credential_file
 
         def initialize(opts)
           @project= opts[:project]
           @api_client = opts[:api_client]
+          @credential_file = opts[:credential_file]
         end
 
         def compute
@@ -186,6 +195,12 @@ module Google
                 raise ResourceNotFound, result.response.body 
               elsif error_code == 400
                 raise BadRequest, result.response.body 
+              elsif error_code == 401
+                # ok, our credentials aren't working, we need
+                # to get a new refresh token and retry
+                @api_client.authorization.fetch_access_token!
+                Client.save_credentials(@project, @api_client, @credential_file)
+                return dispatch(opts)
               else 
                 raise BadRequest, result.response.body 
               end
