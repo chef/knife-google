@@ -453,11 +453,15 @@ class Chef
               link.self_link =~ /#{additional_disk}/
             end.first
           end.map do |disk|
-              {'boot' => false,
-               'type' => 'PERSISTENT',
-               'mode' => 'READ_WRITE',
-               'deviceName' => selflink2name(disk.self_link),
-               'source' => disk.self_link}
+            if disk.nil?
+              ui.error("None of the disks in '#{config[:additional_disks]}' were found")
+              exit 1
+            end
+            {'boot' => false,
+             'type' => 'PERSISTENT',
+             'mode' => 'READ_WRITE',
+             'deviceName' => selflink2name(disk.self_link),
+             'source' => disk.self_link}
           end
 
           disks.push(*additional_disks_parameter)
