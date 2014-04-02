@@ -443,9 +443,15 @@ class Chef
 
         unless config[:additional_disks].to_s.empty? then
           ui.info("Waiting for the spare disk insert operation to complete")
-          additional_disks_parameter = config[:additional_disks].split(',').map do |additional_disk|
+
+          additional_disks_parameter = config[:additional_disks].to_s.split(',').map do |additional_disk|
             client.disks.list(:zone => selflink2name(zone),
-                                 :name => additional_disk).first
+                                 :name => additional_disk).
+            select do |link|
+              # Occatioally AppEngine will give up and return all disks
+              # when this happens find the correct one
+              link.self_link =~ /#{additional_disk}/
+            end.first
           end.map do |disk|
               {'boot' => false,
                'type' => 'PERSISTENT',

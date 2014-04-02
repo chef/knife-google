@@ -55,7 +55,7 @@ describe Chef::Knife::GoogleServerCreate do
     if additional_disk
       # Make sure we look for the disk
       disks.should_receive(:list).exactly(1).
-        with({:zone => stored_zone.name, :name => "additional-disk"}).
+        with({:zone => stored_zone.name, :name => "mock-disk"}).
         and_return([stored_disk])
 
       # We're goign to create a second disk
@@ -133,7 +133,7 @@ describe Chef::Knife::GoogleServerCreate do
       "-I"+stored_image.name,
       "-n"+stored_network.name,
       "-Z"+stored_zone.name,
-      "-Dadditional-disk",
+      "-Dmock-disk",
       stored_instance.name])
     knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
     knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
