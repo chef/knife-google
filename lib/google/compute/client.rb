@@ -54,11 +54,11 @@ module Google
 
       def self.setup
         credential_file ||= File.expand_path(DEFAULT_FILE)
-        $stdout.print "Enter project ID (not name or number): "
+        $stdout.print "Enter Project ID (ex: my-gce-project): "
         project = $stdin.gets.chomp
-        $stdout.print "Enter client id: "
+        $stdout.print "Enter Client ID (ex: 123abc4.apps.googleusercontent.com): "
         client_id = $stdin.gets.chomp
-        $stdout.print "Enter client secret: "
+        $stdout.print "Enter Client secret: "
         client_secret = $stdin.gets.chomp
         authorization_uri = "https://accounts.google.com/o/oauth2/auth"
         token_credential_uri ="https://accounts.google.com/o/oauth2/token"
