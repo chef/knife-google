@@ -49,16 +49,16 @@ will first need to authorize its use of the Google Compute Engine API.
 Authorization to use any of Google's Cloud service API's utilizes the
 [OAuth 2.0](https://developers.google.com/accounts/docs/OAuth2) standard.
 Once your project has been created, log in to your Google Account and visit the
-[API Console](http://code.google.com/apis/console) and follow the "API Access"
-menu.  Create a new "Client ID" and specify the
-[Installed Application](https://developers.google.com/accounts/docs/OAuth2#installed)
-Application type with sub-type "Other".  These actions will generate a new
-"Client ID", "Client secret", and "Redirect URI's".
+[API Console](http://code.google.com/apis/console) and follow the "APIs & auth"
+menu.  Select "Credentials".  Under the "OAuth" section, select "Create New
+Client ID".  Specify the [Installed Application](https://developers.google.com/accounts/docs/OAuth2#installed)
+Application type with sub-type "Other", then "Create Client ID".  These
+actions will generate a new "Client ID", "Client secret", and "Redirect URI's".
 
-This knife plugin includes a 'setup' sub-command that requires you to supply
-the client ID and secret in order to obtain an "authorization token".  You
-will only need to run this command one time and the plugin will record your
-credential information and tokens for future API calls.
+This knife plugin includes a 'setup' sub-command that requires you to
+supply the client ID and secret in order to obtain an "authorization
+token". You will only need to run this command one time and the plugin
+will record your credential information and tokens for future API calls.
 
 ## Installation
 
@@ -284,10 +284,9 @@ each resource.
 The output for `knife google project list -L` should look similar to:
 
   ```
-  name          status  deprecation  cpus  disks-total-gb  in-use-addresses  static-addresses
-  europe-west1  up      -            0     0               0                 0
-  us-central1   up      -            100   1000            10                1
-  us-central2   up      -            0     0               0                 0
+  name        snapshots  networks  firewalls  images  routes forwarding-rules  target-pools  health-checks
+  chef-test1  0/1000     1/5       3/100      0/100   2/100  0/50              0/50          0/50
+  chef-test2  1/1000     2/5       3/100      1/100   2/100  0/50              0/50          0/50
   ```
 
 ### knife google server create
