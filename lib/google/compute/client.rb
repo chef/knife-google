@@ -77,7 +77,7 @@ module Google
         api_client.authorization.client_id = client_id
         api_client.authorization.client_secret = client_secret
         api_client.authorization.redirect_uri = redirect_uri
-        $stdout.puts "Copy and paste the following url in your brower and allow access. Enter the resulting authorization code below.\n\n"
+        $stdout.puts "Copy and paste the following url in your browser and allow access. Enter the resulting authorization code below.\n\n"
         $stdout.puts api_client.authorization.authorization_uri
         $stdout.print "\n\nAuthorization code: "
         authorization_code = $stdin.gets.chomp
@@ -87,7 +87,7 @@ module Google
           api_client.authorization.fetch_access_token!
         rescue Faraday::Error::ConnectionFailed => e
           raise ConnectionFail,
-            "The SSL certificates validation may not configured for this system. Please refer README to configured SSL certificates validation"
+            "The SSL certificates validation may not be configured for this system. Please refer README to configured SSL certificates validation"
         end
         save_credentials(project, api_client, credential_file)
       end
