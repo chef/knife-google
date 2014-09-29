@@ -48,7 +48,7 @@ class Chef
       option :image_project_id,
         :long => "--gce-image-project-id IMAGE_PROJECT_ID",
         :description => "The project-id containing the Image (debian-cloud, centos-cloud, etc)",
-        :default => "" 
+        :default => ""
 
       option :zone,
         :short => "-Z ZONE",
@@ -64,6 +64,11 @@ class Chef
         :long => "--gce-boot-disk-size SIZE",
         :description => "Size of the persistent boot disk between 10 and 10000 GB, specified in GB; default is '10' GB",
         :default => "10"
+
+      option :additional_disks,
+        :long => "--gce-disk-additional-disks DISKS",
+        :short => "-D DISKS",
+        :description => "Additional disks you'd like to have attached to this instance (NOTE: this will not create them)"
 
       option :auto_restart,
         :long => "--[no-]gce-auto-server-restart",
@@ -423,12 +428,44 @@ class Chef
           boot_disk_name = config[:boot_disk_name]
         end
 
-        ui.info("Waiting for the disk insert operation to complete")
+        ui.info("Waiting for the boot disk insert operation to complete")
         boot_disk_insert = client.disks.insert(:sourceImage => image,
                                                :zone => selflink2name(zone),
                                                :name => boot_disk_name,
                                                :sizeGb => boot_disk_size)
         boot_disk_target_link = wait_for_disk(boot_disk_insert, boot_disk_insert.name, zone)
+        disks = [{'boot' => true,
+                  'type' => 'PERSISTENT',
+                  'mode' => 'READ_WRITE',
+                  'deviceName' => selflink2name(boot_disk_target_link),
+                  'source' => boot_disk_target_link
+                  }]
+
+        unless config[:additional_disks].to_s.empty? then
+          ui.info("Waiting for the spare disk insert operation to complete")
+
+          additional_disks_parameter = config[:additional_disks].to_s.split(',').map do |additional_disk|
+            client.disks.list(:zone => selflink2name(zone),
+                                 :name => additional_disk).
+            select do |link|
+              # Occatioally AppEngine will give up and return all disks
+              # when this happens find the correct one
+              link.self_link =~ /#{additional_disk}/
+            end.first
+          end.map do |disk|
+            if disk.nil?
+              ui.error("None of the disks in '#{config[:additional_disks]}' were found")
+              exit 1
+            end
+            {'boot' => false,
+             'type' => 'PERSISTENT',
+             'mode' => 'READ_WRITE',
+             'deviceName' => selflink2name(disk.self_link),
+             'source' => disk.self_link}
+          end
+
+          disks.push(*additional_disks_parameter)
+        end
 
         begin
           network = client.networks.get(config[:network]).self_link
@@ -458,13 +495,7 @@ class Chef
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
                                                    :machineType => machine_type,
-                                                   :disks => [{
-                                                     'boot' => true,
-                                                     'type' => 'PERSISTENT',
-                                                     'mode' => 'READ_WRITE',
-                                                     'deviceName' => selflink2name(boot_disk_target_link),
-                                                     'source' => boot_disk_target_link 
-                                                   }],
+                                                   :disks => disks,
                                                    :networkInterfaces => [network_interface],
                                                    :scheduling => {
                                                      'automaticRestart' => auto_restart,
@@ -477,13 +508,7 @@ class Chef
           zone_operation = client.instances.create(:name => @name_args.first, 
                                                    :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
-                                                   :disks => [{
-                                                     'boot' => true,
-                                                     'type' => 'PERSISTENT',
-                                                     'mode' => 'READ_WRITE',
-                                                     'deviceName' => selflink2name(boot_disk_target_link),
-                                                     'source' => boot_disk_target_link
-                                                   }],
+                                                   :disks => disks,
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
