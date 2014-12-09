@@ -81,7 +81,13 @@ class Chef
             msg_pair("Public IP Address", public_ips(instance).join(','))
             msg_pair("Private IP Address", private_ips(instance).join(','))
             puts "\n"
-            ui.warn("Persistent disks attached to this instance are not deleted with this operation")
+            autodeleted_boot = instance.disks.find { |disk| disk.auto_delete && disk.boot }
+            if autodeleted_boot
+              ui.warn("Boot disk for this instance '#{autodeleted_boot.device_name}' will be deleted together, other persistent disks attached are not deleted with this operation")
+            else
+              ui.warn("Persistent disks attached to this instance are not deleted with this operation")
+            end
+
             ui.confirm("Do you really want to delete server '#{selflink2name(zone)}:#{instance.name}'")
             client.instances.delete(:instance=>instance.name, :zone=>selflink2name(zone))
             ui.warn("Deleted server '#{selflink2name(zone)}:#{instance.name}'")
