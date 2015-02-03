@@ -19,6 +19,8 @@ module Google
   end
 end
 
+require 'google/compute/mixins/inflector'
+
 require 'google/compute/version'
 require 'google/compute/config'
 require 'google/compute/resource_collection'
