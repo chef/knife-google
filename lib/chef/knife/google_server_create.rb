@@ -81,6 +81,12 @@ class Chef
         :description => "Compute Engine can migrate your VM instance to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
         :boolean => true,
         :default => true
+      
+      option :can_ip_forward,
+        :long => "--[no-]gce-can-ip-forward",
+        :description => "Forwarding allows the instance to help route packets.",
+        :boolean => true,
+        :default => false
 
       option :network,
         :short => "-n NETWORK",
@@ -376,6 +382,12 @@ class Chef
           auto_migrate = 'TERMINATE'
         end
 
+        if config[:can_ip_forward] then
+          can_ip_forward = true
+        else
+          can_ip_forward = false
+        end
+
         (checked_custom, checked_all) = false
         begin
           image_project = config[:image_project_id]
@@ -496,6 +508,7 @@ class Chef
                                                    :zone => selflink2name(zone),
                                                    :machineType => machine_type,
                                                    :disks => disks,
+                                                   :canIpForward => can_ip_forward,
                                                    :networkInterfaces => [network_interface],
                                                    :scheduling => {
                                                      'automaticRestart' => auto_restart,
@@ -509,6 +522,7 @@ class Chef
                                                    :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
                                                    :disks => disks,
+                                                   :canIpForward => can_ip_forward,
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
