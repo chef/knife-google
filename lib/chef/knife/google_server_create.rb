@@ -492,21 +492,24 @@ class Chef
           exit 1
         end
 
-        metadata = config[:metadata].collect{|pair| Hash[*pair.split('=')] }
-
-        # Merge metadata from file
         metadata_items = []
         
+        config[:metadata].collect do |pair|
+          mkey, mvalue = pair.split('=')
+          metadata_items << {'key' => mkey, 'value' => mvalue}
+        end
+
+        # Metadata from file
+        
         config[:metadata_from_file].each do |p| 
-          key, filename = p.split('=')
+          mkey, filename = p.split('=')
           begin
             file_content = File.read(filename)
           rescue
             puts "Not possible to read metadata file #{filename}"
           end 
-          metadata_items << {key => file_content}
+          metadata_items << {'key' => mkey, 'value' => file_content}
         end
-        metadata.concat(metadata_items)
 
         network_interface = {'network'=>network}
 
@@ -535,7 +538,7 @@ class Chef
                                                      'automaticRestart' => auto_restart,
                                                      'onHostMaintenance' => auto_migrate
                                                    },
-                                                   :metadata => { 'items' => metadata },
+                                                   :metadata => { 'items' => metadata_items },
                                                    :tags => { 'items' => config[:tags] }
                                                   )
         else
@@ -554,7 +557,7 @@ class Chef
                                                      'automaticRestart' => auto_restart,
                                                      'onHostMaintenance' => auto_migrate
                                                    },
-                                                   :metadata => { 'items'=>metadata },
+                                                   :metadata => { 'items'=>metadata_items },
                                                    :tags => { 'items' => config[:tags] }
                                                   )
         end
