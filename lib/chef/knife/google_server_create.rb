@@ -107,6 +107,12 @@ class Chef
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
 
+      option :metadata_from_file,
+        :long => "--gce-metadata-from-file Key=File[,Key=File...]",
+        :description => "Additional metadata loaded from a YAML file",
+        :proc => Proc.new { |metadata| metadata.split(',') },
+        :default => []
+      
       option :service_account_scopes,
         :long => "--gce-service-account-scopes SCOPE1,SCOPE2,SCOPE3",
         :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
@@ -487,6 +493,21 @@ class Chef
         end
 
         metadata = config[:metadata].collect{|pair| Hash[*pair.split('=')] }
+
+        # Merge metadata from file
+        metadata_items = []
+        
+        config[:metadata_from_file].each do |p| 
+          key, filename = p.split('=')
+          begin
+            file_content = File.read(filename)
+          rescue
+            puts "Not possible to read metadata file #{filename}"
+          end 
+          metadata_items << {key => file_content}
+        end
+        metadata.concat(metadata_items)
+
         network_interface = {'network'=>network}
 
         if config[:public_ip] == 'EPHEMERAL'
