@@ -53,7 +53,7 @@ Once your project has been created, log in to your Google Account and visit the
 menu.  Select "Credentials".  Under the "OAuth" section, select "Create New
 Client ID".  Specify the [Installed Application](https://developers.google.com/accounts/docs/OAuth2#installed)
 Application type with sub-type "Other", then "Create Client ID".  These
-actions will generate a new "Client ID", "Client secret", and "Redirect URI's".
+actions will generate a new "Client ID", "Client secret", and "Redirect URIs".
 
 This knife plugin includes a `setup` sub-command that requires you to
 supply the client ID and secret in order to obtain an "authorization
@@ -88,7 +88,8 @@ To set this in your current command prompt session, type:
 set SSL_CERT_FILE = C:\cacert.pem
 ```
 
-On Linux system the configuration for SSL certificate validation is present by default.
+On a Linux system, the configuration for SSL certificate validation is present
+by default.
 
 Depending on your system's configuration, you may need to run this command
 with root/Administrator privileges.
@@ -314,9 +315,9 @@ to use the private key file (e.g. `~/.ssh/id_rsa`) for the identity
 file and *not* the public key file.
 
 If you would like to set up your server with a service account, provide
-the --gce-service-account-scopes argument during server creation. The service
+the `--gce-service-account-scopes` argument during server creation. The service
 account associated with your project will be used by default unless otherwise
-specified with the optional --gce-service-account-name argument.
+specified with the optional `--gce-service-account-name` argument.
 
 See the extended options that also allow bootstrapping the node with
 `knife google server create --help`.
