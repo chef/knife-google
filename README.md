@@ -20,7 +20,7 @@ for additional information.
 
 With knife-google 1.3.0 options have changed. Several GCE specific short
 options have been deprecated and GCE specific long options now start
-with '--gce-'.
+with `--gce-`.
 
 ### Nomenclature
 
@@ -55,7 +55,7 @@ Client ID".  Specify the [Installed Application](https://developers.google.com/a
 Application type with sub-type "Other", then "Create Client ID".  These
 actions will generate a new "Client ID", "Client secret", and "Redirect URI's".
 
-This knife plugin includes a 'setup' sub-command that requires you to
+This knife plugin includes a `setup` sub-command that requires you to
 supply the client ID and secret in order to obtain an "authorization
 token". You will only need to run this command one time and the plugin
 will record your credential information and tokens for future API calls.
@@ -75,12 +75,12 @@ or, for Gemfile:
 gem 'knife-google'
 ```
 
-There is a long standing issue in Ruby where the net/http library by default
+There is a long-standing issue in Ruby where the `net/http` library by default
 does not check the validity of an SSL certificate during a TLS handshake.
 
-To configure Windows system to validate SSL certificate please download
-[cacert.pem](http://curl.haxx.se/ca/cacert.pem) file and save to C: drive.
-Now make ruby aware of your certificate authority by setting SSL_CERT_FILE.
+To configure a Windows system to validate SSL certificate, download the
+[cacert.pem](http://curl.haxx.se/ca/cacert.pem) file and save to `C:` drive.
+Now make Ruby aware of your certificate authority by setting `SSL_CERT_FILE`.
 
 To set this in your current command prompt session, type:
 
@@ -103,7 +103,7 @@ above.  Run the 'setup' sub-command and supply the Project ID, the Client
 ID, Client secret, and authorization tokens when prompted. It will also
 prompt you to open a URL in a browser. Make sure sure the you are logged
 in with the Google account associated with the project and client
-id/secrete in order to authorize the plugin.
+id/secret in order to authorize the plugin.
 
 ```sh
 knife google setup
