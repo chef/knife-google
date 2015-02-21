@@ -66,13 +66,13 @@ Be sure you are running Chef version 0.10.0 or higher in order to use knife
 plugins.
 
 ```sh
-    gem install knife-google
+gem install knife-google
 ```
 
 or, for Gemfile:
 
 ```ruby
-    gem 'knife-google'
+gem 'knife-google'
 ```
 
 There is a long standing issue in Ruby where the net/http library by default
@@ -85,7 +85,7 @@ Now make ruby aware of your certificate authority by setting SSL_CERT_FILE.
 To set this in your current command prompt session, type:
 
 ```sh
-    set SSL_CERT_FILE = C:\cacert.pem
+set SSL_CERT_FILE = C:\cacert.pem
 ```
 
 On Linux system the configuration for SSL certificate validation is present by default.
@@ -105,9 +105,9 @@ prompt you to open a URL in a browser. Make sure sure the you are logged
 in with the Google account associated with the project and client
 id/secrete in order to authorize the plugin.
 
-  ```sh
-  knife google setup
-  ```
+```sh
+knife google setup
+```
 
 By default, the credential and token information will be stored in
 `~/.google-compute.json`.  You can override this location with
@@ -129,82 +129,82 @@ to the username specified with the `-x` (aka `--ssh-user`) argument of the knife
 command or its default value of `root`.  An example entry should look
 something like this -- notice the prepended username of `myuser`:
 
-  ```
-  myuser:ssh-rsa AYAAB3Nwejwejjfjawlwl990sefjsfC5lPulcP4eZB+z1zcMF
-  76gTV4vojT/SWXymTfGpBL2KHTmF4jnGfEKPwjHIiLrZNHM2ISMi/atlKjOoUCVT
-  AvUyjqqp3z2KVXSP9P50Kgf8JYWjjXKApiZHkJOHJZ8GGf7aTnRU9NEGLbQK6Q1k
-  4UHbVG4ps4kSLWsJ7eVcu981GvlwP3ooiJ6YWcOX9PS58d4SNtq41/XaoLibKt/Y
-  Wzd/4tjYwMRVcxJdAy1T2474vkU/Qr7ibFinKeJymgouoQpEGhF64cF2pncCcmR7
-  zRk7CzL3mhcma8Zvwj234-2f3/+234/AR#@R#y1EEFsbzGbxOJfEVSTgJfvY7KYp
-  329df/2348sd3ARTx99 mymail@myhost
-  ```
+```
+myuser:ssh-rsa AYAAB3Nwejwejjfjawlwl990sefjsfC5lPulcP4eZB+z1zcMF
+76gTV4vojT/SWXymTfGpBL2KHTmF4jnGfEKPwjHIiLrZNHM2ISMi/atlKjOoUCVT
+AvUyjqqp3z2KVXSP9P50Kgf8JYWjjXKApiZHkJOHJZ8GGf7aTnRU9NEGLbQK6Q1k
+4UHbVG4ps4kSLWsJ7eVcu981GvlwP3ooiJ6YWcOX9PS58d4SNtq41/XaoLibKt/Y
+Wzd/4tjYwMRVcxJdAy1T2474vkU/Qr7ibFinKeJymgouoQpEGhF64cF2pncCcmR7
+zRk7CzL3mhcma8Zvwj234-2f3/+234/AR#@R#y1EEFsbzGbxOJfEVSTgJfvY7KYp
+329df/2348sd3ARTx99 mymail@myhost
+```
 
 ## Usage
 
 Some usage examples follow:
 
-  ```sh
-  # See a list of all zones, their statuses and maintenance windows
-  $ knife google zone list
+```sh
+# See a list of all zones, their statuses and maintenance windows
+$ knife google zone list
 
-  # List all servers (including those that may not be managed by Chef)
-  $ knife google server list -Z us-central1-a
+# List all servers (including those that may not be managed by Chef)
+$ knife google server list -Z us-central1-a
 
-  # Create a server
-  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
+# Create a server
+$ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
 
-  # Create a server with service account scopes
-  $ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe --gce-service-account-scopes https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control
+# Create a server with service account scopes
+$ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe --gce-service-account-scopes https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control
 
-  # Delete a server (along with Chef node and API client via --purge)
-  $ knife google server delete www1 --purge -Z us-central1-a
-  ```
+# Delete a server (along with Chef node and API client via --purge)
+$ knife google server delete www1 --purge -Z us-central1-a
+```
 
 For a full list of commands, run `knife google` without additional arguments:
 
-  ```sh
-  $ knife google
+```sh
+$ knife google
 
-  ** GOOGLE COMMANDS **
-  knife google disk create NAME --gce-disk-size N -Z ZONE (options)
-  knife google disk delete NAME -Z ZONE (options)
-  knife google disk list -Z ZONE (options)
-  knife google project list (options)
-  knife google region list (options)
-  knife google server create NAME -m MACHINE_TYPE -I IMAGE -Z ZONE (options)
-  knife google server delete SERVER [SERVER] -Z ZONE (options)
-  knife google server list -Z ZONE (options)
-  knife google setup
-  knife google zone list (options)
-  ```
+** GOOGLE COMMANDS **
+knife google disk create NAME --gce-disk-size N -Z ZONE (options)
+knife google disk delete NAME -Z ZONE (options)
+knife google disk list -Z ZONE (options)
+knife google project list (options)
+knife google region list (options)
+knife google server create NAME -m MACHINE_TYPE -I IMAGE -Z ZONE (options)
+knife google server delete SERVER [SERVER] -Z ZONE (options)
+knife google server list -Z ZONE (options)
+knife google setup
+knife google zone list (options)
+```
 
 More detailed help can be obtained by specifying sub-commands.  For
 instance,
 
-  ```sh
-  $ knife google server list -Z us-central1-a --help
-  knife google server list -Z ZONE (options)
-    -s, --server-url URL             Chef Server URL
-        --chef-zero-port PORT        Port to start chef-zero on
-    -k, --key KEY                    API Client Key
-        --[no-]color                 Use colored output, defaults to false on Windows, true otherwise
-    -f CREDENTIAL_FILE,              Google Compute credential file (google setup can create this)
-        --gce-credential-file
-    -c, --config CONFIG              The configuration file to use
-        --defaults                   Accept default values for all questions
-    -d, --disable-editing            Do not open EDITOR, just accept the data as is
-    -e, --editor EDITOR              Set the editor to use for interactive commands
-    -E, --environment ENVIRONMENT    Set the Chef environment
-    -F, --format FORMAT              Which format to use for output
-    -z, --local-mode                 Point knife commands at local repository instead of server
-    -u, --user USER                  API Client Username
-        --print-after                Show the data after a destructive operation
-    -V, --verbose                    More verbose output. Use twice for max verbosity
-    -v, --version                    Show chef version
-    -y, --yes                        Say yes to all prompts for confirmation
-    -Z, --gce-zone ZONE              The Zone for this server (required)
-    -h, --help                       Show this message
-  ```
+```sh
+$ knife google server list -Z us-central1-a --help
+knife google server list -Z ZONE (options)
+  -s, --server-url URL             Chef Server URL
+      --chef-zero-port PORT        Port to start chef-zero on
+  -k, --key KEY                    API Client Key
+      --[no-]color                 Use colored output, defaults to false on Windows, true otherwise
+  -f CREDENTIAL_FILE,              Google Compute credential file (google setup can create this)
+      --gce-credential-file
+  -c, --config CONFIG              The configuration file to use
+      --defaults                   Accept default values for all questions
+  -d, --disable-editing            Do not open EDITOR, just accept the data as is
+  -e, --editor EDITOR              Set the editor to use for interactive commands
+  -E, --environment ENVIRONMENT    Set the Chef environment
+  -F, --format FORMAT              Which format to use for output
+  -z, --local-mode                 Point knife commands at local repository instead of server
+  -u, --user USER                  API Client Username
+      --print-after                Show the data after a destructive operation
+  -V, --verbose                    More verbose output. Use twice for max verbosity
+  -v, --version                    Show chef version
+  -y, --yes                        Say yes to all prompts for confirmation
+  -Z, --gce-zone ZONE              The Zone for this server (required)
+  -h, --help                       Show this message
+```
 
 ## Sub-commands
 
@@ -237,13 +237,13 @@ You can find a zone's current status and upcoming maintenance windows.
 
 The output for `knife google zone list` should look similar to:
 
-  ```
-  name            status  deprecation  maintainance window
-  europe-west1-a  up      -            2014-01-18 12:00:00 -0800 to 2014-02-02 12:00:00 -0800
-  europe-west1-b  up      -            2014-03-15 12:00:00 -0700 to 2014-03-30 12:00:00 -0700
-  us-central1-a   up      -            -
-  us-central1-b   up      -            -
-  ```
+```
+name            status  deprecation  maintainance window
+europe-west1-a  up      -            2014-01-18 12:00:00 -0800 to 2014-02-02 12:00:00 -0800
+europe-west1-b  up      -            2014-03-15 12:00:00 -0700 to 2014-03-30 12:00:00 -0700
+us-central1-a   up      -            -
+us-central1-b   up      -            -
+```
 
 ### knife google region list
 
@@ -264,12 +264,12 @@ the quota limit for each resource.
 
 The output for `knife google region list -L` should look similar to:
 
-  ```
-  Name          status  deprecation  cpus  disks-total-gb  in-use-addresses  static-addresses
-  europe-west1  up      -            1/10  100/100000      1/10              1/7
-  us-central1   up      -            0/10  0/100000        0/10              0/7
-  us-central2   up      -            1/10  50/100000       1/10              1/7
-  ```
+```
+Name          status  deprecation  cpus  disks-total-gb  in-use-addresses  static-addresses
+europe-west1  up      -            1/10  100/100000      1/10              1/7
+us-central1   up      -            0/10  0/100000        0/10              0/7
+us-central2   up      -            1/10  50/100000       1/10              1/7
+```
 
 ### knife google project list
 
@@ -283,11 +283,11 @@ each resource.
 
 The output for `knife google project list -L` should look similar to:
 
-  ```
-  name        snapshots  networks  firewalls  images  routes forwarding-rules  target-pools  health-checks
-  chef-test1  0/1000     1/5       3/100      0/100   2/100  0/50              0/50          0/50
-  chef-test2  1/1000     2/5       3/100      1/100   2/100  0/50              0/50          0/50
-  ```
+```
+name        snapshots  networks  firewalls  images  routes forwarding-rules  target-pools  health-checks
+chef-test1  0/1000     1/5       3/100      0/100   2/100  0/50              0/50          0/50
+chef-test2  1/1000     2/5       3/100      1/100   2/100  0/50              0/50          0/50
+```
 
 ### knife google server create
 
@@ -296,10 +296,10 @@ instance) with a persistent boot disk. You must specify a name, the
 machine type, the zone, and the the image name. Images provided by
 Google follow this naming convention:
 
-  ```
-  debian-7-wheezy-vYYYYMMDD
-  centos-6-vYYYYMMDD
-  ```
+```
+debian-7-wheezy-vYYYYMMDD
+centos-6-vYYYYMMDD
+```
 
 By default, the plugin will look for the specified image in the instance's
 primary project first and then consult GCE's officially supported image
@@ -338,16 +338,16 @@ Get a list of servers in the specified zone.  Note that this may
 include servers that are *not* managed by Chef. Your output should
 look something like:
 
-  ```
-  name              type             public ip        private ip      disks               zone           status
-  chef-server       n1-standard-1    103.59.80.113    10.240.45.78    chef-server         us-central1-a  running
-  chef-workstation  n1-standard-1    103.59.85.188    10.240.9.140    chef-workstation    us-central1-a  running
-  fuse-dev          n1-standard-1    103.59.80.147    10.240.166.18   fuse-dev            us-central1-a  running
-  magfs-c1          n1-standard-2    103.59.87.217    10.240.61.92    magfs-c1            us-central1-a  running
-  magfs-c2          n1-standard-2    103.59.80.161    10.240.175.240  magfs-c2            us-central1-a  running
-  magfs-c3          n1-standard-2    178.255.120.69   10.240.34.197   magfs-c3            us-central1-a  running
-  magfs-svr         n1-standard-4    103.59.80.178    10.240.81.25    magfs-svr           us-central1-a  running
-  ```
+```
+name              type             public ip        private ip      disks               zone           status
+chef-server       n1-standard-1    103.59.80.113    10.240.45.78    chef-server         us-central1-a  running
+chef-workstation  n1-standard-1    103.59.85.188    10.240.9.140    chef-workstation    us-central1-a  running
+fuse-dev          n1-standard-1    103.59.80.147    10.240.166.18   fuse-dev            us-central1-a  running
+magfs-c1          n1-standard-2    103.59.87.217    10.240.61.92    magfs-c1            us-central1-a  running
+magfs-c2          n1-standard-2    103.59.80.161    10.240.175.240  magfs-c2            us-central1-a  running
+magfs-c3          n1-standard-2    178.255.120.69   10.240.34.197   magfs-c3            us-central1-a  running
+magfs-svr         n1-standard-4    103.59.80.178    10.240.81.25    magfs-svr           us-central1-a  running
+```
 
 ### knife google disk create
 
@@ -365,34 +365,34 @@ running server.
 See a listing of disks defined for a specific zone. Your output should
 look something like:
 
-  ```
-  name              zone            source snapshot   size (in GB)   status
-  dev-1             us-central1-a                     10             ready 
-  dev-2             us-central1-a                     10             ready 
-  test-1            us-central1-a                     20             ready 
-  ```
+```
+name              zone            source snapshot   size (in GB)   status
+dev-1             us-central1-a                     10             ready 
+dev-2             us-central1-a                     10             ready 
+test-1            us-central1-a                     20             ready 
+```
 
 ## Troubleshooting
 
- * Seeing 404 errors or zone not found?
-   This can result if you mistakenly specified an invalid "Project ID"
-   while going through the `knife google setup` command.  Make sure
-   you specified the "Project ID" (not the project name or number).
+* Seeing 404 errors or zone not found?
+  This can result if you mistakenly specified an invalid "Project ID"
+  while going through the `knife google setup` command.  Make sure
+  you specified the "Project ID" (not the project name or number).
 
 ## Build and Development
 
 Standard rake commands for building, installing, testing, and uninstalling the module.
 
-  ```
-  # Run spec tests
-  $ rake
+```sh
+# Run spec tests
+$ rake
 
-  # Build and install the module
-  $ rake install
-  
-  # Uninstall
-  $ rake uninstall
-  ```
+# Build and install the module
+$ rake install
+
+# Uninstall
+$ rake uninstall
+```
 
 ## Versioning and Release Protocol
 
@@ -407,7 +407,9 @@ provision for GCE API changes:
 The version number of the release is simply the gem version. All releases to RubyGems **MUST** be tagged in git with the version number of the release.
 
 ## Contributing
-  * See [CONTRIB.md](https://github.com/opscode/knife-google/blob/master/CONTRIB.md)
+
+* See [CONTRIB.md](https://github.com/opscode/knife-google/blob/master/CONTRIB.md)
 
 ## Licensing
-  * See [LICENSE](https://raw.github.com/opscode/knife-google/master/LICENSE)
+
+* See [LICENSE](https://raw.github.com/opscode/knife-google/master/LICENSE)
