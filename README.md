@@ -208,7 +208,7 @@ knife google server list -Z ZONE (options)
 
 ## Sub-commands
 
-### knife google setup
+### `knife google setup`
 
 Use this command to initially set up authorization (see above for more
 details).  Note that if you override the default credential file with the
@@ -217,7 +217,7 @@ When prompted, make sure to specify the "Project ID" (and not the name or
 number) or you will see 404/not found errors even if the setup command
 completes successfully.
 
-### knife google zone list
+### `knife google zone list`
 
 A zone is an isolated location within a region that is independent of
 other zones in the same region. Zones are designed to support instances
@@ -245,7 +245,7 @@ us-central1-a   up      -            -
 us-central1-b   up      -            -
 ```
 
-### knife google region list
+### `knife google region list`
 
 Each region in Google Compute Engine contains any number of zones.
 The region describes the geographic location where your resources
@@ -271,7 +271,7 @@ us-central1   up      -            0/10  0/100000        0/10              0/7
 us-central2   up      -            1/10  50/100000       1/10              1/7
 ```
 
-### knife google project list
+### `knife google project list`
 
 A project resource is the root collection and settings resource for
 all Google Compute Engine resources.
@@ -289,7 +289,7 @@ chef-test1  0/1000     1/5       3/100      0/100   2/100  0/50              0/5
 chef-test2  1/1000     2/5       3/100      1/100   2/100  0/50              0/50          0/50
 ```
 
-### knife google server create
+### `knife google server create`
 
 Use this command to create a new Google Compute Engine server (a.k.a.
 instance) with a persistent boot disk. You must specify a name, the
@@ -321,7 +321,7 @@ specified with the optional --gce-service-account-name argument.
 See the extended options that also allow bootstrapping the node with
 `knife google server create --help`.
 
-### knife google server delete
+### `knife google server delete`
 
 This command terminates and deletes a server.  Use the `--purge`
 option to also remove it from Chef.
@@ -332,7 +332,7 @@ disks use `knife google disk delete`.
 
 Use `knife google server delete --help` for other options.
 
-### knife google server list
+### `knife google server list`
 
 Get a list of servers in the specified zone.  Note that this may
 include servers that are *not* managed by Chef. Your output should
@@ -349,18 +349,18 @@ magfs-c3          n1-standard-2    178.255.120.69   10.240.34.197   magfs-c3    
 magfs-svr         n1-standard-4    103.59.80.178    10.240.81.25    magfs-svr           us-central1-a  running
 ```
 
-### knife google disk create
+### `knife google disk create`
 
 Create a new persistent disk. You must provide a name, size in
 gigabytes, and the desired zone.
 
-### knife google disk delete
+### `knife google disk delete`
 
 Delete an existing disk in the specified zone. Note that the
 disk will *not* be deleted if it is currently attached to a
 running server.
 
-### knife google disk list
+### `knife google disk list`
 
 See a listing of disks defined for a specific zone. Your output should
 look something like:
