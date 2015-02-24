@@ -87,7 +87,7 @@ class Chef
         :description => "Compute Engine can migrate your VM instance to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
         :boolean => true,
         :default => true
-      
+
       option :can_ip_forward,
         :long => "--[no-]gce-can-ip-forward",
         :description => "Forwarding allows the instance to help route packets.",
@@ -118,7 +118,7 @@ class Chef
         :description => "Additional metadata loaded from a YAML file",
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
-      
+
       option :service_account_scopes,
         :long => "--gce-service-account-scopes SCOPE1,SCOPE2,SCOPE3",
         :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
@@ -506,21 +506,21 @@ class Chef
         end
 
         metadata_items = []
-        
+
         config[:metadata].collect do |pair|
           mkey, mvalue = pair.split('=')
           metadata_items << {'key' => mkey, 'value' => mvalue}
         end
 
         # Metadata from file
-        
-        config[:metadata_from_file].each do |p| 
+
+        config[:metadata_from_file].each do |p|
           mkey, filename = p.split('=')
           begin
             file_content = File.read(filename)
           rescue
             puts "Not possible to read metadata file #{filename}"
-          end 
+          end
           metadata_items << {'key' => mkey, 'value' => file_content}
         end
 

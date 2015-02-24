@@ -36,7 +36,7 @@ class Chef
         :long => "--gce-disk-size SIZE",
         :description => "Size of the persistent disk between 1 and 10000 GB, specified in GB; default is '1' GB",
         :default => "1"
-      
+
       option :disk_type,
         :long => "--gce-disk-type TYPE",
         :description => "Disk type to use to create the disk. Possible values are pd-standard, pd-ssd and local-ssd",
@@ -55,7 +55,7 @@ class Chef
           ui.error("Zone '#{config[:zone]}' not found")
           exit 1
         end
-        
+
         begin
           disk_type = client.disk_types.get(:name => config[:disk_type],
                                                   :zone => selflink2name(zone.self_link))
@@ -72,7 +72,7 @@ class Chef
           ui.error("Size of the persistent disk must be between 1 and 10000 GB.")
           exit 1
         end
-        
+
         zone_operation = client.disks.create(:name => @name_args.first,
                                              :sizeGb => config[:disk_size],
                                              :zone => zone.name,
