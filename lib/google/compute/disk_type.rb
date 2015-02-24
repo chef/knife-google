@@ -1,7 +1,5 @@
 # Copyright 2013 Google Inc. All Rights Reserved.
 #
-# Copyright 2013 Google Inc.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,26 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'google/compute/resource'
-require 'google/compute/zone'
-
 module Google
   module Compute
-    class Disk < Resource
+    class DiskType < Resource
 
-      attr_reader :zone, :size_gb, :status, :options
-      attr_reader :source_snapshot, :source_snapshot_id
-      attr_reader :type
+      attr_reader :deprecated, :valid_disk_size, :default_disk_size_gb
 
-      def from_hash(disk_data)
-        super(disk_data)
-        @zone = disk_data["zone"]
-        @size_gb = disk_data["sizeGb"]
-        @status = disk_data["status"] 
-        @options = disk_data["options"]
-        @source_snapshot = disk_data["sourceSnapshot"]
-        @source_snapshot_id = disk_data["sourceSnapshotId"] 
-        @type = disk_data["type"]
+      def from_hash(data)
+        super(data)
+        @valid_disk_size = data["validDiskSize"]
+        @deprecated = data["deprecated"]
+        @default_disk_size_gb = data["defaultDiskSizeGb"].to_i
       end
     end
   end

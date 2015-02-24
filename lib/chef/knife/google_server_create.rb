@@ -87,6 +87,12 @@ class Chef
         :description => "Compute Engine can migrate your VM instance to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
         :boolean => true,
         :default => true
+      
+      option :can_ip_forward,
+        :long => "--[no-]gce-can-ip-forward",
+        :description => "Forwarding allows the instance to help route packets.",
+        :boolean => true,
+        :default => false
 
       option :network,
         :short => "-n NETWORK",
@@ -107,6 +113,12 @@ class Chef
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
 
+      option :metadata_from_file,
+        :long => "--gce-metadata-from-file Key=File[,Key=File...]",
+        :description => "Additional metadata loaded from a YAML file",
+        :proc => Proc.new { |metadata| metadata.split(',') },
+        :default => []
+      
       option :service_account_scopes,
         :long => "--gce-service-account-scopes SCOPE1,SCOPE2,SCOPE3",
         :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
@@ -382,6 +394,12 @@ class Chef
           auto_migrate = 'TERMINATE'
         end
 
+        if config[:can_ip_forward] then
+          can_ip_forward = true
+        else
+          can_ip_forward = false
+        end
+
         (checked_custom, checked_all) = false
         begin
           image_project = config[:image_project_id]
@@ -487,7 +505,25 @@ class Chef
           exit 1
         end
 
-        metadata = config[:metadata].collect{|pair| Hash[*pair.split('=')] }
+        metadata_items = []
+        
+        config[:metadata].collect do |pair|
+          mkey, mvalue = pair.split('=')
+          metadata_items << {'key' => mkey, 'value' => mvalue}
+        end
+
+        # Metadata from file
+        
+        config[:metadata_from_file].each do |p| 
+          mkey, filename = p.split('=')
+          begin
+            file_content = File.read(filename)
+          rescue
+            puts "Not possible to read metadata file #{filename}"
+          end 
+          metadata_items << {'key' => mkey, 'value' => file_content}
+        end
+
         network_interface = {'network'=>network}
 
         if config[:public_ip] == 'EPHEMERAL'
@@ -509,12 +545,13 @@ class Chef
                                                    :zone => selflink2name(zone),
                                                    :machineType => machine_type,
                                                    :disks => disks,
+                                                   :canIpForward => can_ip_forward,
                                                    :networkInterfaces => [network_interface],
                                                    :scheduling => {
                                                      'automaticRestart' => auto_restart,
                                                      'onHostMaintenance' => auto_migrate
                                                    },
-                                                   :metadata => { 'items' => metadata },
+                                                   :metadata => { 'items' => metadata_items },
                                                    :tags => { 'items' => config[:tags] }
                                                   )
         else
@@ -522,6 +559,7 @@ class Chef
                                                    :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
                                                    :disks => disks,
+                                                   :canIpForward => can_ip_forward,
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
@@ -532,7 +570,7 @@ class Chef
                                                      'automaticRestart' => auto_restart,
                                                      'onHostMaintenance' => auto_migrate
                                                    },
-                                                   :metadata => { 'items'=>metadata },
+                                                   :metadata => { 'items'=>metadata_items },
                                                    :tags => { 'items' => config[:tags] }
                                                   )
         end

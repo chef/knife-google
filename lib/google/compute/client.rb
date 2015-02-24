@@ -122,6 +122,10 @@ module Google
         CreatableResourceCollection.new(:resource_class => Google::Compute::Disk,  :dispatcher=>@dispatcher)
       end
 
+      def disk_types
+        CreatableResourceCollection.new(:resource_class => Google::Compute::DiskType,  :dispatcher=>@dispatcher)
+      end
+
       def firewalls
         CreatableResourceCollection.new(:resource_class => Google::Compute::Firewall, :dispatcher => @dispatcher)
       end
