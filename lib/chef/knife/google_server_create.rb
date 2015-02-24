@@ -65,6 +65,12 @@ class Chef
         :description => "Size of the persistent boot disk between 10 and 10000 GB, specified in GB; default is '10' GB",
         :default => "10"
 
+      option :boot_disk_autodelete,
+        :long => "--[no-]gce-boot-disk-autodelete",
+        :description => "Delete boot disk when instance is being deleted.",
+        :boolean => true,
+        :default => false
+
       option :additional_disks,
         :long => "--gce-disk-additional-disks DISKS",
         :short => "-D DISKS",
@@ -428,6 +434,12 @@ class Chef
           boot_disk_name = config[:boot_disk_name]
         end
 
+        if config[:boot_disk_autodelete] then
+          boot_disk_autodelete = 'true'
+        else
+          boot_disk_autodelete = 'false'
+        end
+
         ui.info("Waiting for the boot disk insert operation to complete")
         boot_disk_insert = client.disks.insert(:sourceImage => image,
                                                :zone => selflink2name(zone),
@@ -438,7 +450,8 @@ class Chef
                   'type' => 'PERSISTENT',
                   'mode' => 'READ_WRITE',
                   'deviceName' => selflink2name(boot_disk_target_link),
-                  'source' => boot_disk_target_link
+                  'source' => boot_disk_target_link,
+                  'autoDelete' => boot_disk_autodelete
                   }]
 
         unless config[:additional_disks].to_s.empty? then
