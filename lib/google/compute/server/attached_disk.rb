@@ -22,7 +22,7 @@ module Google
     class AttachedDisk
       include Utils
 
-      attr_reader :kind, :index, :type, :mode
+      attr_reader :kind, :index, :type, :mode, :auto_delete
       attr_reader :source, :device_name, :boot
       
       def initialize(data)
@@ -33,6 +33,7 @@ module Google
         @source = data["source"]
         @device_name = data["deviceName"] 
         @boot = data["boot"]
+        @auto_delete = data["autoDelete"]
       end
     end
   end

@@ -50,7 +50,8 @@ describe Chef::Knife::GoogleServerCreate do
         "type" => "PERSISTENT",
         "mode" => "READ_WRITE",
         "deviceName" => "",
-        "source" => nil}]
+        "source" => nil,
+        "autoDelete" => "false"}]
 
     if additional_disk
       # Make sure we look for the disk
