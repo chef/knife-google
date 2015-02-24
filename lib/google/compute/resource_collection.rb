@@ -66,7 +66,7 @@ module Google
 
       def api_resource
         # Servers => instances
-        collection_name = resource_class_name.snake_case + "s"
+        collection_name = resource_class_name.underscore + "s"
         if collection_name == "servers"
           @dispatcher.compute.send("instances")
         else

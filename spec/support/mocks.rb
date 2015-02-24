@@ -24,7 +24,7 @@ module Mocks
   end
 
   def mock_data_file(klass)
-    class_name = klass.name.split('::').last.snake_case
+    class_name = klass.name.split('::').last.underscore
     if class_name == "instance"
       json_file = File.expand_path(File.join(SPEC_DATA_FOLDER,  'server.json'))
     else
