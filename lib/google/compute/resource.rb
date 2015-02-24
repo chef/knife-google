@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'extlib'
 require 'google/compute/exception'
-require 'multi_json'
 require 'google/compute/mixins/utils'
+require 'multi_json'
 
 module Google
   module Compute

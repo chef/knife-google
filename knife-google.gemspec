@@ -12,9 +12,10 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.md", "LICENSE", "CONTRIB.md" ]
   s.summary = "Manage Google Compute Engine servers, disks, and zones"
   s.description = "Google Compute Engine Support for Chef's Knife Command"
-  s.homepage = "http://wiki.opscode.com/display/chef"
+  s.homepage = "http://docs.chef.io/"
 
   s.add_dependency "chef", ">= 0.10.0"
+  s.add_dependency "extlib"
   s.add_dependency "google-api-client"
   s.add_dependency "multi_json"
   s.add_dependency "mixlib-config"
