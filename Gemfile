@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gemspec :name => "knife-google"
 
 group(:development, :test) do
   platforms :mswin, :mingw do
@@ -7,5 +8,3 @@ group(:development, :test) do
      gem "win32-service", "0.7.2"
   end
 end
-
-gemspec
