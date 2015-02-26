@@ -15,15 +15,15 @@ Gem::Specification.new do |s|
   s.description = "Google Compute Engine Support for Chef's Knife Command"
   s.homepage = "http://docs.chef.io/"
 
-  s.add_runtime_dependency 'chef', '~> 11.0'
+  s.add_runtime_dependency 'chef'
   s.add_runtime_dependency 'extlib', '~> 0.9'
   s.add_runtime_dependency 'google-api-client' , '~> 0.8'
-  s.add_runtime_dependency 'multi_json', '~> 1.10'
-  s.add_runtime_dependency 'mixlib-config', '~> 2.0'
+  s.add_runtime_dependency 'multi_json'
+  s.add_runtime_dependency 'mixlib-config'
   s.files = `git ls-files`.split($/)
   #s.files = Dir['CONTRIB.md', 'Gemfile', 'LICENSE', 'README.md', 'Rakefile', 'knife-google.gemspec', 'lib/**/*', 'spec/**/*']
 
-  s.add_development_dependency 'rake', '~> 10.0'
-  s.add_development_dependency 'rspec', '~> 3.1'
-  s.add_development_dependency 'simplecov', '~> 0.9'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'simplecov'
 end
