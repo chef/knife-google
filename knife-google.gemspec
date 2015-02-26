@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.description = "Google Compute Engine Support for Chef's Knife Command"
   s.homepage = "http://docs.chef.io/"
 
-  s.add_runtime_dependency 'chef', '~> 12.0'
+  s.add_runtime_dependency 'chef', '~> 11.0'
   s.add_runtime_dependency 'extlib', '~> 0.9'
   s.add_runtime_dependency 'google-api-client' , '~> 0.8'
   s.add_runtime_dependency 'multi_json', '~> 1.10'
