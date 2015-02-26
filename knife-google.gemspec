@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'extlib', '~> 0.9'
   s.add_runtime_dependency 'google-api-client' , '~> 0.8.2'
   s.add_runtime_dependency 'multi_json', '~> 1.10'
-  s.add_runtime_dependency 'mixlib-config', '~> 1.1'
+  s.add_runtime_dependency 'mixlib-config', '~> 2.0'
   s.files = `git ls-files`.split($/)
   #s.files = Dir['CONTRIB.md', 'Gemfile', 'LICENSE', 'README.md', 'Rakefile', 'knife-google.gemspec', 'lib/**/*', 'spec/**/*']
 
