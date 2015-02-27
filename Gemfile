@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
-gemspec :name => "knife-google"
+
+gemspec
 
 group(:development, :test) do
   platforms :mswin, :mingw do
