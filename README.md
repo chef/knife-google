@@ -152,10 +152,10 @@ $ knife google zone list
 $ knife google server list -Z us-central1-a
 
 # Create a server
-$ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe
+$ knife google server create www1 -m n1-standard-1 -I centos-7-v20150127 -Z us-central1-a -x jdoe
 
 # Create a server with service account scopes
-$ knife google server create www1 -m n1-standard-1 -I debian-7-wheezy-v20131120 -Z us-central1-a -i ~/.ssh/id_rsa -x jdoe --gce-service-account-scopes https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control
+$ knife google server create www1 -m n1-standard-1 -I centos-7-v20150127 -Z us-central1-a -x jdoe --gce-service-account-scopes https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control
 
 # Delete a server (along with Chef node and API client via --purge)
 $ knife google server delete www1 --purge -Z us-central1-a
@@ -299,7 +299,7 @@ Google follow this naming convention:
 
 ```
 debian-7-wheezy-vYYYYMMDD
-centos-6-vYYYYMMDD
+centos-7-vYYYYMMDD
 ```
 
 By default, the plugin will look for the specified image in the instance's
