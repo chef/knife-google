@@ -18,6 +18,8 @@ This plugin utilizes Google Compute Engine API v1. Please review API v1
 [release notes](https://developers.google.com/compute/docs/release-notes#december032013)
 for additional information.
 
+With knife-google 1.4.0 Chef 12 is now utilized.
+
 With knife-google 1.3.0 options have changed. Several GCE specific short
 options have been deprecated and GCE specific long options now start
 with `--gce-`.
