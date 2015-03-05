@@ -36,10 +36,12 @@ describe Chef::Knife::GoogleServerCreate do
 
     sizeGb = 10
     disks = double(Google::Compute::ListableResourceCollection)
-    disks.should_receive(:insert).
-      with({:sourceImage => stored_image.self_link, :zone => stored_zone.name,
-            :name => stored_instance.name, :sizeGb => sizeGb}).
-      and_return(stored_disk)
+    disks.should_receive(:insert).with({
+      :sourceImage => stored_image.self_link,
+      :zone => stored_zone.name,
+      :name => stored_instance.name,
+      :type => "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/diskTypes/pd-standard",
+      :sizeGb => sizeGb}).and_return(stored_disk)
 
     networks = double(Google::Compute::ListableResourceCollection)
     networks.should_receive(:get).with(stored_network.name).
@@ -55,9 +57,9 @@ describe Chef::Knife::GoogleServerCreate do
 
     if additional_disk
       # Make sure we look for the disk
-      disks.should_receive(:list).exactly(1).
-        with({:zone => stored_zone.name, :name => "mock-disk"}).
-        and_return([stored_disk])
+      disks.should_receive(:list).exactly(1).with({
+        :zone => stored_zone.name,
+        :name => "mock-disk"}).and_return([stored_disk])
 
       # We're goign to create a second disk
       disk_params.push({
@@ -73,7 +75,7 @@ describe Chef::Knife::GoogleServerCreate do
       :name => stored_instance.name,
       :zone => stored_zone.name,
       :machineType => stored_machine_type.self_link,
-      #:image => stored_image.self_link,
+      :image => stored_image.self_link,
       :disks => disk_params,
       :networkInterfaces => [{
         "network" => stored_network.self_link,
