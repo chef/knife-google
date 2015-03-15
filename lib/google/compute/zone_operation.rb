@@ -38,8 +38,8 @@ module Google
         @status_message = data["statusMessage"]
         @user = data["user"]
         @progress =  data["progress"]
-        @insert_time = Time.parse( data["insertTime"] )
-        @start_time = Time.parse( data["startTime"] )
+        @insert_time = Time.parse( data["insertTime"] ) if data.key?("insertTime")
+        @start_time = Time.parse( data["startTime"] ) if data.key?("startTime")
         @end_time = Time.parse( data["endTime"] ) if data.key?("endTime")
         @error = data["error"]
         @warnings = data["warnings"]
