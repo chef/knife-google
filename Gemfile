@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gemspec
+
 group(:development, :test) do
   platforms :mswin, :mingw do
      gem "ffi", "1.3.1"
@@ -7,5 +9,3 @@ group(:development, :test) do
      gem "win32-service", "0.7.2"
   end
 end
-
-gemspec

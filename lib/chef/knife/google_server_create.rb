@@ -65,6 +65,12 @@ class Chef
         :description => "Size of the persistent boot disk between 10 and 10000 GB, specified in GB; default is '10' GB",
         :default => "10"
 
+      option :boot_disk_ssd,
+        :long => "--[no-]gce-boot-disk-ssd",
+        :description => "Use pd-ssd boot disk; default is pd-standard boot disk",
+        :boolean => true,
+        :default => false
+
       option :boot_disk_autodelete,
         :long => "--[no-]gce-boot-disk-autodelete",
         :description => "Delete boot disk when instance is being deleted.",
@@ -446,6 +452,12 @@ class Chef
           exit 1
         end
 
+        if config[:boot_disk_ssd] then
+          boot_disk_type = "#{zone}/diskTypes/pd-ssd"
+        else
+          boot_disk_type = "#{zone}/diskTypes/pd-standard"
+        end
+
         if config[:boot_disk_name].to_s.empty? then
           boot_disk_name = @name_args.first
         else
@@ -459,12 +471,19 @@ class Chef
         end
 
         ui.info("Waiting for the boot disk insert operation to complete")
+        msg_pair("Name", boot_disk_name)
+        msg_pair("Zone", selflink2name(zone))
+        msg_pair("Type", selflink2name(boot_disk_type))
+        msg_pair("Size", "#{boot_disk_size} gb")
+        msg_pair("Image", selflink2name(image))
         boot_disk_insert = client.disks.insert(:sourceImage => image,
                                                :zone => selflink2name(zone),
                                                :name => boot_disk_name,
+                                               :type => boot_disk_type,
                                                :sizeGb => boot_disk_size)
         boot_disk_target_link = wait_for_disk(boot_disk_insert, boot_disk_insert.name, zone)
         disks = [{'boot' => true,
+                  'diskType' => boot_disk_type,
                   'type' => 'PERSISTENT',
                   'mode' => 'READ_WRITE',
                   'deviceName' => selflink2name(boot_disk_target_link),
