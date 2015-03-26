@@ -46,9 +46,9 @@ describe Chef::Knife::GoogleServerCreate do
     networks = double(Google::Compute::ListableResourceCollection)
     networks.should_receive(:get).with(stored_network.name).
       and_return(stored_network)
-
     disk_params = [{
         "boot" => true,
+        "diskType"=> "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/diskTypes/pd-standard",
         "type" => "PERSISTENT",
         "mode" => "READ_WRITE",
         "deviceName" => "",
@@ -75,7 +75,7 @@ describe Chef::Knife::GoogleServerCreate do
       :name => stored_instance.name,
       :zone => stored_zone.name,
       :machineType => stored_machine_type.self_link,
-      :image => stored_image.self_link,
+      # :image => stored_image.self_link,
       :disks => disk_params,
       :networkInterfaces => [{
         "network" => stored_network.self_link,
@@ -92,6 +92,7 @@ describe Chef::Knife::GoogleServerCreate do
       :scheduling=>{
         "automaticRestart" => "false",
         "onHostMaintenance" => "TERMINATE"},
+      :canIpForward=>false,
       :metadata => {"items" => []},
       :tags => {"items" => []}}).and_return(stored_zone_operation)
 
