@@ -419,14 +419,25 @@ class Chef
               image = client.images.get(:project=>project, :name=>config[:image]).self_link
             else
               case config[:image].downcase
-              when /debian/
-                project = 'debian-cloud'
-                ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
               when /centos/
                 project = 'centos-cloud'
-                ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
+             when /container-vm/
+                project = 'google-containers'
+             when /coreos/
+                project = 'coreos-cloud'
+              when /debian/
+                project = 'debian-cloud'
+             when /opensuse-cloud/
+                project = 'opensuse-cloud'
+              when /rhel/
+                project = 'rhel-cloud'
+              when /sles/
+                project = 'suse-cloud'
+              when /ubuntu/
+                project = 'ubuntu-os-cloud'
               end
               checked_all = true
+              ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
               image = client.images.get(:project=>project, :name=>config[:image]).self_link
             end
           else
