@@ -23,15 +23,22 @@ describe Chef::Knife::GoogleDiskCreate do
 
   it "#run should invoke compute api to create a disk" do
     zones = double(Google::Compute::ListableResourceCollection)
-    zones.should_receive(:get).
+    expect(zones).to receive(:get).
       with(stored_zone.name).and_return(stored_zone)
     disks = double(Google::Compute::CreatableResourceCollection)
-    disks.should_receive(:create).
-      with(:name => stored_disk.name, :sizeGb => 10, :zone => stored_zone.name).
+    expect(disks).to receive(:create).
+      with(:name => stored_disk.name, :sizeGb => 10, :zone => stored_zone.name,:type=>"").
       and_return(stored_zone_operation)
-    client = double(Google::Compute::Client, :zones => zones, :disks => disks)
-    Google::Compute::Client.stub(:from_json).and_return(client)
+    disk_type = double(Google::Compute::CreatableResourceCollection)
+    d_type = Object.new
+    d_type.define_singleton_method(:self_link){""}
+    expect(disk_type).to receive(:get).
+      with(:name => 'pd-ssd', :zone => stored_zone.name).
+      and_return(d_type)
+    client = double(Google::Compute::Client, :zones => zones, :disks => disks, :disk_types => disk_type)
+    allow(Google::Compute::Client).to receive(:from_json).and_return(client)
     knife_plugin.config[:disk_size] = 10
+    knife_plugin.config[:disk_type] = 'pd-ssd'
     knife_plugin.run
   end
 end
