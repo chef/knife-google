@@ -26,7 +26,7 @@ describe Chef::Knife::GoogleZoneList do
       and_return(client)
     client.should_receive(:zones).
       and_return(double("zone-collection", :list => [stored_zone]))
-    $stdout.should_receive(:write).with(kind_of(String))
+    expect(knife_plugin.ui).to receive(:info)
     knife_plugin.run
   end
 end

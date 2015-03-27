@@ -26,7 +26,7 @@ describe Chef::Knife::GoogleRegionList do
       and_return(client)
     client.should_receive(:regions).
       and_return(double("region-collection", :list => [stored_region]))
-    $stdout.should_receive(:write).with(kind_of(String))
+    expect(knife_plugin.ui).to receive(:info)
     knife_plugin.run
   end
 end
