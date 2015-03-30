@@ -50,66 +50,66 @@ describe Google::Compute::Disk do
 #  end
 
   it "#get should return an individual disk by passing a hash with name key also" do
-    @mock_api_client.should_receive(:execute).
+    expect(@mock_api_client).to receive(:execute).
       with(:api_method => mock_compute.disks.get,
            :parameters => {"disk" => "mock-disk", :project => "mock-project", :zone => "mock-zone"},:body_object => nil).
            and_return(mock_response(Google::Compute::Disk))
 
     disk = client.disks.get(:name => 'mock-disk', :zone => "mock-zone")
-    disk.should be_a_kind_of Google::Compute::Disk
-    disk.name.should eq('mock-disk')
+    expect(disk).to be_a_kind_of Google::Compute::Disk
+    expect(disk.name).to eq('mock-disk')
   end
 
   it "#list should return an array of disks" do
-    @mock_api_client.should_receive(:execute).
+    expect(@mock_api_client).to receive(:execute).
       with(:api_method => mock_compute.disks.list,
            :parameters => {:project => "mock-project", :zone => "mock-zone"},:body_object => nil).
            and_return(mock_response(Google::Compute::Disk, true))
     disks = client.disks.list(:zone => "mock-zone")
-    disks.all?{|disk| disk.is_a?(Google::Compute::Disk)}.should be_true
+    expect(disks.all?{|disk| disk.is_a?(Google::Compute::Disk)}).to be true
   end
 
   it "#create should create a new disk" do
     #zone = 'https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone'
     zone = 'mock-zone'
-    @mock_api_client.should_receive(:execute).
+    expect(@mock_api_client).to receive(:execute).
       with(:api_method => mock_compute.disks.insert,
            :parameters => {:project => "mock-project", :zone => "mock-zone"},
            :body_object => {:name => "xxx", :sizeGb => 2, :zone => "mock-zone"}).
            and_return(mock_response(Google::Compute::ZoneOperation))
     o = client.disks.create(:name => 'xxx', :sizeGb => 2, :zone => zone)
-    o.should be_a_kind_of Google::Compute::ZoneOperation
+    expect(o).to be_a_kind_of Google::Compute::ZoneOperation
   end
 
   it "#insert should create a new disk also" do
     #zone = 'https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone'
     zone = 'mock-zone'
-    @mock_api_client.should_receive(:execute).
+    expect(@mock_api_client).to receive(:execute).
       with(:api_method => mock_compute.disks.insert,
            :parameters => {:project => "mock-project", :zone => "mock-zone"},
            :body_object => {:name => "xxx", :sizeGb => 2, :zone => "mock-zone"}).
            and_return(mock_response(Google::Compute::ZoneOperation))
     o = client.disks.insert(:name => 'xxx', :sizeGb => 2, :zone => zone)
-    o.should be_a_kind_of Google::Compute::ZoneOperation
+    expect(o).to be_a_kind_of Google::Compute::ZoneOperation
   end
 
   it "#delete should delete an existing disk" do
-    @mock_api_client.should_receive(:execute).
+    expect(@mock_api_client).to receive(:execute).
       with(:api_method => mock_compute.disks.delete,
            :parameters => {:project => "mock-project","disk" => "mock-disk", :zone => "mock-zone"},:body_object => nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
     o = client.disks.delete("disk" => "mock-disk", :zone => "mock-zone")
-    o.should be_a_kind_of Google::Compute::ZoneOperation
+    expect(o).to be_a_kind_of Google::Compute::ZoneOperation
   end
 
   it "#createSnapshot should create a new snapshot" do
     zone = 'mock-zone'
     disk = 'https://www.googleapis.com/compute/v1/projects/mock-project/disks/mock-disk'
-    @mock_api_client.should_receive(:execute).
+    expect(@mock_api_client).to receive(:execute).
       with(:api_method => mock_compute.disks.create_snapshot,
            :parameters => {:project => "mock-project", :zone => zone, :disk => disk}, :body_object => nil).
            and_return(mock_response(Google::Compute::ZoneOperation))
     o = client.disks.create_snapshot(:project => "mock-project", :zone => zone, :disk => disk)
-    o.should be_a_kind_of Google::Compute::ZoneOperation
+    expect(o).to be_a_kind_of Google::Compute::ZoneOperation
   end
 end
