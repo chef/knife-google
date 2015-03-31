@@ -45,7 +45,7 @@ describe Google::Compute::Region do
            and_return(mock_response(Google::Compute::Region, true))
     regions = client.regions.list
     regions.should_not be_empty
-    regions.all?{|region| region.is_a?(Google::Compute::Region)}.should be_true
+    expect(regions.all?{|region| region.is_a?(Google::Compute::Region)}).to be_truthy
   end
 
 end

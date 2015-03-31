@@ -45,7 +45,7 @@ describe Google::Compute::Zone do
            and_return(mock_response(Google::Compute::Zone, true))
     zones = client.zones.list
     zones.should_not be_empty
-    zones.all?{|zone| zone.is_a?(Google::Compute::Zone)}.should be_true
+    expect(zones.all?{|zone| zone.is_a?(Google::Compute::Zone)}).to be_truthy
   end
 
 end

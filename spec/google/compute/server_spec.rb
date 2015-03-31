@@ -46,7 +46,7 @@ describe Google::Compute::Server do
            and_return(mock_response(Google::Compute::Server, true))
     instances = client.instances.list(:zone => 'mock-zone')
     instances.should_not be_empty
-    instances.all?{|i| i.is_a?(Google::Compute::Server)}.should be_true
+    expect(instances.all?{|i| i.is_a?(Google::Compute::Server)}).to be_truthy
   end
 
   it '#create should create an server' do
