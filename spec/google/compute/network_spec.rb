@@ -45,7 +45,7 @@ describe Google::Compute::Network do
            and_return(mock_response(Google::Compute::Network, true))
     networks = client.networks.list
     networks.should_not be_empty
-    networks.all?{|n| n.is_a?(Google::Compute::Network)}.should be_true
+    expect(networks.all?{|n| n.is_a?(Google::Compute::Network)}).to be_truthy
   end
 
   it '#create should create a new network' do

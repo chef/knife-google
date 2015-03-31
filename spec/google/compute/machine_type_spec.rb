@@ -48,6 +48,6 @@ describe Google::Compute::MachineType do
          and_return(mock_response(Google::Compute::MachineType, true))
     mts = client.machine_types.list
     mts.should_not be_empty
-    mts.all?{|mt| mt.is_a?(Google::Compute::MachineType)}.should be_true
+    expect(mts.all?{|mt| mt.is_a?(Google::Compute::MachineType)}).to be_truthy
   end
 end

@@ -46,7 +46,7 @@ describe Google::Compute::Image do
            and_return(mock_response(Google::Compute::Image, true))
     images = client.images.list
     images.should_not be_empty
-    images.all?{|i| i.is_a?(Google::Compute::Image)}.should be_true
+    expect(images.all?{|i| i.is_a?(Google::Compute::Image)}).to be_truthy
   end
   it '#create should create a new image' do
     storage = 'https://www.googleapis.com/storage/projects/mock-project/bucket/object'

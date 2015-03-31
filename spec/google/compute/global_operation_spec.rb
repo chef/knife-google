@@ -35,7 +35,7 @@ describe Google::Compute::GlobalOperation do
 
     operations = client.globalOperations.list
     operations.should_not be_empty
-    operations.all?{|o| o.is_a?(Google::Compute::GlobalOperation)}.should be_true
+    expect(operations.all?{|o| o.is_a?(Google::Compute::GlobalOperation)}).to be_truthy
   end
 
   it '#get should return an individual global operation' do

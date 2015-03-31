@@ -35,7 +35,7 @@ describe Google::Compute::ZoneOperation do
 
     operations = client.zoneOperations.list
     operations.should_not be_empty
-    operations.all?{|o| o.is_a?(Google::Compute::ZoneOperation)}.should be_true
+    expect(operations.all?{|o| o.is_a?(Google::Compute::ZoneOperation)}).to be_truthy
   end
 
   it '#get should return an individual zone operation' do

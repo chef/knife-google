@@ -44,7 +44,7 @@ describe Google::Compute::Snapshot do
            and_return(mock_response(Google::Compute::Snapshot, true))
     snapshots = client.snapshots.list
     snapshots.should_not be_empty
-    snapshots.all?{|s| s.is_a?(Google::Compute::Snapshot)}.should be_true
+    expect(snapshots.all?{|s| s.is_a?(Google::Compute::Snapshot)}).to be_truthy
   end
 
   it '#delete should delete an existing snapshot' do
