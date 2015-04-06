@@ -10,5 +10,6 @@
   "options":"",
   "status":"READY",
   "sourceSnapshot":"",
-  "sourceSnapshotId":""
+  "sourceSnapshotId":"",
+  "type":"disk"
 }

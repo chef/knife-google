@@ -46,9 +46,9 @@ describe Chef::Knife::GoogleServerCreate do
     networks = double(Google::Compute::ListableResourceCollection)
     networks.should_receive(:get).with(stored_network.name).
       and_return(stored_network)
-
     disk_params = [{
         "boot" => true,
+        "diskType"=> "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/diskTypes/pd-standard",
         "type" => "PERSISTENT",
         "mode" => "READ_WRITE",
         "deviceName" => "",
@@ -75,7 +75,7 @@ describe Chef::Knife::GoogleServerCreate do
       :name => stored_instance.name,
       :zone => stored_zone.name,
       :machineType => stored_machine_type.self_link,
-      :image => stored_image.self_link,
+      # :image => stored_image.self_link,
       :disks => disk_params,
       :networkInterfaces => [{
         "network" => stored_network.self_link,
@@ -92,6 +92,7 @@ describe Chef::Knife::GoogleServerCreate do
       :scheduling=>{
         "automaticRestart" => "false",
         "onHostMaintenance" => "TERMINATE"},
+      :canIpForward=>false,
       :metadata => {"items" => []},
       :tags => {"items" => []}}).and_return(stored_zone_operation)
 
@@ -117,6 +118,7 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
     knife_plugin.config[:boot_disk_size]='10'
     knife_plugin.config[:metadata]=[]
+    knife_plugin.config[:metadata_from_file]=[]
     knife_plugin.config[:tags]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
     knife_plugin.ui.stub(:info)
@@ -142,6 +144,7 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
     knife_plugin.config[:boot_disk_size]='10'
     knife_plugin.config[:metadata]=[]
+    knife_plugin.config[:metadata_from_file]=[]
     knife_plugin.config[:tags]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
     knife_plugin.ui.stub(:info)
@@ -165,6 +168,7 @@ describe Chef::Knife::GoogleServerCreate do
     knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
     knife_plugin.config[:boot_disk_size]='10'
     knife_plugin.config[:metadata]=[]
+    knife_plugin.config[:metadata_from_file]=[]
     knife_plugin.config[:tags]=[]
     knife_plugin.config[:public_ip]='EPHEMERAL'
     knife_plugin.ui.stub(:info)

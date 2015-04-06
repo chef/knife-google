@@ -45,7 +45,7 @@ describe Google::Compute::Firewall do
            and_return(mock_response(Google::Compute::Firewall, true))
     fws = client.firewalls.list
     fws.should_not be_empty
-    fws.all?{|f| f.is_a?(Google::Compute::Firewall)}.should be_true
+    expect(fws.all?{|f| f.is_a?(Google::Compute::Firewall)}).to be_truthy
   end
 
   it '#create should create a new firewall' do
