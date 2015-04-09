@@ -563,7 +563,7 @@ class Chef
           network_interface.merge!('accessConfigs' =>[{"name"=>"External NAT",
                   "type"=>"ONE_TO_ONE_NAT", "natIP"=>config[:public_ip] }])
         elsif config[:public_ip] == 'NONE'
-          # do nothing
+          config[:instance_connect_ip] = 'PRIVATE'
         else
           ui.error("Invalid public ip value : #{config[:public_ip]}")
           exit 1
@@ -585,7 +585,7 @@ class Chef
                                                    :tags => { 'items' => config[:tags] }
                                                   )
         else
-          zone_operation = client.instances.create(:name => @name_args.first, 
+          zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone=> selflink2name(zone),
                                                    :machineType => machine_type,
                                                    :disks => disks,
