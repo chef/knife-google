@@ -17,36 +17,22 @@ require 'spec_helper'
 
 describe Chef::Knife::GoogleServerCreate do
   before(:each) do
-  end
+    @server_instance = Chef::Knife::GoogleServerCreate.new([
+      "-m"+stored_machine_type.name,
+      "-I"+stored_image.name,
+      "-n"+stored_network.name,
+      "-Z"+stored_zone.name,
+      stored_instance.name])
+    @server_instance.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
+    @server_instance.config[:service_account_name]='123845678986@project.gserviceaccount.com'
+    @server_instance.config[:boot_disk_size]='10'
+    @server_instance.config[:metadata]=[]
+    @server_instance.config[:metadata_from_file]=[]
+    @server_instance.config[:tags]=[]
 
-  def setup(additional_disk=false)
-    zones = double(Google::Compute::ListableResourceCollection)
-    zones.should_receive(:get).with(stored_zone.name).
-      and_return(stored_zone)
+    @instances = double(Google::Compute::ListableResourceCollection)
 
-    machine_types = double(Google::Compute::ListableResourceCollection)
-    machine_types.should_receive(:get).
-      with({:name => stored_machine_type.name, :zone => stored_zone.name}).
-      and_return(stored_machine_type)
-
-    images = double(Google::Compute::ListableResourceCollection)
-    images.should_receive(:get).
-      with({:project => "mock-project", :name => stored_image.name}).
-      and_return(stored_image)
-
-    sizeGb = 10
-    disks = double(Google::Compute::ListableResourceCollection)
-    disks.should_receive(:insert).with({
-      :sourceImage => stored_image.self_link,
-      :zone => stored_zone.name,
-      :name => stored_instance.name,
-      :type => "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/diskTypes/pd-standard",
-      :sizeGb => sizeGb}).and_return(stored_disk)
-
-    networks = double(Google::Compute::ListableResourceCollection)
-    networks.should_receive(:get).with(stored_network.name).
-      and_return(stored_network)
-    disk_params = [{
+    @disk_params = [{
         "boot" => true,
         "diskType"=> "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/diskTypes/pd-standard",
         "type" => "PERSISTENT",
@@ -55,28 +41,20 @@ describe Chef::Knife::GoogleServerCreate do
         "source" => nil,
         "autoDelete" => "false"}]
 
-    if additional_disk
-      # Make sure we look for the disk
-      disks.should_receive(:list).exactly(1).with({
-        :zone => stored_zone.name,
-        :name => "mock-disk"}).and_return([stored_disk])
+    sizeGb = 10
+    @disk_setup = {
+      :sourceImage => stored_image.self_link,
+      :zone => stored_zone.name,
+      :name => stored_instance.name,
+      :type => "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/diskTypes/pd-standard",
+      :sizeGb => sizeGb }
 
-      # We're goign to create a second disk
-      disk_params.push({
-          "boot" => false,
-          "type" => "PERSISTENT",
-          "mode" => "READ_WRITE",
-          "deviceName" => "mock-disk",
-          "source" => "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/disks/mock-disk"})
-    end
-
-    instances = double(Google::Compute::ListableResourceCollection)
-    instances.should_receive(:create).with({
+    @result = {
       :name => stored_instance.name,
       :zone => stored_zone.name,
       :machineType => stored_machine_type.self_link,
       # :image => stored_image.self_link,
-      :disks => disk_params,
+      :disks => @disk_params,
       :networkInterfaces => [{
         "network" => stored_network.self_link,
         "accessConfigs" => [{
@@ -94,90 +72,115 @@ describe Chef::Knife::GoogleServerCreate do
         "onHostMaintenance" => "TERMINATE"},
       :canIpForward=>false,
       :metadata => {"items" => []},
-      :tags => {"items" => []}}).and_return(stored_zone_operation)
+      :tags => {"items" => []}}
+  end
 
-    instances.should_receive(:get).
-      with(:zone => stored_zone.name, :name => stored_instance.name).
-      and_return(stored_instance)
+  def setup(additional_disk=false)
+    zones = double(Google::Compute::ListableResourceCollection)
+    expect(zones).to receive(:get).with(stored_zone.name).and_return(stored_zone)
 
-    client = double(Google::Compute::Client, :instances => instances,
+    machine_types = double(Google::Compute::ListableResourceCollection)
+    expect(machine_types).to receive(:get).with({:name => stored_machine_type.name, :zone => stored_zone.name}).
+    and_return(stored_machine_type)
+
+    images = double(Google::Compute::ListableResourceCollection)
+    expect(images).to receive(:get).with({:project => "mock-project", :name => stored_image.name}).
+    and_return(stored_image)
+
+
+    disks = double(Google::Compute::ListableResourceCollection)
+    expect(disks).to receive(:insert).with(@disk_setup).and_return(stored_disk)
+
+    networks = double(Google::Compute::ListableResourceCollection)
+    expect(networks).to receive(:get).with(stored_network.name).and_return(stored_network)
+
+    if additional_disk
+      # Make sure we look for the disk
+      expect(disks).to receive(:list).exactly(1).times.with({
+        :zone => stored_zone.name,
+        :name => "mock-disk"}).and_return([stored_disk])
+
+      # We're goign to create a second disk
+      @disk_params.push({
+          "boot" => false,
+          "type" => "PERSISTENT",
+          "mode" => "READ_WRITE",
+          "deviceName" => "mock-disk",
+          "source" => "https://www.googleapis.com/compute/v1/projects/mock-project/zones/mock-zone/disks/mock-disk"})
+    end
+
+    expect(@instances).to receive(:get).with(:zone => stored_zone.name, :name => stored_instance.name).and_return(stored_instance)
+
+    client = double(Google::Compute::Client, :instances => @instances,
       :images => images, :zones => zones,:machine_types => machine_types,
       :networks => networks, :disks => disks)
-    Google::Compute::Client.stub(:from_json).and_return(client)
+    allow(Google::Compute::Client).to receive(:from_json).and_return(client)
   end
 
   it "#run should invoke compute api to create an server with a service account" do
     setup
-    knife_plugin = Chef::Knife::GoogleServerCreate.new([
-      "-m"+stored_machine_type.name,
-      "-I"+stored_image.name,
-      "-n"+stored_network.name,
-      "-Z"+stored_zone.name,
-      stored_instance.name])
-    knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
-    knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
-    knife_plugin.config[:boot_disk_size]='10'
-    knife_plugin.config[:metadata]=[]
-    knife_plugin.config[:metadata_from_file]=[]
-    knife_plugin.config[:tags]=[]
-    knife_plugin.config[:public_ip]='EPHEMERAL'
-    knife_plugin.ui.stub(:info)
-    knife_plugin.stub(:wait_for_disk)
-    knife_plugin.stub(:wait_for_sshd)
-    knife_plugin.should_receive(:bootstrap_for_node).
-      with(stored_instance,'10.100.0.10').
-      and_return(double("Chef::Knife::Bootstrap",:run => true))
-    knife_plugin.run
+    @server_instance.config[:public_ip]='EPHEMERAL'
+    allow(@server_instance.ui).to receive(:info)
+    allow(@server_instance).to receive(:wait_for_disk)
+    allow(@server_instance).to receive(:wait_for_sshd)
+    expect(@server_instance).to receive(:bootstrap_for_node).with(stored_instance,'10.100.0.10').and_return(double("Chef::Knife::Bootstrap",:run => true))
+    expect(@instances).to receive(:create).with(@result).and_return(stored_zone_operation)
+    @server_instance.run
   end
 
   it "#run should create a server with secondary storage disk" do
     setup(true)
-
-    knife_plugin = Chef::Knife::GoogleServerCreate.new([
-      "-m"+stored_machine_type.name,
-      "-I"+stored_image.name,
-      "-n"+stored_network.name,
-      "-Z"+stored_zone.name,
-      "-Dmock-disk",
-      stored_instance.name])
-    knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
-    knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
-    knife_plugin.config[:boot_disk_size]='10'
-    knife_plugin.config[:metadata]=[]
-    knife_plugin.config[:metadata_from_file]=[]
-    knife_plugin.config[:tags]=[]
-    knife_plugin.config[:public_ip]='EPHEMERAL'
-    knife_plugin.ui.stub(:info)
-    knife_plugin.stub(:wait_for_disk)
-    knife_plugin.stub(:wait_for_sshd)
-    knife_plugin.should_receive(:bootstrap_for_node).
-      with(stored_instance,'10.100.0.10').
-      and_return(double("Chef::Knife::Bootstrap",:run => true))
-    knife_plugin.run
+    @server_instance.config[:additional_disks] = 'mock-disk'
+    @server_instance.config[:public_ip]='EPHEMERAL'
+    allow(@server_instance.ui).to receive(:info)
+    allow(@server_instance).to receive(:wait_for_disk)
+    allow(@server_instance).to receive(:wait_for_sshd)
+    expect(@server_instance).to receive(:bootstrap_for_node).with(stored_instance,'10.100.0.10').and_return(double("Chef::Knife::Bootstrap",:run => true))
+    expect(@instances).to receive(:create).with(@result).and_return(stored_zone_operation)
+    @server_instance.run
   end
 
   it "should read zone value from knife config file." do
     setup
     Chef::Config[:knife][:gce_zone] = stored_zone.name
-    knife_plugin = Chef::Knife::GoogleServerCreate.new([
-      "-m"+stored_machine_type.name,
-      "-I"+stored_image.name,
-      "-n"+stored_network.name,
-      stored_instance.name])
-    knife_plugin.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
-    knife_plugin.config[:service_account_name]='123845678986@project.gserviceaccount.com'
-    knife_plugin.config[:boot_disk_size]='10'
-    knife_plugin.config[:metadata]=[]
-    knife_plugin.config[:metadata_from_file]=[]
-    knife_plugin.config[:tags]=[]
-    knife_plugin.config[:public_ip]='EPHEMERAL'
-    knife_plugin.ui.stub(:info)
-    knife_plugin.stub(:wait_for_disk)
-    knife_plugin.stub(:wait_for_sshd)
-    knife_plugin.should_receive(:bootstrap_for_node).
-      with(stored_instance, '10.100.0.10').
-      and_return(double("Chef::Knife::Bootstrap", :run => true))
-    knife_plugin.run
+    @server_instance.config[:public_ip]='EPHEMERAL'
+    allow(@server_instance.ui).to receive(:info)
+    allow(@server_instance).to receive(:wait_for_disk)
+    allow(@server_instance).to receive(:wait_for_sshd)
+    expect(@server_instance).to receive(:bootstrap_for_node).with(stored_instance,'10.100.0.10').and_return(double("Chef::Knife::Bootstrap",:run => true))
+    expect(@instances).to receive(:create).with(@result).and_return(stored_zone_operation)
+    @server_instance.run
+  end
+
+  it "create with public ip set to none" do
+    setup
+    @result = {
+      :name => stored_instance.name,
+      :zone => stored_zone.name,
+      :machineType => stored_machine_type.self_link,
+      # :image => stored_image.self_link,
+      :disks => @disk_params,
+      :networkInterfaces => [{"network" => stored_network.self_link}],
+      :serviceAccounts => [{
+        "kind" => "compute#serviceAccount",
+        "email" => "123845678986@project.gserviceaccount.com",
+        "scopes" => [
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/compute",
+          "https://www.googleapis.com/auth/devstorage.full_control"]}],
+      :scheduling=>{
+        "automaticRestart" => "false",
+        "onHostMaintenance" => "TERMINATE"},
+      :canIpForward=>false,
+      :metadata => {"items" => []},
+      :tags => {"items" => []}}
+    @server_instance.config[:public_ip]='NONE'
+    allow(@server_instance.ui).to receive(:info)
+    allow(@server_instance).to receive(:wait_for_disk)
+    allow(@server_instance).to receive(:wait_for_sshd)
+    expect(@server_instance).to receive(:bootstrap_for_node).with(stored_instance,'10.100.0.10').and_return(double("Chef::Knife::Bootstrap",:run => true))
+    expect(@instances).to receive(:create).with(@result).and_return(stored_zone_operation)
+    @server_instance.run
   end
 end
 
