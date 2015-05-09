@@ -1,4 +1,4 @@
-# Copyright 2013 Google Inc. All Rights Reserved.
+# Copyright 2015 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 require 'chef/knife/google_base'
 
 class Chef
@@ -20,22 +19,18 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk create NAME --gce-disk-size N -Z ZONE (options)"
+      banner "knife google disk create NAME --gce-disk-size N (options)"
 
-      deps do
-        require 'google/compute'
-      end
-
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
         :description => "The Zone for this disk",
-        :required => true
+        :proc => Proc.new { |key| Chef::Config[:knife][:gce_zone] = key }
 
       option :disk_size,
         :long => "--gce-disk-size SIZE",
-        :description => "Size of the persistent disk between 1 and 10000 GB, specified in GB; default is '1' GB",
-        :default => "1"
+        :description => "Size of the persistent disk between 1 and 10000 GB, specified in GB; default is '10' GB",
+        :default => "10"
 
       option :disk_type,
         :long => "--gce-disk-type TYPE",
@@ -46,38 +41,32 @@ class Chef
         $stdout.sync = true
         unless @name_args.size > 0
           ui.error("Please provide the name of the new disk")
-          exit 1
+          raise
         end
 
-        begin
-          zone = client.zones.get(config[:zone])
-        rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone]}' not found")
-          exit 1
-        end
+        disk_size = config[:disk_size].to_i
 
-        begin
-          disk_type = client.disk_types.get(:name => config[:disk_type],
-                                                  :zone => selflink2name(zone.self_link))
-        rescue Google::Compute::ResourceNotFound
-          ui.error("DiskType '#{config[:disk_type]}' not found")
-          exit 1
-        end
-
-
-        begin
-          disk_size = config[:disk_size].to_i
-          raise if !disk_size.between?(1, 10000)
-        rescue
+        unless disk_size.between?(1, 10000)
           ui.error("Size of the persistent disk must be between 1 and 10000 GB.")
-          exit 1
+          raise
         end
 
-        zone_operation = client.disks.create(:name => @name_args.first,
-                                             :sizeGb => config[:disk_size],
-                                             :zone => zone.name,
-                                             :type => disk_type.self_link)
+        disk_type = "zones/#{config[:zone]}/diskTypes/#{config[:disk_type]}"
+
+        begin
+          result = client.execute(
+            :api_method => compute.disks.insert,
+            :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]},
+            :body_object => {:name => config[:name], :sizeGb => disk_size, :type => disk_type})
+          body = MultiJson.load(result.body, :symbolize_keys => true)
+          raise "#{body[:error][:message]}" if result.status != 200
+        rescue => e
+          ui.error(e)
+          raise
+        end
+
       end
+
     end
   end
 end

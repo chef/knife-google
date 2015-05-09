@@ -1,4 +1,4 @@
-# Copyright 2013 Google Inc. All Rights Reserved.
+# Copyright 2015 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,44 +20,44 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk list -Z ZONE (options)"
+      banner "knife google disk list (options)"
 
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
         :description => "The Zone for disk listing",
-        :required => true
+        :proc => Proc.new { |key| Chef::Config[:knife][:gce_zone] = key }
 
       def run
         $stdout.sync = true
 
-        begin
-          zone = client.zones.get(config[:zone])
-        rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone]}' not found")
-          exit 1
-        end
-
         disk_list = [
-          ui.color("name", :bold),
+          ui.color('name', :bold),
           ui.color('zone', :bold),
-          ui.color('source snapshot', :bold),
-          ui.color('size (in GB)', :bold),
+          ui.color('source image', :bold),
+          ui.color('size (GB)', :bold),
           ui.color('status', :bold)].flatten.compact
 
         output_column_count = disk_list.length
 
-        client.disks.list(:zone=>zone.name).each do |disk|
-          disk_list << disk.name
-          disk_list << selflink2name(disk.zone)
-          if disk.source_snapshot.nil?
+
+        result = client.execute(
+          :api_method => compute.disks.list,
+          :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]})
+
+        body = MultiJson.load(result.body, :symbolize_keys => true)
+
+        body[:items].each do |disk|
+          disk_list << disk[:name]
+          disk_list << selflink2name(disk[:zone])
+          if disk[:sourceImage].nil?
             disk_list << " "
           else
-            disk_list << selflink2name(disk.source_snapshot)
+            disk_list << selflink2name(disk[:sourceImage])
           end
-          disk_list << disk.size_gb
+          disk_list << disk[:sizeGb]
           disk_list << begin
-            status = disk.status.downcase
+            status = disk[:status].downcase
             case status
             when 'stopping', 'stopped', 'terminated'
               ui.color(status, :red)
@@ -68,6 +68,7 @@ class Chef
             end
           end
         end
+
         ui.info(ui.list(disk_list, :uneven_columns_across, output_column_count))
       end
     end

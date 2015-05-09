@@ -16,41 +16,40 @@ require 'chef/knife/google_base'
 
 class Chef
   class Knife
-    class GoogleZoneList < Knife
+    class GoogleRegionQuotas < Knife
 
       include Knife::GoogleBase
 
-      banner "knife google zone list"
+      banner "knife google region quotas"
 
       def run
         $stdout.sync = true
 
-        zones_list = [
-          ui.color('name', :bold),
-          ui.color('status', :bold)].flatten.compact
+        quotas_list = [
+          ui.color('region', :bold),
+          ui.color('quota', :bold),
+          ui.color('limit', :bold),
+          ui.color('usage', :bold)].flatten.compact
 
-        output_column_count = zones_list.length
+        output_column_count = quotas_list.length
 
         result = client.execute(
-          :api_method => compute.zones.list,
-          :parameters => {:project => config[:gce_project]})
+          :api_method => compute.regions.list,
+          :parameters => {:project => config[:project]})
 
         body = MultiJson.load(result.body, :symbolize_keys => true)
 
         body[:items].each do |item|
-          zones_list << item[:name]
-          zones_list << begin
-            status = item[:status].downcase
-            case status
-            when 'up'
-              ui.color(status, :green)
-            else
-              ui.color(status, :red)
-            end
+          region = item[:name]
+          item[:quotas].each do |quota|
+            quotas_list << region
+            quotas_list << quota[:metric].downcase
+            quotas_list << quota[:limit]
+            quotas_list << quota[:usage]
           end
         end
 
-        ui.info(ui.list(zone_list, :uneven_columns_across, output_column_count))
+        ui.info(ui.list(quotas_list, :uneven_columns_across, output_column_count))
       end
     end
   end

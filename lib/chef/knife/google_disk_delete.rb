@@ -1,4 +1,4 @@
-# Copyright 2013 Google Inc. All Rights Reserved.
+# Copyright 2015 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,41 +20,33 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google disk delete NAME -Z ZONE (options)"
+      banner "knife google disk delete NAME (options)"
 
-      deps do
-        require 'google/compute'
-      end
-
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
         :description => "The Zone for this disk",
-        :required => true
+        :proc => Proc.new { |key| Chef::Config[:knife][:gce_zone] = key }
 
       def run
+        $stdout.sync = true
         unless @name_args.size > 0
           ui.error("Please provide the name of the disk to be deleted")
-          exit 1
+          raise
         end
-
         begin
-          zone = client.zones.get(config[:zone])
-        rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone]}' not found")
-          exit 1
-        end
-
-        begin
-          disk = client.disks.get(:zone=>zone.name, :disk=>@name_args.first)
-          ui.confirm("Are you sure you want to delete disk '#{zone.name}:#{disk.name}'")
-          zone_operation = client.disks.delete(:zone=>zone.name, :disk=>disk.name)
-          ui.warn("Disk '#{zone.name}:#{disk.name}' deleted")
-        rescue Google::Compute::ResourceNotFound
-          ui.error("Disk '#{zone.name}:#{@name_args.first}' not found")
-          exit 1
+          ui.confirm("Delete the disk '#{config[:zone]}:#{@name_args.first}'")
+          result = client.execute(
+            :api_method => compute.disks.delete,
+            :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :disk => @name_args.first})
+          ui.warn("Disk '#{config[:zone]}:#{@name_args.first}' deleted") if result.status == 200
+        rescue
+          body = MultiJson.load(result.body, :symbolize_keys => true)
+          ui.error("#{body[:error][:message]}")
+          raise
         end
       end
+
     end
   end
 end

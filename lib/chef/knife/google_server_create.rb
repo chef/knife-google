@@ -1,4 +1,4 @@
-# Copyright 2013 Google Inc. All Rights Reserved.
+# Copyright 2015 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'timeout'
 require 'chef/knife/google_base'
 
 class Chef
@@ -22,13 +21,12 @@ class Chef
       include Knife::GoogleBase
 
       deps do
-        require 'google/compute'
-        require 'chef/json_compat'
         require 'chef/knife/bootstrap'
+        require 'timeout'
         Chef::Knife::Bootstrap.load_deps
       end
 
-      banner "knife google server create NAME -m MACHINE_TYPE -I IMAGE -Z ZONE (options)"
+      banner "knife google server create NAME -m MACHINE_TYPE -I IMAGE (options)"
 
       attr_accessor :initial_sleep_delay
       attr_reader :instance
@@ -50,7 +48,7 @@ class Chef
         :description => "The project-id containing the Image (debian-cloud, centos-cloud, etc)",
         :default => ""
 
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
@@ -73,30 +71,30 @@ class Chef
 
       option :boot_disk_autodelete,
         :long => "--[no-]gce-boot-disk-autodelete",
-        :description => "Delete boot disk when instance is being deleted.",
+        :description => "Delete boot disk when server is deleted.",
         :boolean => true,
         :default => false
 
       option :additional_disks,
         :long => "--gce-disk-additional-disks DISKS",
         :short => "-D DISKS",
-        :description => "Additional disks you'd like to have attached to this instance (NOTE: this will not create them)"
+        :description => "Additional disks to attach to this server (NOTE: this will not create them)"
 
       option :auto_restart,
         :long => "--[no-]gce-auto-server-restart",
-        :description => "Compute Engine can automatically restart your VM instance if it is terminated for non-user-initiated reasons; enabled by default.",
+        :description => "GCE can automatically restart your server if it is terminated for non-user-initiated reasons; enabled by default.",
         :boolean => true,
         :default => true
 
       option :auto_migrate,
         :long => "--[no-]gce-auto-server-migrate",
-        :description => "Compute Engine can migrate your VM instance to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
+        :description => "GCE can migrate your server to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
         :boolean => true,
         :default => true
 
       option :can_ip_forward,
         :long => "--[no-]gce-can-ip-forward",
-        :description => "Forwarding allows the instance to help route packets.",
+        :description => "Allow server network forwarding",
         :boolean => true,
         :default => false
 
@@ -137,9 +135,9 @@ class Chef
         :description => "Service account name for this server, typically in the form of '123845678986@project.gserviceaccount.com'; default is 'default'",
         :default => "default"
 
-      option :instance_connect_ip,
-        :long => "--gce-server-connect-ip INTERFACE",
-        :description => "Whether to use PUBLIC or PRIVATE interface/address to connect; default is 'PUBLIC'",
+      option :server_connect_interface,
+        :long => "--gce-server-connect-interface INTERFACE",
+        :description => "Whether to use PUBLIC or PRIVATE interface to connect; default is 'PUBLIC'",
         :default => 'PUBLIC'
 
       option :public_ip,
@@ -208,7 +206,7 @@ class Chef
         :short => "-j JSON",
         :long => "--json-attributes JSON",
         :description => "A JSON string to be added to the first run of chef-client",
-        :proc => lambda { |o| JSON.parse(o) }
+        :proc => lambda { |o| MultiJson.load(o) }
 
       option :host_key_verify,
         :long => "--[no-]host-key-verify",
@@ -227,7 +225,7 @@ class Chef
         :proc => Proc.new { |h|
            Chef::Config[:knife][:hints] ||= {}
            name, path = h.split("=")
-           Chef::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new
+           Chef::Config[:knife][:hints][name] = path ? MultiJson.load(::File.read(path)) : Hash.new
         }
 
       option :secret,
@@ -260,18 +258,6 @@ class Chef
         tcp_socket && tcp_socket.close
       end
 
-      def wait_for_sshd(hostname)
-        config[:ssh_gateway] ? wait_for_tunnelled_sshd(hostname) : wait_for_direct_sshd(hostname, config[:ssh_port])
-      end
-
-      def wait_for_tunnelled_sshd(hostname)
-        print(".")
-        print(".") until tunnel_test_ssh(hostname) {
-          sleep @initial_sleep_delay ||= 40
-          puts("done")
-        }
-      end
-
       def tunnel_test_ssh(hostname, &block)
         gw_host, gw_user = config[:ssh_gateway].split('@').reverse
         gw_host, gw_port = gw_host.split(':')
@@ -289,49 +275,24 @@ class Chef
       end
 
       def wait_for_direct_sshd(hostname, ssh_port)
-        print(".") until tcp_test_ssh(ssh_connect_host, ssh_port) {
-          sleep @initial_sleep_delay ||=  40
-          puts("done")
+        ui.info("Waiting for direct ssh to #{hostname}:#{ssh_port}") until tcp_test_ssh(hostname, ssh_port) {
+          sleep @initial_sleep_delay ||=  10
+          ui.info(ui.color("Connected to server", :magenta))
         }
       end
 
-      def ssh_connect_host
-        @ssh_connect_host ||= if config[:instance_connect_ip] == 'PUBLIC'
-                                public_ips(@instance).first
-        else
-           private_ips(@instance).first
-        end
+      def wait_for_tunneled_sshd(hostname)
+        ui.info("Waiting for tunneled ssh to #{hostname}") until tunnel_test_ssh(hostname) {
+          sleep @initial_sleep_delay ||= 10
+          ui.info(ui.color("Connected to server", :magenta))
+        }
       end
 
-      def disk_exists(disk, zone)
-        # if client.disks.get errors with a Google::Compute::ResourceNotFound
-        # then the disk does not exist and can be created
-        client.disks.get(:disk => disk, :zone => selflink2name(zone))
-      rescue Google::Compute::ResourceNotFound
-        # disk does not exist
-        # continue provisioning
-        false
-      else
-        true
+      def wait_for_sshd(hostname)
+        config[:ssh_gateway] ? wait_for_tunneled_sshd(hostname) : wait_for_direct_sshd(hostname, config[:ssh_port])
       end
 
-      def wait_for_disk(disk, operation, zone)
-        Timeout::timeout(300) do
-          until disk.status == 'DONE'
-            ui.info(".")
-            sleep 1
-            disk = client.zoneOperations.get(:name => disk,
-                                             :operation => operation,
-                                             :zone => selflink2name(zone))
-          end
-          disk.target_link
-        end
-      rescue Timeout::Error
-        ui.error("Timeout exceeded with disk status: " + disk.status)
-        exit 1
-      end
-
-      def bootstrap_for_node(instance, ssh_host)
+      def bootstrap_for_node(instance_name, ssh_host)
         bootstrap = Chef::Knife::Bootstrap.new
         bootstrap.name_args = [ssh_host]
         bootstrap.config[:run_list] = config[:run_list]
@@ -339,7 +300,7 @@ class Chef
         bootstrap.config[:ssh_port] = config[:ssh_port]
         bootstrap.config[:ssh_gateway] = config[:ssh_gateway]
         bootstrap.config[:identity_file] = config[:identity_file]
-        bootstrap.config[:chef_node_name] = config[:chef_node_name] || instance.name
+        bootstrap.config[:chef_node_name] = config[:chef_node_name] || instance_name
         bootstrap.config[:prerelease] = config[:prerelease]
         bootstrap.config[:bootstrap_version] = config[:bootstrap_version]
         bootstrap.config[:first_boot_attributes] = config[:json_attributes]
@@ -351,11 +312,9 @@ class Chef
         bootstrap.config[:encrypted_data_bag_secret_file] = locate_config_value(:encrypted_data_bag_secret_file)
         bootstrap.config[:secret] = locate_config_value(:secret)
         bootstrap.config[:secret_file] = locate_config_value(:secret_file)
-
         # may be needed for vpc_mode
         bootstrap.config[:host_key_verify] = config[:host_key_verify]
-        # Modify global configuration state to ensure hint gets set by
-        # knife-bootstrap
+        # Modify global configuration state to ensure hint gets set by knife-bootstrap
         Chef::Config[:knife][:hints] ||= {}
         Chef::Config[:knife][:hints]["gce"] ||= {}
         Chef::Config[:knife][:hints]["google"] ||= {}
@@ -369,22 +328,10 @@ class Chef
           exit 1
         end
 
-        begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone]).self_link
-        rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone]}' not found.")
-          exit 1
-        rescue Google::Compute::ParameterValidation
-          ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
-          exit 1
-        end
-
-        begin
-          machine_type = client.machine_types.get(:name => config[:machine_type],
-                                                  :zone => selflink2name(zone)).self_link
-        rescue Google::Compute::ResourceNotFound
-          ui.error("MachineType '#{config[:machine_type]}' not found")
-          exit 1
+        if config[:auto_migrate] then
+          auto_migrate = 'MIGRATE'
+        else
+          auto_migrate = 'TERMINATE'
         end
 
         # this parameter is a string during the post and boolean otherwise
@@ -394,79 +341,10 @@ class Chef
           auto_restart = 'false'
         end
 
-        if config[:auto_migrate] then
-          auto_migrate = 'MIGRATE'
+        if config[:boot_disk_autodelete] then
+          boot_disk_autodelete = 'true'
         else
-          auto_migrate = 'TERMINATE'
-        end
-
-        if config[:can_ip_forward] then
-          can_ip_forward = true
-        else
-          can_ip_forward = false
-        end
-
-        (checked_custom, checked_all) = false
-        begin
-          image_project = config[:image_project_id]
-          # use zone url to determine project name
-          zone =~ Regexp.new('/projects/(.*?)/')
-          project = $1
-          if image_project.to_s.empty?
-            unless checked_custom
-              checked_custom = true
-              ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
-              image = client.images.get(:project=>project, :name=>config[:image]).self_link
-            else
-              case config[:image].downcase
-              when /centos/
-                project = 'centos-cloud'
-             when /container-vm/
-                project = 'google-containers'
-             when /coreos/
-                project = 'coreos-cloud'
-              when /debian/
-                project = 'debian-cloud'
-             when /opensuse-cloud/
-                project = 'opensuse-cloud'
-              when /rhel/
-                project = 'rhel-cloud'
-              when /sles/
-                project = 'suse-cloud'
-              when /ubuntu/
-                project = 'ubuntu-os-cloud'
-              end
-              checked_all = true
-              ui.info("Looking for Image '#{config[:image]}' in Project '#{project}'")
-              image = client.images.get(:project=>project, :name=>config[:image]).self_link
-            end
-          else
-            checked_all = true
-            project = image_project
-            image = client.images.get(:project=>project, :name=>config[:image]).self_link
-          end
-          ui.info("Found Image '#{config[:image]}' in Project '#{project}'")
-        rescue Google::Compute::ResourceNotFound
-          unless checked_all then
-            retry
-          else
-            ui.error("Image '#{config[:image]}' not found")
-            exit 1
-          end
-        end
-
-        begin
-          boot_disk_size = config[:boot_disk_size].to_i
-          raise if !boot_disk_size.between?(10, 10000)
-        rescue
-          ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")
-          exit 1
-        end
-
-        if config[:boot_disk_ssd] then
-          boot_disk_type = "#{zone}/diskTypes/pd-ssd"
-        else
-          boot_disk_type = "#{zone}/diskTypes/pd-standard"
+          boot_disk_autodelete = 'false'
         end
 
         if config[:boot_disk_name].to_s.empty? then
@@ -475,164 +353,280 @@ class Chef
           boot_disk_name = config[:boot_disk_name]
         end
 
-        if config[:boot_disk_autodelete] then
-          boot_disk_autodelete = 'true'
-        else
-          boot_disk_autodelete = 'false'
+        begin
+          boot_disk_size = config[:boot_disk_size].to_i
+          raise if !boot_disk_size.between?(10, 10000)
+        rescue
+          ui.error("Size of the boot disk must be between 10 and 10000 GB.")
+          raise
         end
 
-        ui.info("Waiting for the boot disk insert operation to complete")
-        msg_pair("Name", boot_disk_name)
-        msg_pair("Zone", selflink2name(zone))
-        msg_pair("Type", selflink2name(boot_disk_type))
-        msg_pair("Size", "#{boot_disk_size} gb")
-        msg_pair("Image", selflink2name(image))
-        boot_disk_insert = client.disks.insert(:sourceImage => image,
-                                               :zone => selflink2name(zone),
-                                               :name => boot_disk_name,
-                                               :type => boot_disk_type,
-                                               :sizeGb => boot_disk_size)
-        boot_disk_target_link = wait_for_disk(boot_disk_insert, boot_disk_insert.name, zone)
-        disks = [{'boot' => true,
-                  'diskType' => boot_disk_type,
-                  'type' => 'PERSISTENT',
-                  'mode' => 'READ_WRITE',
-                  'deviceName' => selflink2name(boot_disk_target_link),
-                  'source' => boot_disk_target_link,
-                  'autoDelete' => boot_disk_autodelete
-                  }]
+        if config[:boot_disk_ssd] then
+          boot_disk_type = "zones/#{config[:gce_zone]}/diskTypes/pd-ssd"
+        else
+          boot_disk_type = "zones/#{config[:gce_zone]}/diskTypes/pd-standard"
+        end
 
-        unless config[:additional_disks].to_s.empty? then
-          ui.info("Waiting for the spare disk insert operation to complete")
-
-          additional_disks_parameter = config[:additional_disks].to_s.split(',').map do |additional_disk|
-            client.disks.list(:zone => selflink2name(zone),
-                                 :name => additional_disk).
-            select do |link|
-              # Occatioally AppEngine will give up and return all disks
-              # when this happens find the correct one
-              link.self_link =~ /#{additional_disk}/
-            end.first
-          end.map do |disk|
-            if disk.nil?
-              ui.error("None of the disks in '#{config[:additional_disks]}' were found")
-              exit 1
-            end
-            {'boot' => false,
-             'type' => 'PERSISTENT',
-             'mode' => 'READ_WRITE',
-             'deviceName' => selflink2name(disk.self_link),
-             'source' => disk.self_link}
-          end
-
-          disks.push(*additional_disks_parameter)
+        if config[:can_ip_forward] then
+          can_ip_forward = true
+        else
+          can_ip_forward = false
         end
 
         begin
-          network = client.networks.get(config[:network]).self_link
-        rescue Google::Compute::ResourceNotFound
-          ui.error("Network '#{config[:network]}' not found")
-          exit 1
+          result = client.execute(
+            :api_method => compute.machine_types.get,
+            :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :machineType => config[:machine_type]})
+          body = MultiJson.load(result.body, :symbolize_keys => true)
+          machine_type = body[:selfLink]
+          raise(body[:error][:message]) if result.status != 200
+        rescue => e
+          ui.error(e)
+          raise
         end
 
-        metadata_items = []
+        begin
+          ui.info(ui.color("Looking for image", :magenta))
+          project = config[:image_project_id]
+          if project.to_s.empty?
+            # no project specified so assume use of public image
+            case config[:image].downcase
+            when /centos/
+              project = 'centos-cloud'
+            when /container-vm/
+              project = 'google-containers'
+            when /coreos/
+              project = 'coreos-cloud'
+            when /debian/
+              project = 'debian-cloud'
+            when /opensuse-cloud/
+              project = 'opensuse-cloud'
+            when /rhel/
+              project = 'rhel-cloud'
+            when /sles/
+              project = 'suse-cloud'
+            when /ubuntu/
+              project = 'ubuntu-os-cloud'
+            end
+          end
+          result = client.execute(
+            :api_method => compute.images.list,
+            :parameters => {:project => project, :filter => "name eq ^#{config[:image]}$"})
+          body = MultiJson.load(result.body, :symbolize_keys => true)
+          if body[:items][0][:name] == config[:image]
+            source_image = body[:items][0][:selfLink]
+            ui.info("found image '#{selflink2name(source_image)}' in project '#{project}'")
+          else
+            raise "#{selflink2name(source_image)} not found"
+          end
+        rescue => e
+          ui.error(e)
+          raise
+        end
 
+        begin
+          ui.info(ui.color("Creating boot disk", :magenta))
+          result = client.execute(
+            :api_method => compute.disks.insert,
+            :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :sourceImage => source_image},
+            :body_object => {:name => boot_disk_name, :sizeGb => boot_disk_size.to_i, :type => boot_disk_type})
+          body = MultiJson.load(result.body, :symbolize_keys => true)
+          # this will not catch all possible errors
+          raise "#{body[:error][:message]}" if result.status != 200
+        rescue => e
+          ui.error(e)
+          raise
+        end
+
+        disks = []
+        begin
+          Timeout::timeout(120) do
+            status = ""
+            until status == "READY"
+              sleep 2
+              result = client.execute(
+                :api_method => compute.disks.get,
+                :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :disk => boot_disk_name})
+              body = MultiJson.load(result.body, :symbolize_keys => true)
+              ui.info("disk #{body[:status].downcase}") unless body[:status].empty?
+              status = body[:status]
+            end
+            disks = [{'autoDelete' => boot_disk_autodelete,
+                      'boot' => true,
+                      'deviceName' => boot_disk_name,
+                      'mode' => "READ_WRITE",
+                      'source' => body[:selfLink],
+                      'type' => "PERSISTENT"}]
+          end
+        rescue Timeout::Error
+          ui.error("Timeout exceeded with disk status: #{status}")
+          raise
+        rescue => e
+          ui.error(e)
+          raise
+        end
+
+        begin
+          unless config[:additional_disks].to_s.empty? then
+            ui.info(ui.color("Attaching additional disk(s)", :magenta))
+            config[:additional_disks].to_s.split(',').map do |additional_disk|
+              result = client.execute(
+                :api_method => compute.disks.get,
+                :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :disk => additional_disk})
+              body = MultiJson.load(result.body, :symbolize_keys => true)
+              # TODO add some status notification
+              # TODO add some sort of validation or error checking
+              disks.push({'boot' => false,
+                          'deviceName' => body[:name],
+                          'mode' => "READ_WRITE",
+                          'source' => body[:selfLink],
+                          'type' => "PERSISTENT"})
+            end
+          end
+        rescue => e
+          ui.error(e)
+          raise
+        end
+
+        # metadata
+
+        metadata_items = []
         config[:metadata].collect do |pair|
           mkey, mvalue = pair.split('=')
           metadata_items << {'key' => mkey, 'value' => mvalue}
         end
 
-        # Metadata from file
+        # metadata from file
 
         config[:metadata_from_file].each do |p|
           mkey, filename = p.split('=')
           begin
             file_content = File.read(filename)
           rescue
-            puts "Not possible to read metadata file #{filename}"
+            ui.error("Could not read metadata file #{filename}")
           end
           metadata_items << {'key' => mkey, 'value' => file_content}
         end
 
-        network_interface = {'network'=>network}
+        # network
 
-        if config[:public_ip] == 'EPHEMERAL'
-          network_interface.merge!('accessConfigs' =>[{"name"=>"External NAT",
-                                  "type"=> "ONE_TO_ONE_NAT"}])
+        begin
+          result = client.execute(
+            :api_method => compute.networks.get,
+            :parameters => {:project => config[:gce_project], :network => config[:network]})
+          body = MultiJson.load(result.body, :symbolize_keys => true)
+          network = body[:selfLink]
+        rescue => e
+          ui.error("Network '#{config[:network]}' not found")
+          raise
+        end
+
+        network_interface = {"network" => network}
+
+        if config[:public_ip] == "EPHEMERAL"
+          network_interface.merge!("accessConfigs" => [{"name" => "External NAT", "type" => "ONE_TO_ONE_NAT"}])
         elsif config[:public_ip] =~ /\d+\.\d+\.\d+\.\d+/
-          network_interface.merge!('accessConfigs' =>[{"name"=>"External NAT",
-                  "type"=>"ONE_TO_ONE_NAT", "natIP"=>config[:public_ip] }])
-        elsif config[:public_ip] == 'NONE'
-          config[:instance_connect_ip] = 'PRIVATE'
+          network_interface.merge!("accessConfigs" => [{"name" => "External NAT", "type" => "ONE_TO_ONE_NAT", "natIP" => config[:public_ip]}])
+        elsif config[:public_ip] == "NONE"
+          config[:server_connect_interface] = "PRIVATE"
         else
           ui.error("Invalid public ip value : #{config[:public_ip]}")
-          exit 1
+          raise
         end
 
-        ui.info("Waiting for the create server operation to complete")
+        ui.info(ui.color("Creating server", :magenta))
         if !config[:service_account_scopes].any?
-          zone_operation = client.instances.create(:name => @name_args.first,
-                                                   :zone => selflink2name(zone),
-                                                   :machineType => machine_type,
-                                                   :disks => disks,
-                                                   :canIpForward => can_ip_forward,
-                                                   :networkInterfaces => [network_interface],
-                                                   :scheduling => {
-                                                     'automaticRestart' => auto_restart,
-                                                     'onHostMaintenance' => auto_migrate
-                                                   },
-                                                   :metadata => { 'items' => metadata_items },
-                                                   :tags => { 'items' => config[:tags] }
-                                                  )
+          begin
+            result = client.execute(
+              :api_method => compute.instances.insert,
+              :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]},
+              :body_object => {:name => @name_args.first,
+                               :machineType => machine_type,
+                               :disks => disks,
+                               :canIpForward => can_ip_forward,
+                               :networkInterfaces => [network_interface],
+                               :scheduling => {'automaticRestart' => auto_restart,
+                                               'onHostMaintenance' => auto_migrate},
+                               :metadata => {'items' => metadata_items},
+                               :tags => {'items' => config[:tags]}})
+            body = MultiJson.load(result.body, :symbolize_keys => true)
+            # this will not catch all possible errors
+            raise "#{body[:error][:message]}" if result.status != 200
+          rescue => e
+            ui.error(e)
+            raise
+          end
         else
-          zone_operation = client.instances.create(:name => @name_args.first,
-                                                   :zone=> selflink2name(zone),
-                                                   :machineType => machine_type,
-                                                   :disks => disks,
-                                                   :canIpForward => can_ip_forward,
-                                                   :networkInterfaces => [network_interface],
-                                                   :serviceAccounts => [{
-                                                     'kind' => 'compute#serviceAccount',
+          begin
+            result = client.execute(
+              :api_method => compute.instances.insert,
+              :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]},
+              :body_object => {:name => @name_args.first,
+                               :machineType => machine_type,
+                               :disks => disks,
+                               :canIpForward => can_ip_forward,
+                               :networkInterfaces => [network_interface],
+                               :serviceAccounts => [{'kind' => 'compute#serviceAccount',
                                                      'email' => config[:service_account_name],
-                                                     'scopes' => config[:service_account_scopes]
-                                                   }],
-                                                   :scheduling => {
-                                                     'automaticRestart' => auto_restart,
-                                                     'onHostMaintenance' => auto_migrate
-                                                   },
-                                                   :metadata => { 'items'=>metadata_items },
-                                                   :tags => { 'items' => config[:tags] }
-                                                  )
+                                                     'scopes' => config[:service_account_scopes]}],
+                               :scheduling => {'automaticRestart' => auto_restart,
+                                               'onHostMaintenance' => auto_migrate},
+                               :metadata => {'items' => metadata_items},
+                               :tags => {'items' => config[:tags]}})
+            body = MultiJson.load(result.body, :symbolize_keys => true)
+            # this will not catch all possible errors
+            raise "#{body[:error][:message]}" if result.status != 200
+          rescue => e
+            ui.error(e)
+            raise
+          end
         end
 
-        until zone_operation.progress.to_i == 100
-          ui.info(".")
-          sleep 1
-          zone_operation = client.zoneOperations.get(:name=>zone_operation, :operation=>zone_operation.name, :zone=>selflink2name(zone))
+        begin
+          sleep 2
+          Timeout::timeout(120) do
+            status = ""
+            until status == "RUNNING"
+              sleep 2
+              result = client.execute(
+                :api_method => compute.instances.get,
+                :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :instance => @name_args.first})
+              body = MultiJson.load(result.body, :symbolize_keys => true)
+              ui.info("server #{body[:status].downcase}") unless body[:status].empty?
+              status = body[:status]
+              # TODO raise if status == STOPPING or TERMINATED
+            end
+          end
+          private_ip = body[:networkInterfaces].find { |n| n[:name] == "nic0" }[:networkIP]
+          if body[:networkInterfaces].find { |n| n[:name] == "nic0" }[:accessConfigs]
+            public_ip = body[:networkInterfaces].find { |n| n[:name] == "nic0" }[:accessConfigs][0][:natIP]
+          else
+            public_ip = "NONE"
+          end
+          ui.info("\n")
+          msg_pair("Instance Name", @name_args.first)
+          msg_pair("Machine Type", selflink2name(machine_type))
+          msg_pair("Image", selflink2name(source_image))
+          msg_pair("Zone", config[:gce_zone])
+          msg_pair("Public IP Address", public_ip)
+          msg_pair("Private IP Address", private_ip)
+          ui.info("\n")
+          ui.info(ui.color("Waiting for sshd", :magenta))
+          ssh_connect_ip = if config[:server_connect_interface] == "PUBLIC"
+                             public_ip
+                           else
+                             private_ip
+                           end
+          wait_for_sshd(ssh_connect_ip)
+          bootstrap_for_node(@name_args.first, ssh_connect_ip).run
+        rescue Timeout::Error
+          ui.error("Timeout exceeded with status: #{status}")
+          raise
+        rescue => e
+          ui.error(e)
+          raise
         end
 
-        ui.info("Waiting for the servers to be in running state")
-
-        @instance = client.instances.get(:name=>@name_args.first, :zone=>selflink2name(zone))
-        msg_pair("Instance Name", @instance.name)
-        msg_pair("Machine Type", selflink2name(@instance.machine_type))
-        msg_pair("Image", selflink2name(config[:image]))
-        msg_pair("Zone", selflink2name(@instance.zone))
-        msg_pair("Tags", @instance.tags.has_key?("items") ? @instance.tags["items"].join(",") : "None")
-        until @instance.status == "RUNNING"
-          sleep 3
-          msg_pair("Status", @instance.status.downcase)
-          @instance = client.instances.get(:name=>@name_args.first, :zone=>selflink2name(zone))
-        end
-
-        msg_pair("Public IP Address", public_ips(@instance)) unless public_ips(@instance).empty?
-        msg_pair("Private IP Address", private_ips(@instance))
-        ui.info("\n#{ui.color("Waiting for server", :magenta)}")
-
-        ui.info("\n")
-        ui.info(ui.color("Waiting for sshd", :magenta))
-        wait_for_sshd(ssh_connect_host)
-        bootstrap_for_node(@instance,ssh_connect_host).run
         ui.info("\n")
         ui.info("Complete!!")
       end

@@ -11,19 +11,18 @@ Gem::Specification.new do |s|
   s.email = "paulrossman@google.com"
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.md", "LICENSE", "CONTRIB.md" ]
-  s.summary = "Manage Google Compute Engine servers, disks, and zones"
+  s.summary = "Manage Google Compute Engine servers and disks"
   s.description = "Google Compute Engine Support for Chef's Knife Command"
   s.homepage = "http://docs.chef.io/"
 
   s.add_dependency 'chef', '~> 12.0'
-  s.add_dependency 'extlib', '~> 0.9'                 # google-api-ruby-client
   s.add_dependency 'google-api-client', '~> 0.8'      # google-api-ruby-client
-  s.add_dependency 'mixlib-config', '~> 2.0'
+  s.add_dependency 'extlib', '~> 0.9'                 # google-api-ruby-client
   s.add_dependency 'multi_json', '~> 1.10'            # google-api-ruby-client
 
   s.files = `git ls-files`.split($/)
-  #s.files = Dir['CONTRIB.md', 'Gemfile', 'LICENSE', 'README.md', 'Rakefile', 'knife-google.gemspec', 'lib/**/*', 'spec/**/*']
 
+  s.add_development_dependency 'mixlib-config', '~> 2.0'
   s.add_development_dependency 'rake', '~> 10.0'       # google-api-ruby-client
   s.add_development_dependency 'rspec', '~> 3.1'       # google-api-ruby-client
   s.add_development_dependency 'simplecov', '~> 0.9'   # google-api-ruby-client
