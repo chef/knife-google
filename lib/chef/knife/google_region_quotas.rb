@@ -35,7 +35,7 @@ class Chef
 
         result = client.execute(
           :api_method => compute.regions.list,
-          :parameters => {:project => config[:project]})
+          :parameters => {:project => config[:gce_project]})
 
         body = MultiJson.load(result.body, :symbolize_keys => true)
 
@@ -44,8 +44,8 @@ class Chef
           item[:quotas].each do |quota|
             quotas_list << region
             quotas_list << quota[:metric].downcase
-            quotas_list << quota[:limit]
-            quotas_list << quota[:usage]
+            quotas_list << quota[:limit].to_s
+            quotas_list << quota[:usage].to_s
           end
         end
 

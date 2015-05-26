@@ -34,16 +34,16 @@ class Chef
         output_column_count = quotas_list.length
 
         result = client.execute(
-          :api_method => compute.projects.list,
-          :parameters => {:project => config[:project]})
+          :api_method => compute.projects.get,
+          :parameters => {:project => config[:gce_project]})
 
         body = MultiJson.load(result.body, :symbolize_keys => true)
 
         body[:quotas].each do |quota|
-          quotas_list << config[:project]
+          quotas_list << config[:gce_project]
           quotas_list << quota[:metric].downcase
-          quotas_list << quota[:limit]
-          quotas_list << quota[:usage]
+          quotas_list << quota[:limit].to_s
+          quotas_list << quota[:usage].to_s
         end
 
         ui.info(ui.list(quotas_list, :uneven_columns_across, output_column_count))

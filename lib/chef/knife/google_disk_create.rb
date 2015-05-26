@@ -34,37 +34,23 @@ class Chef
 
       option :disk_type,
         :long => "--gce-disk-type TYPE",
-        :description => "Disk type to use to create the disk. Possible values are pd-standard, pd-ssd and local-ssd",
+        :description => "Disk type to use to create the disk. Possible values are 'pd-standard', 'pd-ssd' and 'local-ssd'; default is 'pd-standard'",
         :default => "pd-standard"
 
       def run
         $stdout.sync = true
-        unless @name_args.size > 0
-          ui.error("Please provide the name of the new disk")
-          raise
-        end
-
         disk_size = config[:disk_size].to_i
-
-        unless disk_size.between?(1, 10000)
-          ui.error("Size of the persistent disk must be between 1 and 10000 GB.")
-          raise
-        end
-
         disk_type = "zones/#{config[:zone]}/diskTypes/#{config[:disk_type]}"
-
-        begin
-          result = client.execute(
-            :api_method => compute.disks.insert,
-            :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]},
-            :body_object => {:name => config[:name], :sizeGb => disk_size, :type => disk_type})
-          body = MultiJson.load(result.body, :symbolize_keys => true)
-          raise "#{body[:error][:message]}" if result.status != 200
-        rescue => e
-          ui.error(e)
-          raise
-        end
-
+        fail "Please provide the name of the new disk" if @name_args.empty?
+        fail "Size of the persistent disk must be between 1 and 10000 GB" unless disk_size.between?(1, 10000)
+        result = client.execute(
+          :api_method => compute.disks.insert,
+          :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]},
+          :body_object => {:name => config[:name], :sizeGb => disk_size, :type => disk_type})
+        body = MultiJson.load(result.body, :symbolize_keys => true)
+        fail "#{body[:error][:message]}" if result.status != 200
+      rescue => e
+        raise
       end
 
     end

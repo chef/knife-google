@@ -37,21 +37,18 @@ class Chef
           ui.color('source image', :bold),
           ui.color('size (GB)', :bold),
           ui.color('status', :bold)].flatten.compact
-
         output_column_count = disk_list.length
-
 
         result = client.execute(
           :api_method => compute.disks.list,
           :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]})
-
         body = MultiJson.load(result.body, :symbolize_keys => true)
 
         body[:items].each do |disk|
           disk_list << disk[:name]
           disk_list << selflink2name(disk[:zone])
           if disk[:sourceImage].nil?
-            disk_list << " "
+            disk_list << "-"
           else
             disk_list << selflink2name(disk[:sourceImage])
           end
@@ -70,7 +67,11 @@ class Chef
         end
 
         ui.info(ui.list(disk_list, :uneven_columns_across, output_column_count))
+
+      rescue => e
+        raise
       end
+
     end
   end
 end
