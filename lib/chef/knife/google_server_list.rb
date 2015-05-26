@@ -34,32 +34,47 @@ class Chef
         instance_list = [
           ui.color('name', :bold),
           ui.color('status', :bold)].flatten.compact
-
         output_column_count = instance_list.length
 
-        result = client.execute(
-          :api_method => compute.instances.list,
-          :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]})
+        list_request = true
+        parameters = {:project => config[:gce_project], :zone => config[:gce_zone]}
 
-        body = MultiJson.load(result.body, :symbolize_keys => true)
+        while list_request
+          result = client.execute(
+            :api_method => compute.instances.list,
+            :parameters => parameters)
+          body = MultiJson.load(result.body, :symbolize_keys => true)
 
-        body[:items].each do |instance|
-          instance_list << instance[:name]
-          instance_list << begin
-            status = instance[:status].downcase
-            case status
-            when 'stopping', 'stopped', 'terminated'
-              ui.color(status, :red)
-            when 'requested', 'provisioning', 'staging'
-              ui.color(status, :yellow)
-            else
-              ui.color(status, :green)
+          body[:items].each do |instance|
+            instance_list << instance[:name]
+            instance_list << begin
+              status = instance[:status].downcase
+              case status
+              when 'stopping', 'stopped', 'terminated'
+                ui.color(status, :red)
+              when 'requested', 'provisioning', 'staging'
+                ui.color(status, :yellow)
+              else
+                ui.color(status, :green)
+              end
             end
+          end
+
+          if body.key?(:nextPageToken)
+            parameters = {:project => config[:gce_project],
+                          :zone => config[:gce_zone],
+                          :pageToken => body[:nextPageToken]}
+          else
+            list_request = false
           end
         end
 
         ui.info(ui.list(instance_list, :uneven_columns_across, output_column_count))
+
+      rescue
+        raise
       end
+
     end
   end
 end

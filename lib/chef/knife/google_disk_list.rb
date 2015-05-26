@@ -39,36 +39,49 @@ class Chef
           ui.color('status', :bold)].flatten.compact
         output_column_count = disk_list.length
 
-        result = client.execute(
-          :api_method => compute.disks.list,
-          :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]})
-        body = MultiJson.load(result.body, :symbolize_keys => true)
+        list_request = true
+        parameters = {:project => config[:gce_project], :zone => config[:gce_zone]}
 
-        body[:items].each do |disk|
-          disk_list << disk[:name]
-          disk_list << selflink2name(disk[:zone])
-          if disk[:sourceImage].nil?
-            disk_list << "-"
-          else
-            disk_list << selflink2name(disk[:sourceImage])
-          end
-          disk_list << disk[:sizeGb]
-          disk_list << begin
-            status = disk[:status].downcase
-            case status
-            when 'stopping', 'stopped', 'terminated'
-              ui.color(status, :red)
-            when 'requested', 'provisioning', 'staging'
-              ui.color(status, :yellow)
+        while list_request
+          result = client.execute(
+            :api_method => compute.disks.list,
+            :parameters => parameters)
+          body = MultiJson.load(result.body, :symbolize_keys => true)
+
+          body[:items].each do |disk|
+            disk_list << disk[:name]
+            disk_list << selflink2name(disk[:zone])
+            if disk[:sourceImage].nil?
+              disk_list << "-"
             else
-              ui.color(status, :green)
+              disk_list << selflink2name(disk[:sourceImage])
             end
+            disk_list << disk[:sizeGb]
+            disk_list << begin
+              status = disk[:status].downcase
+              case status
+              when 'stopping', 'stopped', 'terminated'
+                ui.color(status, :red)
+              when 'requested', 'provisioning', 'staging'
+                ui.color(status, :yellow)
+              else
+                ui.color(status, :green)
+              end
+            end
+          end
+
+          if body.key?(:nextPageToken)
+            parameters = {:project => config[:gce_project],
+                          :zone => config[:gce_zone],
+                          :pageToken => body[:nextPageToken]}
+          else
+            list_request = false
           end
         end
 
         ui.info(ui.list(disk_list, :uneven_columns_across, output_column_count))
 
-      rescue => e
+      rescue
         raise
       end
 
