@@ -29,7 +29,7 @@ class Chef
 
       option :disk_size,
         :long => "--gce-disk-size SIZE",
-        :description => "Size of the persistent disk between 1 and 10000 GB, specified in GB; default is '10' GB",
+        :description => "Size of the persistent disk between 10 and 10000 GB, specified in GB; default is '10' GB",
         :default => "10"
 
       option :disk_type,
@@ -42,7 +42,7 @@ class Chef
         disk_size = config[:disk_size].to_i
         disk_type = "zones/#{config[:gce_zone]}/diskTypes/#{config[:disk_type]}"
         fail "Please provide the name of the new disk" if @name_args.empty?
-        fail "Size of the persistent disk must be between 1 and 10000 GB" unless disk_size.between?(1, 10000)
+        fail "Size of the persistent disk must be between 10 and 10000 GB" unless disk_size.between?(10, 10000)
         result = client.execute(
           :api_method => compute.disks.insert,
           :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]},
