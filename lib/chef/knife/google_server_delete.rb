@@ -56,11 +56,11 @@ class Chef
       def run
         @name_args.each do |instance_name|
           begin
-            ui.confirm("Delete the instance '#{config[:zone]}:#{instance_name}'")
+            ui.confirm("Delete the instance '#{config[:gce_zone]}:#{instance_name}'")
             result = client.execute(
               :api_method => compute.instance.delete,
               :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :instance => instance_name})
-            ui.warn("Instance '#{config[:zone]}:#{instance_name}' deleted") if result.status == 200
+            ui.warn("Instance '#{config[:gce_zone]}:#{instance_name}' deleted") if result.status == 200
           rescue
             body = MultiJson.load(result.body, :symbolize_keys => true)
             ui.error("#{body[:error][:message]}")

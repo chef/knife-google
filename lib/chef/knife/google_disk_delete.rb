@@ -31,13 +31,13 @@ class Chef
       def run
         $stdout.sync = true
         fail "Please provide the name of the disk to be deleted" if @name_args.empty?
-        ui.confirm("Delete the disk '#{config[:zone]}:#{@name_args.first}'")
+        ui.confirm("Delete the disk '#{config[:gce_zone]}:#{@name_args.first}'")
         result = client.execute(
           :api_method => compute.disks.delete,
           :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :disk => @name_args.first})
         body = MultiJson.load(result.body, :symbolize_keys => true)
         if result.status == 200
-          ui.warn("Disk '#{config[:zone]}:#{@name_args.first}' deleted")
+          ui.warn("Disk '#{config[:gce_zone]}:#{@name_args.first}' deleted")
         else
           fail "#{body[:error][:message]}"
         end

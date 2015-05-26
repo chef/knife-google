@@ -40,7 +40,7 @@ class Chef
       def run
         $stdout.sync = true
         disk_size = config[:disk_size].to_i
-        disk_type = "zones/#{config[:zone]}/diskTypes/#{config[:disk_type]}"
+        disk_type = "zones/#{config[:gce_zone]}/diskTypes/#{config[:disk_type]}"
         fail "Please provide the name of the new disk" if @name_args.empty?
         fail "Size of the persistent disk must be between 1 and 10000 GB" unless disk_size.between?(1, 10000)
         result = client.execute(
