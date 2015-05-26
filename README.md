@@ -18,11 +18,7 @@ This plugin utilizes Google Compute Engine API v1. Please review API v1
 [release notes](https://developers.google.com/compute/docs/release-notes#december032013)
 for additional information.
 
-With knife-google 1.4.0 Chef 12 is now utilized.
-
-With knife-google 1.3.0 options have changed. Several GCE specific short
-options have been deprecated and GCE specific long options now start
-with `--gce-`.
+With knife-google 2.0.0, Chef 12 is now required.
 
 ### Nomenclature
 
@@ -47,25 +43,14 @@ Account before creating the project and adding services.
 ### Authorizing Setup
 
 In order for the knife plugin to programmatically manage your servers, you
-will first need to authorize its use of the Google Compute Engine API.
-Authorization to use any of Google's Cloud service API's utilizes the
-[OAuth 2.0](https://developers.google.com/accounts/docs/OAuth2) standard.
-Once your project has been created, log in to your Google Account and visit the
-[API Console](http://code.google.com/apis/console) and follow the "APIs & auth"
-menu.  Select "Credentials".  Under the "OAuth" section, select "Create New
-Client ID".  Specify the [Installed Application](https://developers.google.com/accounts/docs/OAuth2#installed)
-Application type with sub-type "Other", then "Create Client ID".  These
-actions will generate a new "Client ID", "Client secret", and "Redirect URIs".
-
-This knife plugin includes a `setup` sub-command that requires you to
-supply the client ID and secret in order to obtain an "authorization
-token". You will only need to run this command one time and the plugin
-will record your credential information and tokens for future API calls.
+will first need to get credentials using `gcloud auth login`.
+[Download](https://cloud.google.com/sdk/) the Google Cloud SDK and
+review the gcloud [documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login)
+for more information.
 
 ## Installation
 
-Be sure you are running Chef version 0.10.0 or higher in order to use knife
-plugins.
+Be sure you are running Chef 12 or higher.
 
 ```sh
 gem install knife-google
@@ -101,35 +86,23 @@ with root/Administrator privileges.
 ### Setting up the plugin
 
 For initial setup, you must first have created your Google Cloud Platform
-project, enabled Google Compute Engine, and set up the Client ID described
-above.  Run the 'setup' sub-command and supply the Project ID, the Client
-ID, Client secret, and authorization tokens when prompted. It will also
-prompt you to open a URL in a browser. Make sure sure the you are logged
-in with the Google account associated with the project and client
-id/secret in order to authorize the plugin.
-
-```sh
-knife google setup
-```
-
-By default, the credential and token information will be stored in
-`~/.google-compute.json`.  You can override this location with
-`-f <credential_file>` flag with all plugin commands.
+project, enabled Google Compute Engine, and authorized as described
+above.
 
 ### Bootstrap Preparation and SSH
 
 In order to bootstrap nodes, you will first need to ensure your SSH
-keys are set up correctly.  In Google Compute Engine, you can store
+keys are set up correctly. In Google Compute Engine, you can store
 SSH keys in project metadata that will get copied over to new servers
 and placed in the appropriate user's `~/.ssh/authorized_keys` file.
 
 If you don't already have SSH keys set up, you can create them with
-the `ssh-keygen` program.  Open up the Metadata page from the
-GCE section of the cloud console.  If it doesn't already exist, create
+the `ssh-keygen` program. Open up the Metadata page from the
+GCE section of the cloud console. If it doesn't already exist, create
 a new `sshKeys` key and paste in your user's `~/.ssh/id_rsa.pub`
 file; make sure to prefix the entry with the username that corresponds
-to the username specified with the `-x` (aka `--ssh-user`) argument of the knife 
-command or its default value of `root`.  An example entry should look
+to the username specified with the `-x` (aka `--ssh-user`) argument of the knife
+command or its default value of `root`. An example entry should look
 something like this -- notice the prepended username of `myuser`:
 
 ```
@@ -211,15 +184,6 @@ knife google server list -Z ZONE (options)
 
 ## Sub-commands
 
-### `knife google setup`
-
-Use this command to initially set up authorization (see above for more
-details).  Note that if you override the default credential file with the
-`-f` switch, you'll need to use the `-f` switch for *all* sub-commands.
-When prompted, make sure to specify the "Project ID" (and not the name or
-number) or you will see 404/not found errors even if the setup command
-completes successfully.
-
 ### `knife google zone list`
 
 A zone is an isolated location within a region that is independent of
@@ -284,14 +248,6 @@ networks, firewalls, images, routes, forwarding-rules, target-pools and
 health-checks. Use the `-L` switch to also list the quota limit for
 each resource.
 
-The output for `knife google project list -L` should look similar to:
-
-```
-name        snapshots  networks  firewalls  images  routes forwarding-rules  target-pools  health-checks
-chef-test1  0/1000     1/5       3/100      0/100   2/100  0/50              0/50          0/50
-chef-test2  1/1000     2/5       3/100      1/100   2/100  0/50              0/50          0/50
-```
-
 ### `knife google server create`
 
 Use this command to create a new Google Compute Engine server (a.k.a.
@@ -306,14 +262,14 @@ centos-7-vYYYYMMDD
 
 By default, the plugin will look for the specified image in the instance's
 primary project first and then consult GCE's officially supported image
-locations. The `--gce-image-project-id IMAGE_PROJECT_ID` option can be 
+locations. The `--gce-image-project-id IMAGE_PROJECT_ID` option can be
 specified to force the plugin to look for the image in an alternate project
 location.
 
-Note that if you are bootstrapping the node, make sure to follow the 
-preparation instructions earlier and use the `-x` and `-i` commands 
-to specify the username and the identity file for that user.  Make sure 
-to use the private key file (e.g. `~/.ssh/id_rsa`) for the identity 
+Note that if you are bootstrapping the node, make sure to follow the
+preparation instructions earlier and use the `-x` and `-i` commands
+to specify the username and the identity file for that user.  Make sure
+to use the private key file (e.g. `~/.ssh/id_rsa`) for the identity
 file and *not* the public key file.
 
 If you would like to set up your server with a service account, provide
@@ -370,9 +326,9 @@ look something like:
 
 ```
 name              zone            source snapshot   size (in GB)   status
-dev-1             us-central1-a                     10             ready 
-dev-2             us-central1-a                     10             ready 
-test-1            us-central1-a                     20             ready 
+dev-1             us-central1-a                     10             ready
+dev-2             us-central1-a                     10             ready
+test-1            us-central1-a                     20             ready
 ```
 
 ## Troubleshooting
