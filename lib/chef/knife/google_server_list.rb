@@ -1,4 +1,7 @@
-# Copyright 2015 Google Inc. All Rights Reserved.
+#
+# Author:: Paul Rossman (<paulrossman@google.com>)
+# Copyright:: Copyright 2015 Google Inc. All Rights Reserved.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 require 'chef/knife/google_base'
 
 class Chef
@@ -30,21 +33,17 @@ class Chef
 
       def run
         $stdout.sync = true
-
         instance_list = [
           ui.color('name', :bold),
           ui.color('status', :bold)].flatten.compact
         output_column_count = instance_list.length
-
         list_request = true
         parameters = {:project => config[:gce_project], :zone => config[:gce_zone]}
-
         while list_request
           result = client.execute(
             :api_method => compute.instances.list,
             :parameters => parameters)
           body = MultiJson.load(result.body, :symbolize_keys => true)
-
           body[:items].each do |instance|
             instance_list << instance[:name]
             instance_list << begin
@@ -59,7 +58,6 @@ class Chef
               end
             end
           end
-
           if body.key?(:nextPageToken)
             parameters = {:project => config[:gce_project],
                           :zone => config[:gce_zone],
@@ -68,9 +66,7 @@ class Chef
             list_request = false
           end
         end
-
         ui.info(ui.list(instance_list, :uneven_columns_across, output_column_count))
-
       rescue
         raise
       end

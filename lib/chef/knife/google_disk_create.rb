@@ -1,4 +1,7 @@
-# Copyright 2015 Google Inc. All Rights Reserved.
+#
+# Author:: Paul Rossman (<paulrossman@google.com>)
+# Copyright:: Copyright 2015 Google Inc. All Rights Reserved.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 require 'chef/knife/google_base'
 
 class Chef
@@ -39,17 +43,17 @@ class Chef
 
       def run
         $stdout.sync = true
-        disk_size = config[:disk_size].to_i
-        disk_type = "zones/#{config[:gce_zone]}/diskTypes/#{config[:disk_type]}"
         fail "Please provide the name of the new disk" if @name_args.empty?
+        disk_size = config[:disk_size].to_i
         fail "Size of the persistent disk must be between 10 and 10000 GB" unless disk_size.between?(10, 10000)
+        disk_type = "zones/#{config[:gce_zone]}/diskTypes/#{config[:disk_type]}"
         result = client.execute(
           :api_method => compute.disks.insert,
           :parameters => {:project => config[:gce_project], :zone => config[:gce_zone]},
           :body_object => {:name => config[:name], :sizeGb => disk_size, :type => disk_type})
         body = MultiJson.load(result.body, :symbolize_keys => true)
         fail "#{body[:error][:message]}" if result.status != 200
-      rescue => e
+      rescue
         raise
       end
 

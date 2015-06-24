@@ -1,4 +1,7 @@
-# Copyright 2015 Google Inc. All Rights Reserved.
+#
+# Author:: Paul Rossman (<paulrossman@google.com>)
+# Copyright:: Copyright 2015 Google Inc. All Rights Reserved.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,7 +42,7 @@ class Chef
         :long => "--purge",
         :boolean => true,
         :default => false,
-        :description => "In addition to deleting the GCE instance itself, delete corresponding node and client on the Chef Server."
+        :description => "In addition to deleting the GCE server itself, delete corresponding node and client on the Chef Server."
 
       # Taken from knife-ec2 plugin, for rational check the following link
       # https://github.com/opscode/knife-ec2/blob/master/lib/chef/knife/ec2_server_delete.rb#L48
@@ -70,10 +73,11 @@ class Chef
             destroy_item(Chef::Node, instance_name, "node")
             destroy_item(Chef::ApiClient, instance_name, "client")
           else
-            ui.warn("Corresponding node and client for the #{instance_name} server were not deleted and remain registered with the Chef Server")
+            ui.warn("Corresponding node and client for #{instance_name} were not deleted and remain registered with the Chef Server")
           end
         end
       end
+
     end
   end
 end

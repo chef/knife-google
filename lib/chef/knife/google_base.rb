@@ -1,4 +1,7 @@
-# Copyright 2015 Google Inc. All Rights Reserved.
+#
+# Author:: Paul Rossman (<paulrossman@google.com>)
+# Copyright:: Copyright 2015 Google Inc. All Rights Reserved.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'google/api_client'
+require 'chef/knife'
 
 class Chef
   class Knife
@@ -21,16 +24,14 @@ class Chef
       def self.included(includer)
         includer.class_eval do
           deps do
-            require 'chef/knife'
+            require 'google/api_client'
             require 'knife-google/version'
             require 'multi_json'
           end
-
           option :gce_project,
             :long => "--gce-project PROJECT",
             :description => "Your Google project",
             :proc => Proc.new { |key| Chef::Config[:knife][:gce_project] = key }
-
         end
       end
 
