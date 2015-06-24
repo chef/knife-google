@@ -19,33 +19,31 @@ require 'chef/knife/google_base'
 
 class Chef
   class Knife
-    class GoogleDiskDelete < Knife
+    class GoogleProjectQuotas < Knife
 
       include Knife::GoogleBase
 
-      banner "knife google disk delete NAME (options)"
-
-      option :gce_zone,
-        :short => "-Z ZONE",
-        :long => "--gce-zone ZONE",
-        :description => "The Zone for this disk",
-        :proc => Proc.new { |key| Chef::Config[:knife][:gce_zone] = key }
+      banner "knife google project quotas"
 
       def run
         $stdout.sync = true
-        fail "Please provide the name of the disk to be deleted" if @name_args.empty?
-        ui.confirm("Delete the disk '#{config[:gce_zone]}:#{@name_args.first}'")
+        quotas_list = [
+          ui.color('project', :bold),
+          ui.color("quota", :bold),
+          ui.color('limit', :bold),
+          ui.color('usage', :bold)].flatten.compact
+        output_column_count = quotas_list.length
         result = client.execute(
-          :api_method => compute.disks.delete,
-          :parameters => {:project => config[:gce_project], :zone => config[:gce_zone], :disk => @name_args.first})
+          :api_method => compute.projects.get,
+          :parameters => {:project => config[:gce_project]})
         body = MultiJson.load(result.body, :symbolize_keys => true)
-        if result.status == 200
-          ui.warn("Disk '#{config[:gce_zone]}:#{@name_args.first}' deleted")
-        else
-          fail "#{body[:error][:message]}"
+        body[:quotas].each do |quota|
+          quotas_list << config[:gce_project]
+          quotas_list << quota[:metric].downcase
+          quotas_list << quota[:limit].to_s
+          quotas_list << quota[:usage].to_s
         end
-      rescue
-        raise
+        ui.info(ui.list(quotas_list, :uneven_columns_across, output_column_count))
       end
 
     end

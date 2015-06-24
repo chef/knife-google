@@ -1,4 +1,7 @@
-# Copyright 2013 Google Inc. All Rights Reserved.
+#
+# Author:: Paul Rossman (<paulrossman@google.com>)
+# Copyright:: Copyright 2015 Google Inc. All Rights Reserved.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,9 +14,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 require 'chef/knife/google_base'
-require 'time'
 
 class Chef
   class Knife
@@ -21,23 +23,22 @@ class Chef
 
       include Knife::GoogleBase
 
-      banner "knife google zone list (options)"
+      banner "knife google zone list"
 
       def run
         $stdout.sync = true
-
-        zone_list = [
-          ui.color("name", :bold),
-          ui.color('status', :bold),
-          ui.color('deprecation', :bold),
-          ui.color('maintainance window', :bold)].flatten.compact
-
-        output_column_count = zone_list.length
-
-        client.zones.list.each do |zone|
-          zone_list << zone.name
-          zone_list << begin
-            status = zone.status.downcase
+        zones_list = [
+          ui.color('name', :bold),
+          ui.color('status', :bold)].flatten.compact
+        output_column_count = zones_list.length
+        result = client.execute(
+          :api_method => compute.zones.list,
+          :parameters => {:project => config[:gce_project]})
+        body = MultiJson.load(result.body, :symbolize_keys => true)
+        body[:items].each do |item|
+          zones_list << item[:name]
+          zones_list << begin
+            status = item[:status].downcase
             case status
             when 'up'
               ui.color(status, :green)
@@ -45,28 +46,10 @@ class Chef
               ui.color(status, :red)
             end
           end
-          deprecation_state = "-"
-          if zone.deprecated.respond_to?('state')
-            deprecation_state = zone.deprecated.state  
-          end 
-          zone_list << deprecation_state
-          unless zone.maintenance_windows.nil?
-            maintenance_window = zone.maintenance_windows.map do |mw|
-              begin_time = Time.parse(mw["beginTime"])
-              end_time = Time.parse(mw["endTime"])
-              if (Time.now >= begin_time) and (Time.now <= end_time)
-                ui.color("#{begin_time} to #{end_time}",:red)
-              else
-                ui.color("#{begin_time} to #{end_time}",:green)
-              end
-            end.join(",")
-            zone_list << maintenance_window
-          else
-            zone_list << "-"
-          end
         end
-        ui.info(ui.list(zone_list, :uneven_columns_across, output_column_count))
+        ui.info(ui.list(zones_list, :uneven_columns_across, output_column_count))
       end
+
     end
   end
 end
