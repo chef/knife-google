@@ -1,5 +1,9 @@
 # knife-google
 
+[![Gem Version](https://badge.fury.io/rb/knife-google.svg)](http://badge.fury.io/rb/knife-google)
+[![Build Status](https://travis-ci.org/chef/knife-google.svg?branch=master)](https://travis-ci.org/chef/knife-google)
+[![Dependency Status](https://gemnasium.com/chef/knife-google.svg)](https://gemnasium.com/chef/knife-google)
+
 A [knife] (http://wiki.opscode.com/display/chef/Knife) plugin to create,
 delete and enlist
 [Google Compute Engine] (https://cloud.google.com/products/compute-engine)
