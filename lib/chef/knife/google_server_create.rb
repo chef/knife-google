@@ -185,7 +185,8 @@ class Chef
 
       option :bootstrap_version,
         :long => "--bootstrap-version VERSION",
-        :description => "The version of Chef to install"
+        :description => "The version of Chef to install",
+        :proc => Proc.new { |v| Chef::Config[:knife][:bootstrap_version] = v }
 
       option :distro,
         :short => "-d DISTRO",
