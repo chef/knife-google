@@ -36,14 +36,12 @@ class Chef
       option :machine_type,
         :short => "-m MACHINE_TYPE",
         :long => "--gce-machine-type MACHINE_TYPE",
-        :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)",
-        :required => true
+        :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)"
 
       option :image,
         :short => "-I IMAGE",
         :long => "--gce-image IMAGE",
-        :description => "The Image for the server",
-        :required => true
+        :description => "The Image for the server"
 
       option :image_project_id,
         :long => "--gce-image-project-id IMAGE_PROJECT_ID",
