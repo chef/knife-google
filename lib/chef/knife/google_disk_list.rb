@@ -25,8 +25,7 @@ class Chef
       option :zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
-        :description => "The Zone for disk listing",
-        :required => true
+        :description => "The Zone for disk listing"
 
       def run
         $stdout.sync = true

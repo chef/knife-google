@@ -29,8 +29,7 @@ class Chef
       option :zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
-        :description => "The Zone for this disk",
-        :required => true
+        :description => "The Zone for this disk"
 
       def run
         unless @name_args.size > 0

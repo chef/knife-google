@@ -183,12 +183,3 @@ describe Chef::Knife::GoogleServerCreate do
     @server_instance.run
   end
 end
-
-describe "without appropriate command line options" do
-  it "should throw exception when required params are not passed" do
-    $stdout.stub(:write) # lets not print those error messages
-    expect {
-      Chef::Knife::GoogleServerCreate.new([ "NAME"])
-    }.to raise_error(SystemExit)
-  end
-end

@@ -36,14 +36,12 @@ class Chef
       option :machine_type,
         :short => "-m MACHINE_TYPE",
         :long => "--gce-machine-type MACHINE_TYPE",
-        :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)",
-        :required => true
+        :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)"
 
       option :image,
         :short => "-I IMAGE",
         :long => "--gce-image IMAGE",
-        :description => "The Image for the server",
-        :required => true
+        :description => "The Image for the server"
 
       option :image_project_id,
         :long => "--gce-image-project-id IMAGE_PROJECT_ID",
@@ -335,26 +333,26 @@ class Chef
       def bootstrap_for_node(instance, ssh_host)
         bootstrap = Chef::Knife::Bootstrap.new
         bootstrap.name_args = [ssh_host]
-        bootstrap.config[:run_list] = config[:run_list]
-        bootstrap.config[:ssh_user] = config[:ssh_user]
-        bootstrap.config[:ssh_port] = config[:ssh_port]
-        bootstrap.config[:ssh_gateway] = config[:ssh_gateway]
-        bootstrap.config[:identity_file] = config[:identity_file]
-        bootstrap.config[:chef_node_name] = config[:chef_node_name] || instance.name
-        bootstrap.config[:prerelease] = config[:prerelease]
-        bootstrap.config[:bootstrap_version] = config[:bootstrap_version]
-        bootstrap.config[:first_boot_attributes] = config[:json_attributes]
-        bootstrap.config[:distro] = config[:distro]
-        bootstrap.config[:use_sudo] = true unless config[:ssh_user] == 'root'
-        bootstrap.config[:template_file] = config[:template_file]
-        bootstrap.config[:environment] = config[:environment]
+        bootstrap.config[:run_list] = locate_config_value(:run_list)
+        bootstrap.config[:ssh_user] = locate_config_value(:ssh_user)
+        bootstrap.config[:ssh_port] = locate_config_value(:ssh_port)
+        bootstrap.config[:ssh_gateway] = locate_config_value(:ssh_gateway)
+        bootstrap.config[:identity_file] = locate_config_value(:identity_file)
+        bootstrap.config[:chef_node_name] = locate_config_value(:chef_node_name) || instance.name
+        bootstrap.config[:prerelease] = locate_config_value(:prerelease)
+        bootstrap.config[:bootstrap_version] = locate_config_value(:bootstrap_version)
+        bootstrap.config[:first_boot_attributes] = locate_config_value(:json_attributes)
+        bootstrap.config[:distro] = locate_config_value(:distro)
+        bootstrap.config[:use_sudo] = true unless locate_config_value(:ssh_user) == 'root'
+        bootstrap.config[:template_file] = locate_config_value(:template_file)
+        bootstrap.config[:environment] = locate_config_value(:environment)
         bootstrap.config[:encrypted_data_bag_secret] = locate_config_value(:encrypted_data_bag_secret)
         bootstrap.config[:encrypted_data_bag_secret_file] = locate_config_value(:encrypted_data_bag_secret_file)
         bootstrap.config[:secret] = locate_config_value(:secret)
         bootstrap.config[:secret_file] = locate_config_value(:secret_file)
 
         # may be needed for vpc_mode
-        bootstrap.config[:host_key_verify] = config[:host_key_verify]
+        bootstrap.config[:host_key_verify] = locate_config_value(:host_key_verify)
         # Modify global configuration state to ensure hint gets set by
         # knife-bootstrap
         Chef::Config[:knife][:hints] ||= {}
@@ -371,7 +369,7 @@ class Chef
         end
 
         begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone]).self_link
+          zone = client.zones.get(locate_config_value(:zone)).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone]}' not found.")
           exit 1
@@ -381,7 +379,7 @@ class Chef
         end
 
         begin
-          machine_type = client.machine_types.get(:name => config[:machine_type],
+          machine_type = client.machine_types.get(:name => locate_config_value(:machine_type),
                                                   :zone => selflink2name(zone)).self_link
         rescue Google::Compute::ResourceNotFound
           ui.error("MachineType '#{config[:machine_type]}' not found")
