@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 require 'chef/knife/google_base'
-
+require 'pry'
 class Chef
   class Knife
     class GoogleDiskCreate < Knife
@@ -26,17 +26,17 @@ class Chef
         require 'google/compute'
       end
 
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
         :description => "The Zone for this disk"
 
-      option :disk_size,
+      option :gce_disk_size,
         :long => "--gce-disk-size SIZE",
         :description => "Size of the persistent disk between 1 and 10000 GB, specified in GB; default is '1' GB",
         :default => "1"
 
-      option :disk_type,
+      option :gce_disk_type,
         :long => "--gce-disk-type TYPE",
         :description => "Disk type to use to create the disk. Possible values are pd-standard, pd-ssd and local-ssd",
         :default => "pd-standard"
@@ -49,23 +49,23 @@ class Chef
         end
 
         begin
-          zone = client.zones.get(config[:zone])
+          zone = client.zones.get(locate_config_value(:gce_zone))
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone]}' not found")
+          ui.error("Zone '#{locate_config_value(:gce_zone)}' not found")
           exit 1
         end
 
         begin
-          disk_type = client.disk_types.get(:name => config[:disk_type],
+          disk_type = client.disk_types.get(:name => locate_config_value(:gce_disk_type),
                                                   :zone => selflink2name(zone.self_link))
         rescue Google::Compute::ResourceNotFound
-          ui.error("DiskType '#{config[:disk_type]}' not found")
+          ui.error("DiskType '#{locate_config_value(:gce_disk_type)}' not found")
           exit 1
         end
 
 
         begin
-          disk_size = config[:disk_size].to_i
+          disk_size = locate_config_value(:gce_disk_size).to_i
           raise if !disk_size.between?(1, 10000)
         rescue
           ui.error("Size of the persistent disk must be between 1 and 10000 GB.")
@@ -73,7 +73,7 @@ class Chef
         end
 
         zone_operation = client.disks.create(:name => @name_args.first,
-                                             :sizeGb => config[:disk_size],
+                                             :sizeGb => locate_config_value(:gce_disk_size),
                                              :zone => zone.name,
                                              :type => disk_type.self_link)
       end
