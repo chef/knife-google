@@ -455,7 +455,7 @@ class Chef
         end
 
         begin
-          boot_disk_size = locate_config_value(:boot_disk_size).to_i
+          boot_disk_size = locate_config_value(:gce_boot_disk_size).to_i
           raise if !boot_disk_size.between?(10, 10000)
         rescue
           ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")

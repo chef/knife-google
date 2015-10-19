@@ -23,12 +23,12 @@ describe Chef::Knife::GoogleServerCreate do
       "-n"+stored_network.name,
       "-Z"+stored_zone.name,
       stored_instance.name])
-    @server_instance.config[:service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
-    @server_instance.config[:service_account_name]='123845678986@project.gserviceaccount.com'
-    @server_instance.config[:boot_disk_size]='10'
-    @server_instance.config[:metadata]=[]
-    @server_instance.config[:metadata_from_file]=[]
-    @server_instance.config[:tags]=[]
+    @server_instance.config[:gce_service_account_scopes]=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.full_control"]
+    @server_instance.config[:gce_service_account_name]='123845678986@project.gserviceaccount.com'
+    @server_instance.config[:gce_boot_disk_size]='10'
+    @server_instance.config[:gce_metadata]=[]
+    @server_instance.config[:gce_metadata_from_file]=[]
+    @server_instance.config[:gce_tags]=[]
 
     @instances = double(Google::Compute::ListableResourceCollection)
 
@@ -119,7 +119,7 @@ describe Chef::Knife::GoogleServerCreate do
 
   it "#run should invoke compute api to create an server with a service account" do
     setup
-    @server_instance.config[:public_ip]='EPHEMERAL'
+    @server_instance.config[:gce_public_ip]='EPHEMERAL'
     allow(@server_instance.ui).to receive(:info)
     allow(@server_instance).to receive(:wait_for_disk)
     allow(@server_instance).to receive(:wait_for_sshd)
@@ -130,8 +130,8 @@ describe Chef::Knife::GoogleServerCreate do
 
   it "#run should create a server with secondary storage disk" do
     setup(true)
-    @server_instance.config[:additional_disks] = 'mock-disk'
-    @server_instance.config[:public_ip]='EPHEMERAL'
+    @server_instance.config[:gce_additional_disks] = 'mock-disk'
+    @server_instance.config[:gce_public_ip]='EPHEMERAL'
     allow(@server_instance.ui).to receive(:info)
     allow(@server_instance).to receive(:wait_for_disk)
     allow(@server_instance).to receive(:wait_for_sshd)
@@ -143,7 +143,7 @@ describe Chef::Knife::GoogleServerCreate do
   it "should read zone value from knife config file." do
     setup
     Chef::Config[:knife][:gce_zone] = stored_zone.name
-    @server_instance.config[:public_ip]='EPHEMERAL'
+    @server_instance.config[:gce_public_ip]='EPHEMERAL'
     allow(@server_instance.ui).to receive(:info)
     allow(@server_instance).to receive(:wait_for_disk)
     allow(@server_instance).to receive(:wait_for_sshd)
@@ -174,7 +174,7 @@ describe Chef::Knife::GoogleServerCreate do
       :canIpForward=>false,
       :metadata => {"items" => []},
       :tags => {"items" => []}}
-    @server_instance.config[:public_ip]='NONE'
+    @server_instance.config[:gce_public_ip]='NONE'
     allow(@server_instance.ui).to receive(:info)
     allow(@server_instance).to receive(:wait_for_disk)
     allow(@server_instance).to receive(:wait_for_sshd)
