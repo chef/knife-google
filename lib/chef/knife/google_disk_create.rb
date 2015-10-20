@@ -13,7 +13,6 @@
 # limitations under the License.
 #
 require 'chef/knife/google_base'
-require 'pry'
 class Chef
   class Knife
     class GoogleDiskCreate < Knife
