@@ -33,115 +33,115 @@ class Chef
       attr_accessor :initial_sleep_delay
       attr_reader :instance
 
-      option :gce_machine_type,
+      option :machine_type,
         :short => "-m MACHINE_TYPE",
-        :long => "--gce-machine-type MACHINE_TYPE",
+        :long => "--machine-type MACHINE_TYPE",
         :description => "The machine type of server (n1-highcpu-2, n1-highcpu-2-d, etc)"
 
-      option :gce_image,
+      option :image,
         :short => "-I IMAGE",
-        :long => "--gce-image IMAGE",
+        :long => "--image IMAGE",
         :description => "The Image for the server"
 
-      option :gce_image_project_id,
-        :long => "--gce-image-project-id IMAGE_PROJECT_ID",
+      option :image_project_id,
+        :long => "--image-project-id IMAGE_PROJECT_ID",
         :description => "The project-id containing the Image (debian-cloud, centos-cloud, etc)",
         :default => ""
 
-      option :gce_zone,
+      option :zone,
         :short => "-Z ZONE",
-        :long => "--gce-zone ZONE",
+        :long => "--zone ZONE",
         :description => "The Zone for this server"
 
-      option :gce_boot_disk_name,
-        :long => "--gce-boot-disk-name DISK",
+      option :boot_disk_name,
+        :long => "--boot-disk-name DISK",
         :description => "Name of persistent boot disk; default is to use the server name",
         :default => ""
 
-      option :gce_boot_disk_size,
-        :long => "--gce-boot-disk-size SIZE",
+      option :boot_disk_size,
+        :long => "--boot-disk-size SIZE",
         :description => "Size of the persistent boot disk between 10 and 10000 GB, specified in GB; default is '10' GB",
         :default => "10"
 
-      option :gce_boot_disk_ssd,
-        :long => "--[no-]gce-boot-disk-ssd",
+      option :boot_disk_ssd,
+        :long => "--[no-]boot-disk-ssd",
         :description => "Use pd-ssd boot disk; default is pd-standard boot disk",
         :boolean => true,
         :default => false
 
-      option :gce_boot_disk_autodelete,
-        :long => "--[no-]gce-boot-disk-autodelete",
+      option :boot_disk_autodelete,
+        :long => "--[no-]boot-disk-autodelete",
         :description => "Delete boot disk when instance is being deleted.",
         :boolean => true,
         :default => false
 
-      option :gce_additional_disks,
-        :long => "--gce-disk-additional-disks DISKS",
+      option :additional_disks,
+        :long => "--disk-additional-disks DISKS",
         :short => "-D DISKS",
         :description => "Additional disks you'd like to have attached to this instance (NOTE: this will not create them)"
 
-      option :gce_auto_restart,
-        :long => "--[no-]gce-auto-server-restart",
+      option :auto_restart,
+        :long => "--[no-]auto-server-restart",
         :description => "Compute Engine can automatically restart your VM instance if it is terminated for non-user-initiated reasons; enabled by default.",
         :boolean => true,
         :default => true
 
-      option :gce_auto_migrate,
-        :long => "--[no-]gce-auto-server-migrate",
+      option :auto_migrate,
+        :long => "--[no-]auto-server-migrate",
         :description => "Compute Engine can migrate your VM instance to other hardware without downtime prior to periodic infrastructure maintenance, otherwise the server is terminated; enabled by default.",
         :boolean => true,
         :default => true
 
-      option :gce_can_ip_forward,
-        :long => "--[no-]gce-can-ip-forward",
+      option :can_ip_forward,
+        :long => "--[no-]can-ip-forward",
         :description => "Forwarding allows the instance to help route packets.",
         :boolean => true,
         :default => false
 
-      option :gce_network,
+      option :network,
         :short => "-n NETWORK",
-        :long => "--gce-network NETWORK",
+        :long => "--network NETWORK",
         :description => "The network for this server; default is 'default'",
         :default => "default"
 
-      option :gce_tags,
+      option :tags,
         :short => "-T TAG1,TAG2,TAG3",
-        :long => "--gce-tags TAG1,TAG2,TAG3",
+        :long => "--tags TAG1,TAG2,TAG3",
         :description => "Tags for this server",
         :proc => Proc.new { |tags| tags.split(',') },
         :default => []
 
-      option :gce_metadata,
-        :long => "--gce-metadata Key=Value[,Key=Value...]",
+      option :metadata,
+        :long => "--metadata Key=Value[,Key=Value...]",
         :description => "Additional metadata for this server",
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
 
-      option :gce_metadata_from_file,
-        :long => "--gce-metadata-from-file Key=File[,Key=File...]",
+      option :metadata_from_file,
+        :long => "--metadata-from-file Key=File[,Key=File...]",
         :description => "Additional metadata loaded from a YAML file",
         :proc => Proc.new { |metadata| metadata.split(',') },
         :default => []
 
-      option :gce_service_account_scopes,
-        :long => "--gce-service-account-scopes SCOPE1,SCOPE2,SCOPE3",
+      option :service_account_scopes,
+        :long => "--service-account-scopes SCOPE1,SCOPE2,SCOPE3",
         :proc => Proc.new { |service_account_scopes| service_account_scopes.split(',') },
         :description => "Service account scopes for this server",
         :default => []
 
       # GCE documentation uses the term 'service account name', the api uses the term 'email'
-      option :gce_service_account_name,
-        :long => "--gce-service-account-name NAME",
+      option :service_account_name,
+        :long => "--service-account-name NAME",
         :description => "Service account name for this server, typically in the form of '123845678986@project.gserviceaccount.com'; default is 'default'",
         :default => "default"
 
-      option :gce_server_connect_ip,
-        :long => "--gce-server-connect-ip INTERFACE",
+      option :server_connect_ip,
+        :long => "--server-connect-ip INTERFACE",
         :description => "Whether to use PUBLIC or PRIVATE interface/address to connect; default is 'PUBLIC'",
         :default => 'PUBLIC'
 
-      option :gce_public_ip,
-        :long=> "--gce-public-ip IP_ADDRESS",
+      option :public_ip,
+        :long=> "--public-ip IP_ADDRESS",
         :description => "EPHEMERAL or static IP address or NONE; default is 'EPHEMERAL'",
         :default => "EPHEMERAL"
 
@@ -295,7 +295,7 @@ class Chef
       end
 
       def ssh_connect_host
-        @ssh_connect_host ||= if locate_config_value(:gce_server_connect_ip) == 'PUBLIC'
+        @ssh_connect_host ||= if locate_config_value(:server_connect_ip) == 'PUBLIC'
                                 public_ips(@instance).first
         else
            private_ips(@instance).first
@@ -369,9 +369,9 @@ class Chef
         end
 
         begin
-          zone = client.zones.get(locate_config_value(:gce_zone)).self_link
+          zone = client.zones.get(locate_config_value(:zone)).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{locate_config_value(:gce_zone)}' not found.")
+          ui.error("Zone '#{locate_config_value(:zone)}' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
@@ -379,27 +379,27 @@ class Chef
         end
 
         begin
-          machine_type = client.machine_types.get(:name => locate_config_value(:gce_machine_type),
+          machine_type = client.machine_types.get(:name => locate_config_value(:machine_type),
                                                   :zone => selflink2name(zone)).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("MachineType '#{locate_config_value(:gce_machine_type)}' not found")
+          ui.error("MachineType '#{locate_config_value(:machine_type)}' not found")
           exit 1
         end
 
         # this parameter is a string during the post and boolean otherwise
-        if locate_config_value(:gce_auto_restart) then
+        if locate_config_value(:auto_restart) then
           auto_restart = 'true'
         else
           auto_restart = 'false'
         end
 
-        if locate_config_value(:gce_auto_migrate) then
+        if locate_config_value(:auto_migrate) then
           auto_migrate = 'MIGRATE'
         else
           auto_migrate = 'TERMINATE'
         end
 
-        if locate_config_value(:gce_can_ip_forward) then
+        if locate_config_value(:can_ip_forward) then
           can_ip_forward = true
         else
           can_ip_forward = false
@@ -407,17 +407,17 @@ class Chef
 
         (checked_custom, checked_all) = false
         begin
-          image_project = locate_config_value(:gce_image_project_id)
+          image_project = locate_config_value(:image_project_id)
           # use zone url to determine project name
           zone =~ Regexp.new('/projects/(.*?)/')
           project = $1
           if image_project.to_s.empty?
             unless checked_custom
               checked_custom = true
-              ui.info("Looking for Image '#{locate_config_value(:gce_image)}' in Project '#{project}'")
-              image = client.images.get(:project=>project, :name=>locate_config_value(:gce_image)).self_link
+              ui.info("Looking for Image '#{locate_config_value(:image)}' in Project '#{project}'")
+              image = client.images.get(:project=>project, :name=>locate_config_value(:image)).self_link
             else
-              case config[:gce_image].downcase
+              case config[:image].downcase
               when /centos/
                 project = 'centos-cloud'
              when /container-vm/
@@ -436,45 +436,45 @@ class Chef
                 project = 'ubuntu-os-cloud'
               end
               checked_all = true
-              ui.info("Looking for Image '#{locate_config_value(:gce_image)}' in Project '#{project}'")
-              image = client.images.get(:project=>project, :name=>locate_config_value(:gce_image)).self_link
+              ui.info("Looking for Image '#{locate_config_value(:image)}' in Project '#{project}'")
+              image = client.images.get(:project=>project, :name=>locate_config_value(:image)).self_link
             end
           else
             checked_all = true
             project = image_project
-            image = client.images.get(:project=>project, :name=>locate_config_value(:gce_image)).self_link
+            image = client.images.get(:project=>project, :name=>locate_config_value(:image)).self_link
           end
-          ui.info("Found Image '#{locate_config_value(:gce_image)}' in Project '#{project}'")
+          ui.info("Found Image '#{locate_config_value(:image)}' in Project '#{project}'")
         rescue Google::Compute::ResourceNotFound
           unless checked_all then
             retry
           else
-            ui.error("Image '#{locate_config_value(:gce_image)}' not found")
+            ui.error("Image '#{locate_config_value(:image)}' not found")
             exit 1
           end
         end
 
         begin
-          boot_disk_size = locate_config_value(:gce_boot_disk_size).to_i
+          boot_disk_size = locate_config_value(:boot_disk_size).to_i
           raise if !boot_disk_size.between?(10, 10000)
         rescue
           ui.error("Size of the persistent boot disk must be between 10 and 10000 GB.")
           exit 1
         end
 
-        if locate_config_value(:gce_boot_disk_ssd) then
+        if locate_config_value(:boot_disk_ssd) then
           boot_disk_type = "#{zone}/diskTypes/pd-ssd"
         else
           boot_disk_type = "#{zone}/diskTypes/pd-standard"
         end
 
-        if locate_config_value(:gce_boot_disk_name).to_s.empty? then
+        if locate_config_value(:boot_disk_name).to_s.empty? then
           boot_disk_name = @name_args.first
         else
-          boot_disk_name = locate_config_value(:gce_boot_disk_name)
+          boot_disk_name = locate_config_value(:boot_disk_name)
         end
 
-        if locate_config_value(:gce_boot_disk_autodelete) then
+        if locate_config_value(:boot_disk_autodelete) then
           boot_disk_autodelete = 'true'
         else
           boot_disk_autodelete = 'false'
@@ -501,10 +501,10 @@ class Chef
                   'autoDelete' => boot_disk_autodelete
                   }]
 
-        unless locate_config_value(:gce_additional_disks).to_s.empty? then
+        unless locate_config_value(:additional_disks).to_s.empty? then
           ui.info("Waiting for the spare disk insert operation to complete")
 
-          additional_disks_parameter = locate_config_value(:gce_additional_disks).to_s.split(',').map do |additional_disk|
+          additional_disks_parameter = locate_config_value(:additional_disks).to_s.split(',').map do |additional_disk|
             client.disks.list(:zone => selflink2name(zone),
                                  :name => additional_disk).
             select do |link|
@@ -514,7 +514,7 @@ class Chef
             end.first
           end.map do |disk|
             if disk.nil?
-              ui.error("None of the disks in '#{locate_config_value(:gce_additional_disks)}' were found")
+              ui.error("None of the disks in '#{locate_config_value(:additional_disks)}' were found")
               exit 1
             end
             {'boot' => false,
@@ -528,22 +528,22 @@ class Chef
         end
 
         begin
-          network = client.networks.get(locate_config_value(:gce_network)).self_link
+          network = client.networks.get(locate_config_value(:network)).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Network '#{locate_config_value(:gce-network)}' not found")
+          ui.error("Network '#{locate_config_value(:network)}' not found")
           exit 1
         end
 
         metadata_items = []
 
-        locate_config_value(:gce_metadata).collect do |pair|
+        locate_config_value(:metadata).collect do |pair|
           mkey, mvalue = pair.split('=')
           metadata_items << {'key' => mkey, 'value' => mvalue}
         end
 
         # Metadata from file
 
-        locate_config_value(:gce_metadata_from_file).each do |p|
+        locate_config_value(:metadata_from_file).each do |p|
           mkey, filename = p.split('=')
           begin
             file_content = File.read(filename)
@@ -555,7 +555,7 @@ class Chef
 
         network_interface = {'network'=>network}
 
-        public_ip = locate_config_value(:gce_public_ip)
+        public_ip = locate_config_value(:public_ip)
         if public_ip == 'EPHEMERAL'
           network_interface.merge!('accessConfigs' =>[{"name"=>"External NAT",
                                   "type"=> "ONE_TO_ONE_NAT"}])
@@ -563,14 +563,14 @@ class Chef
           network_interface.merge!('accessConfigs' =>[{"name"=>"External NAT",
                   "type"=>"ONE_TO_ONE_NAT", "natIP"=>public_ip}])
         elsif public_ip == 'NONE'
-          config[:gce_server_connect_ip] = 'PRIVATE'
+          config[:server_connect_ip] = 'PRIVATE'
         else
           ui.error("Invalid public ip value : #{public_ip}")
           exit 1
         end
 
         ui.info("Waiting for the create server operation to complete")
-        if !locate_config_value(:gce_service_account_scopes).any?
+        if !locate_config_value(:service_account_scopes).any?
           zone_operation = client.instances.create(:name => @name_args.first,
                                                    :zone => selflink2name(zone),
                                                    :machineType => machine_type,
@@ -582,7 +582,7 @@ class Chef
                                                      'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items' => metadata_items },
-                                                   :tags => { 'items' => locate_config_value(:gce_tags) }
+                                                   :tags => { 'items' => locate_config_value(:tags) }
                                                   )
         else
           zone_operation = client.instances.create(:name => @name_args.first,
@@ -593,15 +593,15 @@ class Chef
                                                    :networkInterfaces => [network_interface],
                                                    :serviceAccounts => [{
                                                      'kind' => 'compute#serviceAccount',
-                                                     'email' => locate_config_value(:gce_service_account_name),
-                                                     'scopes' => locate_config_value(:gce_service_account_scopes)
+                                                     'email' => locate_config_value(:service_account_name),
+                                                     'scopes' => locate_config_value(:service_account_scopes)
                                                    }],
                                                    :scheduling => {
                                                      'automaticRestart' => auto_restart,
                                                      'onHostMaintenance' => auto_migrate
                                                    },
                                                    :metadata => { 'items'=>metadata_items },
-                                                   :tags => { 'items' => locate_config_value(:gce_tags) }
+                                                   :tags => { 'items' => locate_config_value(:tags) }
                                                   )
         end
 
@@ -616,7 +616,7 @@ class Chef
         @instance = client.instances.get(:name=>@name_args.first, :zone=>selflink2name(zone))
         msg_pair("Instance Name", @instance.name)
         msg_pair("Machine Type", selflink2name(@instance.machine_type))
-        msg_pair("Image", selflink2name(config[:gce_image]))
+        msg_pair("Image", selflink2name(config[:image]))
         msg_pair("Zone", selflink2name(@instance.zone))
         msg_pair("Tags", @instance.tags.has_key?("items") ? @instance.tags["items"].join(",") : "None")
         until @instance.status == "RUNNING"

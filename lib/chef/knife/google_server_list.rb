@@ -22,18 +22,18 @@ class Chef
 
       banner "knife google server list -Z ZONE (options)"
 
-      option :gce_zone,
+      option :zone,
         :short => "-Z ZONE",
-        :long => "--gce-zone ZONE",
+        :long => "--zone ZONE",
         :description => "The Zone for this server"
 
       def run
         $stdout.sync = true
 
         begin
-          zone = client.zones.get(locate_config_value(:gce_zone))
+          zone = client.zones.get(locate_config_value(:zone))
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{locate_config_value(:gce_zone)}' not found.")
+          ui.error("Zone '#{locate_config_value(:zone)}' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
