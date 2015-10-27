@@ -29,9 +29,9 @@ class Chef
 
       attr_reader :instances
 
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
-        :long => "--zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
 
       option :purge,
@@ -60,9 +60,9 @@ class Chef
 
       def run
         begin
-          zone = client.zones.get(locate_config_value(:zone)).self_link
+          zone = client.zones.get(locate_config_value(:gce_zone)).self_link
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{locate_config_value(:zone)}' not found")
+          ui.error("Zone '#{locate_config_value(:gce_zone)}' not found")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")

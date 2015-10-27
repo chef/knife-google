@@ -26,9 +26,9 @@ class Chef
         require 'google/compute'
       end
 
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
-        :long => "--zone ZONE",
+        :long => "--gce-zone ZONE",
         :description => "The Zone for this disk"
 
       def run
@@ -38,9 +38,9 @@ class Chef
         end
 
         begin
-          zone = client.zones.get(locate_config_value(:zone))
+          zone = client.zones.get(locate_config_value(:gce_zone))
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{locate_config_value(:zone)}' not found")
+          ui.error("Zone '#{locate_config_value(:gce_zone)}' not found")
           exit 1
         end
 

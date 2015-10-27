@@ -37,8 +37,8 @@ describe Chef::Knife::GoogleDiskCreate do
       and_return(d_type)
     client = double(Google::Compute::Client, :zones => zones, :disks => disks, :disk_types => disk_type)
     allow(Google::Compute::Client).to receive(:from_json).and_return(client)
-    knife_plugin.config[:disk_size] = 10
-    knife_plugin.config[:disk_type] = 'pd-ssd'
+    knife_plugin.config[:gce_disk_size] = 10
+    knife_plugin.config[:gce_disk_type] = 'pd-ssd'
     knife_plugin.run
   end
 end
