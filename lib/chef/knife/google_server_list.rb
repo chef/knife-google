@@ -22,18 +22,18 @@ class Chef
 
       banner "knife google server list -Z ZONE (options)"
 
-      option :zone,
+      option :gce_zone,
         :short => "-Z ZONE",
         :long => "--gce-zone ZONE",
         :description => "The Zone for this server"
 
       def run
         $stdout.sync = true
-        
+
         begin
-          zone = client.zones.get(config[:zone] || Chef::Config[:knife][:gce_zone])
+          zone = client.zones.get(locate_config_value(:gce_zone))
         rescue Google::Compute::ResourceNotFound
-          ui.error("Zone '#{config[:zone] || Chef::Config[:knife][:gce_zone] }' not found.")
+          ui.error("Zone '#{locate_config_value(:gce_zone)}' not found.")
           exit 1
         rescue Google::Compute::ParameterValidation
           ui.error("Must specify zone in knife config file or in command line as an option. Try --help.")
@@ -65,7 +65,7 @@ class Chef
           end
         end
 
-        if instance_list.count > 8  # This condition checks if there are any servers available. The first 8 values are the Labels. 
+        if instance_list.count > 8  # This condition checks if there are any servers available. The first 8 values are the Labels.
            puts ui.list(instance_list, :uneven_columns_across, output_column_count)
         else
            puts "No servers found in #{zone.name} zone."
