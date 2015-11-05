@@ -6,22 +6,13 @@ Example Note:
 ## Example Heading
 Details about the thing that changed that needs to get included in the Release Notes in markdown.
 -->
-# knife-google 1.3.1 Release Notes :
-This release of knife-google contains a fix for an issue where access tokens
-could expire during long-running operations such as `knife google server
-create`. If you've experienced intermittent failures with your usage of the
-knife-google plug-in, you should consider upgrading to this version.
+# knife-google 2.0.0 Release Notes :
+In this release of knife-google the option names have been changed to conform to the long option names.
+For example the `zone` option has been changed to `--gce-zone` as per the long option.
+Also, support has been added so that the options can be set from knife.rb file.
 
-Thanks go to Eric Johnson at Google for the fix.
+## Issues fixed in knife-google 2.0.0
 
-## knife-google on RubyGems and Github
-https://rubygems.org/gems/knife-google
-https://github.com/opscode/knife-google
-
-## Issues fixed in knife-google 1.3.1
-
-* KNIFE-473: knife-google should refresh access token
-
-## knife-google Breaking Changes:
-
-None.
+* [knife-google #70] (https://github.com/chef/knife-google/pull/70) Fix for --bootstrap-version command line option
+* [knife-google #76] (https://github.com/chef/knife-google/pull/76) Fix for picking options from knife.rb
+* [knife-google #77] (https://github.com/chef/knife-google/pull/77) Changed option names according to long options
