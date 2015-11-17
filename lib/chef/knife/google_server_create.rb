@@ -537,7 +537,7 @@ class Chef
         metadata_items = []
 
         locate_config_value(:gce_metadata).collect do |pair|
-          mkey, mvalue = pair.split('=')
+          mkey, mvalue = pair.split('=',2)
           metadata_items << {'key' => mkey, 'value' => mvalue}
         end
 
