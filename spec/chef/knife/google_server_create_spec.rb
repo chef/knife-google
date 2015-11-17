@@ -152,6 +152,20 @@ describe Chef::Knife::GoogleServerCreate do
     @server_instance.run
   end
 
+  it "should correctly parse gce metadata" do
+    setup
+    sshKeys = "user:ssh-rsa blah,blah== me@example"
+    @server_instance.config[:gce_public_ip]='EPHEMERAL'
+    @server_instance.config[:gce_metadata]=["sshKeys=#{sshKeys}"]
+    allow(@server_instance.ui).to receive(:info)
+    allow(@server_instance).to receive(:wait_for_disk)
+    allow(@server_instance).to receive(:wait_for_sshd)
+    expect(@server_instance).to receive(:bootstrap_for_node).with(stored_instance,'10.100.0.10').and_return(double("Chef::Knife::Bootstrap",:run => true))
+    @result[:metadata]["items"] = [{"key"=>"sshKeys", "value"=>sshKeys}]
+    expect(@instances).to receive(:create).with(@result).and_return(stored_zone_operation)
+    @server_instance.run
+  end
+
   it "create with public ip set to none" do
     setup
     @result = {
