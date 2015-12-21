@@ -48,6 +48,7 @@ module Google
           $stdout.print "Error reading CREDENTIAL_FILE, please run 'knife google setup'\n"
           exit 1
         end
+
         credential_data["issued_at"] = Time.parse(credential_data["issued_at"]).to_i if credential_data.has_key?("issued_at")
         authorization = Signet::OAuth2::Client.new(credential_data)
         self.new(authorization, credential_data['project'], filename)
