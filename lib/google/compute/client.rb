@@ -48,6 +48,8 @@ module Google
           $stdout.print "Error reading CREDENTIAL_FILE, please run 'knife google setup'\n"
           exit 1
         end
+
+        credential_data["issued_at"] = Time.parse(credential_data["issued_at"]).to_i if credential_data.has_key?("issued_at")
         authorization = Signet::OAuth2::Client.new(credential_data)
         self.new(authorization, credential_data['project'], filename)
       end
@@ -82,7 +84,7 @@ module Google
         $stdout.print "\n\nAuthorization code: "
         authorization_code = $stdin.gets.chomp
         api_client.authorization.code = authorization_code
-        
+
         begin
           api_client.authorization.fetch_access_token!
         rescue Faraday::Error::ConnectionFailed => e
@@ -182,9 +184,9 @@ module Google
         def compute
           @compute ||= @api_client.discovered_api('compute','v1')
         end
-        
+
         def dispatch(opts)
-          begin  
+          begin
             unless opts[:parameters].has_key?(:project)
               opts[:parameters].merge!( :project => @project )
             end
@@ -194,25 +196,25 @@ module Google
                                     )
             unless result.success?
               response = MultiJson.load(result.response.body)
-              error_code = response["error"]["code"] 
+              error_code = response["error"]["code"]
               if error_code == 404
-                raise ResourceNotFound, result.response.body 
+                raise ResourceNotFound, result.response.body
               elsif error_code == 400
-                raise BadRequest, result.response.body 
+                raise BadRequest, result.response.body
               elsif error_code == 401
                 # ok, our credentials aren't working, we need
                 # to get a new refresh token and retry
                 @api_client.authorization.fetch_access_token!
                 Client.save_credentials(@project, @api_client, @credential_file)
                 return dispatch(opts)
-              else 
-                raise BadRequest, result.response.body 
+              else
+                raise BadRequest, result.response.body
               end
-            end  
+            end
             return MultiJson.load(result.response.body) unless result.response.body.nil?
           rescue ArgumentError => e
             raise ParameterValidation, e.message
-          end  
+          end
         end
       end
     end
