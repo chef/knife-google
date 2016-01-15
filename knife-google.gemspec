@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'chef', '~> 12.0'
   s.add_dependency 'extlib', '~> 0.9'                 # google-api-ruby-client
-  s.add_dependency 'google-api-client', '~> 0.8'      # google-api-ruby-client
+  s.add_dependency 'google-api-client', '= 0.8.2'      # google-api-ruby-client
   s.add_dependency 'mixlib-config', '~> 2.0'
   s.add_dependency 'multi_json', '~> 1.10'            # google-api-ruby-client
 
