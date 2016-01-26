@@ -35,8 +35,8 @@ end
 task :default => :spec
 
 task :install => :package do
-  sh %{gem install pkg/#{GEM_NAME}-#{Knife::Google::VERSION} --no-rdoc --no-ri}
-end 
+  sh %{gem install pkg/#{GEM_NAME}-#{Knife::Google::VERSION}.gem --no-rdoc --no-ri}
+end
 
 task :uninstall do
   sh %{gem uninstall #{GEM_NAME} -x -v #{Knife::Google::VERSION} }
