@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.md", "LICENSE", "CONTRIB.md" ]
   s.summary = "Manage Google Compute Engine servers and disks"
   s.description = "Google Compute Engine Support for Chef's Knife Command"
-  s.homepage = "http://docs.chef.io/"
+  s.homepage = "https://github.com/chef/knife-google"
 
   s.add_dependency 'chef', '~> 12.0'
   s.add_dependency 'google-api-client', '~> 0.8'      # google-api-ruby-client
