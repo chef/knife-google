@@ -2,23 +2,34 @@
 
 ## Overview
 
-This is the official Chef [Knife](http://docs.chef.io/knife.html) plugin for [Google Compute Engine](https://cloud.google.com/products/compute-engine). This plugin gives knife the ability to create, bootstrap, and manage GCE instances.
+This is the official Chef [Knife](http://docs.chef.io/knife.html) plugin for
+[Google Compute Engine](https://cloud.google.com/products/compute-engine).
+This plugin gives knife the ability to create, bootstrap, and manage GCE instances.
 
 ### Compatibility
 
-Chef 12.x is required. This plugin utilizes the [Google API Ruby Client](https://github.com/google/google-api-ruby-client).
+Chef 12.x is required. This plugin utilizes the
+[Google API Ruby Client](https://github.com/google/google-api-ruby-client).
 
 ### Nomenclature
 
-This plugin conforms to the nomenclature used by similar plugins and uses the term "server" when referencing nodes managed by the plugin. In Google Compute Engine parlance, this is equivalent to an "instance" or "virtual machine instance".
+This plugin conforms to the nomenclature used by similar plugins and uses the
+term "server" when referencing nodes managed by the plugin. In Google Compute
+Engine parlance, this is equivalent to an "instance" or "virtual machine instance".
 
 ### Create a Google Cloud Platform project
 
-Before getting started with this plugin, you must first create a [Google Cloud Platform](https://cloud.google.com/) project and enable the Google Compute Engine service to your project.
+Before getting started with this plugin, you must first create a
+[Google Cloud Platform](https://cloud.google.com/) project and enable the
+Google Compute Engine service to your project.
 
 ### Authorizing Setup
 
-In order for the knife plugin manage your servers, you will first need to get credentials using `gcloud auth login`. [Download](https://cloud.google.com/sdk/) the Google Cloud SDK and review the `gcloud` [documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login) for more information.
+In order for the knife plugin manage your servers, you will first need to get
+credentials using `gcloud auth login`. [Download](https://cloud.google.com/sdk/)
+the Google Cloud SDK and review the `gcloud`
+[documentation](https://cloud.google.com/sdk/gcloud/reference/auth/login)
+for more information.
 
 ## Installation
 
@@ -33,27 +44,35 @@ gem 'chef', '~> 12.0'
 gem 'knife-google'
 ```
 
-If the knife-google gem out of date, the most recent version can be installed from Github by replacing the `gem 'knife-ec2'` line with the following:
+If the knife-google gem out of date, the most recent version can be installed
+from Github by replacing the `gem 'knife-ec2'` line with the following:
 
 ```ruby
 gem 'knife-google', :github => 'chef/knife-google'
 ```
+
 ### RubyGems
 
-If you are not using bundler, you can install the gem manually. This plugin is distributed as a Ruby Gem. Be sure you are running Chef 12 or higher. To install it, run:
+If you are not using bundler, you can install the gem manually. This plugin is
+distributed as a Ruby Gem. Be sure you are running Chef 12 or higher. To install
+it, run:
 
-    $ gem install chef -v '~> 12.0'
-    $ gem install knife-google
+```sh
+$ gem install chef -v '~> 12.0'
+$ gem install knife-google
+```
 
 ### Github
 
 To build the gem from the knife-google source code on Github:
 
-   $ git clone https://github.com/chef/knife-google.git
-   $ cd knife-google
-   $ rake install
+```sh
+$ git clone https://github.com/chef/knife-google.git
+$ cd knife-google
+$ rake install
+```
 
-##  Configuration
+## Configuration
 
 ### Setting up the plugin
 
@@ -63,19 +82,19 @@ above.
 
 ### Bootstrap Preparation and SSH
 
-In order to bootstrap nodes, you will first need to ensure your SSH
-keys are set up correctly. In Google Compute Engine, you can store
-SSH keys in project metadata that will get copied over to new servers
-and placed in the appropriate user's `~/.ssh/authorized_keys` file.
+In order to bootstrap nodes, you will first need to ensure your SSH keys are set
+up correctly. In Google Compute Engine, you can store SSH keys in project
+metadata that will get copied over to new servers and placed in the appropriate
+user's `~/.ssh/authorized_keys` file.
 
-If you don't already have SSH keys set up, you can create them with
-the `ssh-keygen` program. Open up the Metadata page from the
-GCE section of the cloud console. If it doesn't already exist, create
-a new `sshKeys` key and paste in your user's `~/.ssh/id_rsa.pub`
-file; make sure to prefix the entry with the username that corresponds
-to the username specified with the `-x` (aka `--ssh-user`) argument of the knife
-command or its default value of `root`. An example entry should look
-something like this -- notice the prepended username of `myuser`:
+If you don't already have SSH keys set up, you can create them with the
+`ssh-keygen` program. Open up the Metadata page from the GCE section of the
+cloud console. If it doesn't already exist, create a new `sshKeys` key and paste
+in your user's `~/.ssh/id_rsa.pub` file; make sure to prefix the entry with the
+username that corresponds to the username specified with the `-x`
+(aka `--ssh-user`) argument of the knife command or its default value of `root`.
+An example entry should look something like this -- notice the prepended
+username of `myuser`:
 
 ```
 myuser:ssh-rsa AYAAB3Nwejwejjfjawlwl990sefjsfC5lPulcP4eZB+z1zcMF
@@ -91,7 +110,8 @@ zRk7CzL3mhcma8Zvwj234-2f3/+234/AR#@R#y1EEFsbzGbxOJfEVSTgJfvY7KYp
 
 ### Optional knife.rb defaults
 
-Setting these values in `knife.rb` file will eliminate having to specify the GCE project and zone each time you use `knife-google`.
+Setting these values in `knife.rb` file will eliminate having to specify the GCE
+project and zone each time you use `knife-google`.
 
 ```
 knife[:gce_project] = "myproject"
@@ -107,7 +127,7 @@ Some usage examples follow:
 $ knife google server list
 
 # Create a server
-$ knife google server create www1 -m n1-standard-1 -I ubuntu-1204-precise-v20150316 -x jdoe --gce-zone us-central1-a 
+$ knife google server create www1 -m n1-standard-1 -I ubuntu-1204-precise-v20150316 -x jdoe --gce-zone us-central1-a
 
 # Create a server with service account scopes
 $ knife google server create www1 -m n1-standard-1 -I ubuntu-1204-precise-v20150316 -x jdoe --gce-zone us-central1-a --gce-service-account-scopes https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/devstorage.full_control
@@ -143,7 +163,7 @@ $ knife google server list --help
 knife google server list
     -s, --server-url URL             Chef Server URL
         --chef-zero-host HOST        Host to start chef-zero on
-        --chef-zero-port PORT        Port (or port range) to start chef-zero on.  Port ranges like 1000,1010 or 8889-9999 will try all given ports until one works.
+        --chef-zero-port PORT        Port (or port range) to start chef-zero on. Port ranges like 1000,1010 or 8889-9999 will try all given ports until one works.
     -k, --key KEY                    API Client Key
         --[no-]color                 Use colored output, defaults to false on Windows, true otherwise
     -c, --config CONFIG              The configuration file to use
@@ -168,9 +188,12 @@ knife google server list
 
 ### `knife google zone list`
 
-A zone is an isolated location within a region that is independent of other zones in the same region. For additional information on zones, please refer to the GCE [documentation](https://cloud.google.com/compute/docs/zones).
+A zone is an isolated location within a region that is independent of other
+zones in the same region. For additional information on zones, please refer
+to the GCE [documentation](https://cloud.google.com/compute/docs/zones).
 
-Use this command to list out the available Google Compute Engine zones and their status.
+Use this command to list out the available Google Compute Engine zones and
+their status.
 
 ```sh
 $ knife google zone list
@@ -186,13 +209,17 @@ us-central1-a   up
 us-central1-b   up
 us-central1-c   up
 ```
+
 This information is also available using `gcloud`:
 
-    $ gcloud compute zones list
+```sh
+$ gcloud compute zones list
+```
 
 ### `knife google region quotas`
 
-Regions are collections of zones. For additional information on regions, please refer to the GCE [documentation](https://cloud.google.com/compute/docs/zones).
+Regions are collections of zones. For additional information on regions, please
+refer to the GCE [documentation](https://cloud.google.com/compute/docs/zones).
 
 Use this command to list all available regions and their quota information.
 
@@ -221,9 +248,12 @@ us-central1   ssd_total_gb        2048.0   10.0
 us-central1   local_ssd_total_gb  6000.0   0.0
 us-central1   instances           240.0    1.0
 ```
+
 This information is also available using `gcloud`:
 
-    $ gcloud compute regions list
+```sh
+$ gcloud compute regions list
+```
 
 ### `knife google project quotas`
 
@@ -251,43 +281,61 @@ myproject        backend_services     3.0     0.0
 myproject        target_vpn_gateways  5.0     0.0
 myproject        vpn_tunnels          10.0    0.0
 ```
+
 This information is also available using `gcloud`:
 
-    $ gcloud compute project-info describe
+```sh
+$ gcloud compute project-info describe
+```
 
 ### `knife google server create`
 
-Use this command to create a new Google Compute Engine server (instance). You must specify a name, machine type, zone and boot disk image name. Images provided by Google follow this naming convention:
+Use this command to create a new Google Compute Engine server (instance).
+You must specify a name, machine type, zone and boot disk image name.
+Images provided by Google follow this naming convention:
 
 ```
 debian-7-wheezy-vYYYYMMDD
 centos-7-vYYYYMMDD
 ```
 
-By default, knife-google will look for the specified image in the instance's primary project first and then consult GCE's officially supported image locations. The `--gce-image-project-id IMAGE_PROJECT_ID` option can be specified to force the plugin to look for the image in an alternate project location.
+By default, knife-google will look for the specified image in the instance's
+primary project first and then consult GCE's officially supported image
+locations. The `--gce-image-project-id IMAGE_PROJECT_ID` option can be specified
+to force the plugin to look for the image in an alternate project location.
 
-Note that if you are bootstrapping the node, make sure to follow the preparation instructions earlier and use the `-x` arguments to specify the username for the matching SSH key metadata.
+Note that if you are bootstrapping the node, make sure to follow the preparation
+instructions earlier and use the `-x` arguments to specify the username for the
+matching SSH key metadata.
 
-If you would like to set up your server with a service account, provide the `--gce-service-account-scopes` argument during server creation. The service account associated with your project will be used by default unless otherwise specified with the optional `--gce-service-account-name` argument.
+If you would like to set up your server with a service account, provide the
+`--gce-service-account-scopes` argument during server creation. The service
+account associated with your project will be used by default unless otherwise
+specified with the optional `--gce-service-account-name` argument.
 
-See the extended options that also allow bootstrapping the node with `knife google server create --help`.
+See the extended options that also allow bootstrapping the node with
+`knife google server create --help`.
 
 ### `knife google server delete`
 
-This command terminates and deletes a server. Use the `--purge` option to also remove it from Chef.
+This command terminates and deletes a server. Use the `--purge` option to also
+remove it from Chef.
 
-Note that persistent disks associated with the server. Boot disks are deleted only if `--gce-boot-disk-autodelete` was specified when creating the server. To delete persistent disks use `knife google disk delete`.
+Note that persistent disks associated with the server. Boot disks are deleted
+only if `--gce-boot-disk-autodelete` was specified when creating the server.
+To delete persistent disks use `knife google disk delete`.
 
 See the extended options with `knife google server delete --help`.
 
 ### `knife google server list`
 
-Get a list of servers in the specified zone.  Note that this may include servers that are *not* managed by Chef.
+Get a list of servers in the specified zone.  Note that this may include servers
+that are *not* managed by Chef.
 
 ```sh
 $ knife google server list
 name    status
-www1  running
+www1    running
 ```
 
 ### `knife google disk create`
@@ -296,11 +344,12 @@ Create a new disk. You must provide a name, size in gigabytes and zone.
 
 ### `knife google disk delete`
 
-Delete an existing disk in the specified zone. Note that the disk will *not* be deleted if it is currently attached to a running server.
+Delete an existing disk in the specified zone. Note that the disk will *not* be
+deleted if it is currently attached to a running server.
 
 ### `knife google disk list`
 
-See a listing of disks defined for a specific zone. 
+See a listing of disks defined for a specific zone.
 
 ```sh
 $ knife google disk list
@@ -311,10 +360,10 @@ disk1   us-central1-a  -                             10         ready
 
 ## Troubleshooting
 
-
 ## Build and Development
 
-Standard rake commands for building, installing, testing, and uninstalling the module.
+Standard rake commands for building, installing, testing, and uninstalling
+the module.
 
 ```sh
 # Run spec tests
@@ -337,7 +386,8 @@ provision for GCE API changes:
 * When the implementation of knife-google switches to a new GCE API revision,
   the minor version **MUST** be incremented.
 
-The version number of the release is simply the gem version. All releases to RubyGems **MUST** be tagged in git with the version number of the release.
+The version number of the release is simply the gem version. All releases to
+RubyGems **MUST** be tagged in git with the version number of the release.
 
 ## Contributing
 
