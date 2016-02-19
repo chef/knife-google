@@ -1,22 +1,34 @@
 <!---
-This file is reset every time a new release is done. The contents of this file are for the currently unreleased version.
+This file is reset every time a new release is done. The contents of this file
+are for the currently unreleased version.
 
 Example Note:
 
 ## Example Heading
-Details about the thing that changed that needs to get included in the Release Notes in markdown.
+Details about the thing that changed that needs to get included in the Release
+Notes in markdown.
 -->
-# knife-google 2.0.0 Release Notes :
-This release of knife-google is a complete rewrite utilizing google-api-ruby-client.
 
-## knife-google on RubyGems and Github
-https://rubygems.org/gems/knife-google
-https://github.com/chef/knife-google
+# Release 3.0.0
 
-## Issues fixed in knife-google 2.0.0
+* This release of knife-google is a complete rewrite utilizing
+  `google-api-ruby-client`.
+* GCE project and zone values can now be set in the `knife.rb` file. Doing so
+  will eliminate having to specify the GCE project and zone each time
+  `knife-google` is invoked.
 
-Now using google-api-ruby-client.
+# Release 3.0.0 Breaking Changes
 
-## knife-google Breaking Changes:
-
-None.
+* Many arguments and all output from sub commands has changed.
+* Setup using `google setup` has been removed. To obtain credentials use
+  `gcloud auth login` from the [Google Cloud SDK](https://cloud.google.com/sdk/).
+  See README.md for additional details.
+* The `project list` command has been removed. Use the new command `project
+  quotas` or from the `gcloud` tool from the
+  [Google Cloud SDK](https://cloud.google.com/sdk/gcloud/).
+* The `region list` command has been removed. Use the new command `region
+  quotas` or from the `gcloud` tool from the
+  [Google Cloud SDK](https://cloud.google.com/sdk/gcloud/).
+* Options and output from `server create` have changed.
+* The `server delete` option to specify a different `node name` from the
+  `client name` has been removed.
