@@ -23,11 +23,11 @@ require "chef/knife/cloud/google_service_helpers"
 require "chef/knife/cloud/google_service_options"
 
 class Chef::Knife::Cloud
-  class GoogleZoneList < ResourceListCommand
+  class GoogleProjectQuotas < ResourceListCommand
     include GoogleServiceHelpers
     include GoogleServiceOptions
 
-    banner "knife google zone list"
+    banner "knife google project quotas"
 
     def validate_params!
       check_for_missing_config_values!
@@ -36,26 +36,24 @@ class Chef::Knife::Cloud
 
     def before_exec_command
       @columns_with_info = [
-        { label: "Zone",   key: "name" },
-        { label: "Status", key: "status", value_callback: method(:format_status_value) },
+        { label: "Quota", key: "metric", value_callback: method(:format_name) },
+        { label: "Limit", key: "limit", value_callback: method(:format_number) },
+        { label: "Usage", key: "usage", value_callback: method(:format_number) },
       ]
 
-      @sort_by_field = "name"
-    end
-
-    def format_status_value(status)
-      status = status.downcase
-      status_color = if status == "up"
-                       :green
-                     else
-                       :red
-                     end
-
-      ui.color(status, status_color)
+      @sort_by_field = "metric"
     end
 
     def query_resource
-      service.list_zones
+      service.list_project_quotas
+    end
+
+    def format_name(name)
+      name.split("_").map { |x| x.capitalize }.join(" ")
+    end
+
+    def format_number(number)
+      number % 1 == 0 ? number.to_i.to_s : number.to_s
     end
   end
 end
