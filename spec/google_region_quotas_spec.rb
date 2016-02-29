@@ -83,7 +83,7 @@ describe Chef::Knife::Cloud::GoogleRegionQuotas do
         expect(command).to receive(:format_number).with("usage1")
         expect(command).to receive(:format_number).with("usage2")
         expect(ui).to receive(:list).and_return("list_output")
-        expect(command).to receive(:puts).with("list_output")
+        expect(ui).to receive(:msg).with("list_output")
 
         command.execute_command
       end

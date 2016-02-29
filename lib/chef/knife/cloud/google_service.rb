@@ -141,31 +141,19 @@ class Chef::Knife::Cloud
     end
 
     def list_zones
-      zones = paginated_results(:list_zones, :items, project)
-      return [] if zones.nil?
-
-      zones
+      paginated_results(:list_zones, :items, project) || []
     end
 
     def list_disks
-      disks = paginated_results(:list_disks, :items, project, zone)
-      return [] if disks.nil?
-
-      disks
+      paginated_results(:list_disks, :items, project, zone) || []
     end
 
     def list_regions
-      regions = paginated_results(:list_regions, :items, project)
-      return [] if regions.nil?
-
-      regions
+      paginated_results(:list_regions, :items, project) || []
     end
 
     def list_project_quotas
-      quotas = connection.get_project(project).quotas
-      return [] if quotas.nil?
-
-      quotas
+      connection.get_project(project).quotas || []
     end
 
     def validate_server_create_options!(options)

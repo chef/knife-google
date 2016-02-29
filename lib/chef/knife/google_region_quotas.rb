@@ -53,7 +53,7 @@ class Chef::Knife::Cloud
           output << format_number(quota.usage)
         end
 
-        puts ui.list(output.flatten, :uneven_columns_across, table_header.size)
+        ui.msg(ui.list(output.flatten, :uneven_columns_across, table_header.size))
         ui.msg("")
       end
     end

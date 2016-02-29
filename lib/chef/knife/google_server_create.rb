@@ -22,7 +22,6 @@ require "chef/knife/cloud/server/create_options"
 require "chef/knife/cloud/google_service"
 require "chef/knife/cloud/google_service_helpers"
 require "chef/knife/cloud/google_service_options"
-require "gcewinpass"
 
 class Chef::Knife::Cloud
   class GoogleServerCreate < ServerCreateCommand
@@ -135,6 +134,10 @@ class Chef::Knife::Cloud
     option :gce_email,
       long:        "--gce-email EMAIL_ADDRESS",
       description: "email address of the logged-in Google Cloud user; required for bootstrapping windows hosts"
+
+    deps do
+      require "gcewinpass"
+    end
 
     def before_exec_command
       super

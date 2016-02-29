@@ -19,6 +19,7 @@
 require "spec_helper"
 require "chef/knife/google_server_create"
 require "support/shared_examples_for_command"
+require "gcewinpass"
 
 describe Chef::Knife::Cloud::GoogleServerCreate do
   let(:command) { described_class.new(["test_instance"]) }
