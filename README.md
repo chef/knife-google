@@ -27,7 +27,7 @@ chef gem install knife-google
 If you're using Bundler, simply add it to your Gemfile:
 
 ```ruby
-gem "knife-google", "~> 3.0"
+gem "knife-google", "~> 2.0"
 ```
 
 ... and then run `bundle install`.
