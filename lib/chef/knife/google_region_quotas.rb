@@ -23,39 +23,55 @@ require "chef/knife/cloud/google_service_helpers"
 require "chef/knife/cloud/google_service_options"
 
 class Chef::Knife::Cloud
-  class GoogleZoneList < ResourceListCommand
+  class GoogleRegionQuotas < Command
     include GoogleServiceHelpers
     include GoogleServiceOptions
 
-    banner "knife google zone list"
+    banner "knife google region quotas"
 
     def validate_params!
       check_for_missing_config_values!
       super
     end
 
-    def before_exec_command
-      @columns_with_info = [
-        { label: "Zone",   key: "name" },
-        { label: "Status", key: "status", value_callback: method(:format_status_value) },
+    def execute_command
+      service.list_regions.each do |region|
+        ui.msg(ui.color("Region: #{region.name}", :bold))
+
+        quotas = region.quotas
+        if quotas.nil? || quotas.empty?
+          ui.warn("No quota information available for this region.")
+          ui.msg("")
+          next
+        end
+
+        output = []
+        output << table_header
+        quotas.each do |quota|
+          output << format_name(quota.metric)
+          output << format_number(quota.limit)
+          output << format_number(quota.usage)
+        end
+
+        ui.msg(ui.list(output.flatten, :uneven_columns_across, table_header.size))
+        ui.msg("")
+      end
+    end
+
+    def table_header
+      [
+        ui.color("Quota", :bold),
+        ui.color("Limit", :bold),
+        ui.color("Usage", :bold),
       ]
-
-      @sort_by_field = "name"
     end
 
-    def format_status_value(status)
-      status = status.downcase
-      status_color = if status == "up"
-                       :green
-                     else
-                       :red
-                     end
-
-      ui.color(status, status_color)
+    def format_name(name)
+      name.split("_").map { |x| x.capitalize }.join(" ")
     end
 
-    def query_resource
-      service.list_zones
+    def format_number(number)
+      number % 1 == 0 ? number.to_i.to_s : number.to_s
     end
   end
 end

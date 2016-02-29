@@ -1,7 +1,6 @@
 #
-# Author:: Paul Rossman (<paulrossman@google.com>)
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright 2015-2016 Google Inc., Chef Software, Inc.
+# Copyright:: Copyright 2016 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +16,29 @@
 # limitations under the License.
 
 require "chef/knife"
-require "chef/knife/cloud/command"
+require "chef/knife/cloud/server/show_options"
+require "chef/knife/cloud/server/show_command"
 require "chef/knife/cloud/google_service"
 require "chef/knife/cloud/google_service_helpers"
 require "chef/knife/cloud/google_service_options"
 
-class Chef::Knife::Cloud
-  class GoogleDiskDelete < Command
-    include GoogleServiceHelpers
-    include GoogleServiceOptions
+class Chef
+  class Knife
+    class Cloud
+      class GoogleServerShow < ServerShowCommand
+        include ServerShowOptions
+        include GoogleServiceHelpers
+        include GoogleServiceOptions
 
-    banner "knife google disk delete NAME [NAME] (options)"
+        banner "knife google server show INSTANCE_NAME (options)"
 
-    def validate_params!
-      check_for_missing_config_values!
-      raise "You must specify at least one disk to delete." if @name_args.empty?
-      super
-    end
-
-    def execute_command
-      @name_args.each { |disk| service.delete_disk(disk) }
+        def validate_params!
+          check_for_missing_config_values!
+          raise "You must supply an instance name to display" if @name_args.empty?
+          raise "You may only supply one instance name" if @name_args.size > 1
+          super
+        end
+      end
     end
   end
 end

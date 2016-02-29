@@ -1,4 +1,8 @@
-# Copyright 2013 Google Inc. All Rights Reserved.
+#
+# Author:: Paul Rossman (<paulrossman@google.com>)
+# Author:: Chef Partner Engineering (<partnereng@chef.io>)
+# Copyright:: Copyright 2015-2016 Google Inc., Chef Software, Inc.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,115 +15,52 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-require 'chef/knife/google_base'
-require 'time'
 
-class Chef
-  class Knife
-    class GoogleRegionList < Knife
+require "chef/knife"
+require "chef/knife/cloud/list_resource_command"
+require "chef/knife/cloud/google_service"
+require "chef/knife/cloud/google_service_helpers"
+require "chef/knife/cloud/google_service_options"
 
-      include Knife::GoogleBase
+class Chef::Knife::Cloud
+  class GoogleRegionList < ResourceListCommand
+    include GoogleServiceHelpers
+    include GoogleServiceOptions
 
-      banner "knife google region list (options)"
+    banner "knife google zone list"
 
-      option :limits,
-        :short => "-L",
-        :long => "--with-limits",
-        :description => "Additionally print the quota limit for each metric",
-        :required => false,
-        :boolean => true,
-        :default => false 
+    def validate_params!
+      check_for_missing_config_values!
+      super
+    end
 
-      def run
-        $stdout.sync = true
+    def before_exec_command
+      @columns_with_info = [
+        { label: "Region", key: "name" },
+        { label: "Status", key: "status", value_callback: method(:format_status_value) },
+        { label: "Zones",  key: "zones", value_callback: method(:format_zones) },
+      ]
 
-        region_list = [
-          ui.color("name", :bold),
-          ui.color('status', :bold),
-          ui.color('deprecation', :bold),
-          ui.color('cpus', :bold),
-          ui.color('disks-total-gb', :bold),
-          ui.color('in-use-addresses', :bold),
-          ui.color('static-addresses', :bold)].flatten.compact
+      @sort_by_field = "name"
+    end
 
-        output_column_count = region_list.length
+    def query_resource
+      service.list_regions
+    end
 
-        client.regions.list.each do |region|
-          region_list << region.name
-          region_list << begin
-            status = region.status.downcase
-            case status
-            when 'up'
-              ui.color(status, :green)
-            else
-              ui.color(status, :red)
-            end
-          end
-          deprecation_state = "-"
-          if region.deprecated.respond_to?('state')
-            deprecation_state = region.deprecated.state
-          end
-          region_list << deprecation_state
-          cpu_usage = "0"
-          cpu_limit = "0"
-          region.quotas.each do |quota|
-            if quota["metric"] == "CPUS"
-              cpu_usage = "#{quota["usage"].to_i}"
-              cpu_limit = "#{quota["limit"].to_i}"
-            end
-          end
-          if config[:limits] == true
-            cpu_quota = "#{cpu_usage}/#{cpu_limit}"
-          else
-            cpu_quota = "#{cpu_usage}"
-          end
-          region_list << cpu_quota
-          disk_usage = "0"
-          disk_limit = "0"
-          region.quotas.each do |quota|
-            if quota["metric"] == "DISKS_TOTAL_GB"
-              disk_usage = "#{quota["usage"].to_i}"
-              disk_limit = "#{quota["limit"].to_i}"
-            end
-          end
-          if config[:limits] == true
-            disk_quota = "#{disk_usage}/#{disk_limit}" 
-          else
-            disk_quota = "#{disk_usage}"
-          end
-          region_list << disk_quota
-          inuse_usage = "0"
-          inuse_limit = "0"
-          region.quotas.each do |quota|
-            if quota["metric"] == "IN_USE_ADDRESSES"
-             inuse_usage = "#{quota["usage"].to_i}"
-             inuse_limit = "#{quota["limit"].to_i}"
-            end
-          end
-          if config[:limits] == true
-            inuse_quota = "#{inuse_usage}/#{inuse_limit}"
-          else
-            inuse_quota = "#{inuse_usage}"
-          end
-          region_list << inuse_quota
-          static_usage = "0"
-          static_limit = "0"
-          region.quotas.each do |quota|
-            if quota["metric"] == "STATIC_ADDRESSES"
-              static_usage = "#{quota["usage"].to_i}"
-              static_limit = "#{quota["limit"].to_i}"
-            end
-          end
-          if config[:limits] == true
-            static_quota = "#{static_usage}/#{static_limit}"
-          else
-            static_quota = "#{static_usage}"
-          end
-          region_list << static_quota
-        end
-        ui.info(ui.list(region_list, :uneven_columns_across, output_column_count))
-      end
+    def format_status_value(status)
+      status = status.downcase
+      status_color = if status == "up"
+                       :green
+                     else
+                       :red
+                     end
+
+      ui.color(status, status_color)
+    end
+
+    def format_zones(zones)
+      zones.map { |zone| zone.split("/").last }.sort.join(", ")
     end
   end
 end
