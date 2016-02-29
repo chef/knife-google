@@ -164,11 +164,11 @@ Create a GCE server instance and bootstrap it with Chef.
  * **--gce-boot-disk-name**: The name to use when creating the instance's boot disk. Defaults to the instance name.
  * **--gce-boot-disk-size**: The size of the boot disk to create, in GB. Defaults to 10.
  * **--[no-]gce-boot-disk-ssd**: If true, the boot disk will be created as a `pd-ssd` disk type. By default, this is false, and the boot disk will be created as a `pd-standard` disk type.
- * **--[no-]gce-boot-disk-autodelete: If true, the boot disk will be automatically deleted whenever the instance is deleted. Defaults to true.
- * **--additional_disks: A comma-separated list of disk names to attach to the instance when creating it. The disks must already exist.
- * **--[no-]gce-auto-server-restart: If true, the instance will be automatically restarted if it was terminated for non-user-initiated actions, such as host maintenance. Defaults to true.
- * **--[no-]gce-auto-server-migrate: If true, the instance will be automatically migrated to another host if maintenance would require the instance to be terminated. Defaulst to true.
- * **--[no-]gce-can-ip-forward: If true, the instance will be allowed to perform network forwarding. Defaults to false.
+ * **--[no-]gce-boot-disk-autodelete**: If true, the boot disk will be automatically deleted whenever the instance is deleted. Defaults to true.
+ * **--additional_disks**: A comma-separated list of disk names to attach to the instance when creating it. The disks must already exist.
+ * **--[no-]gce-auto-server-restart**: If true, the instance will be automatically restarted if it was terminated for non-user-initiated actions, such as host maintenance. Defaults to true.
+ * **--[no-]gce-auto-server-migrate**: If true, the instance will be automatically migrated to another host if maintenance would require the instance to be terminated. Defaulst to true.
+ * **--[no-]gce-can-ip-forward**: If true, the instance will be allowed to perform network forwarding. Defaults to false.
  * **--gce-tags**: A comma-separated list of tag values to add to the instance.
  * **--gce-metadata**: A comma-separated list of key=value pairs to be added to the instance metadata. Example: `--gce-metadata mykey=myvalue,yourkey=yourvalue`
  * **--gce-service-account-scopes**: A comma-separated list of account scopes for this instance. View a list of scoped by running `gcloud compute instances create --help` and searching for the documentation for the `--scopes` parameter. You must supply the full URI (i.e. "https://www.googleapis.com/auth/devstorage.full_control") or the final part of the URI (i.e. "devstorage.full_control"). Alias names (i.e. "storage-rw") are not permitted.
