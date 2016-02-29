@@ -366,17 +366,27 @@ describe Chef::Knife::Cloud::GoogleService do
       let(:options) { { additional_disks: %w{disk1 disk2} } }
 
       it "returns an array containing all three disks" do
-        expect(connection).to receive(:get_disk).with(project, zone, "disk1").and_return("disk_obj_1")
-        expect(connection).to receive(:get_disk).with(project, zone, "disk2").and_return("disk_obj_2")
-        expect(service.instance_disks_for(options)).to eq(%w{boot_disk disk_obj_1 disk_obj_2})
+        disk1 = double("disk1")
+        disk2 = double("disk2")
+        attached_disk1 = double("attached_disk1")
+        attached_disk2 = double("attached_disk2")
+
+        expect(connection).to receive(:get_disk).with(project, zone, "disk1").and_return(disk1)
+        expect(connection).to receive(:get_disk).with(project, zone, "disk2").and_return(disk2)
+        expect(disk1).to receive(:self_link).and_return("disk1_url")
+        expect(disk2).to receive(:self_link).and_return("disk2_url")
+        expect(Google::Apis::ComputeV1::AttachedDisk).to receive(:new).and_return(attached_disk1)
+        expect(Google::Apis::ComputeV1::AttachedDisk).to receive(:new).and_return(attached_disk2)
+        expect(attached_disk1).to receive(:source=).and_return("disk1_url")
+        expect(attached_disk2).to receive(:source=).and_return("disk2_url")
+        expect(service.instance_disks_for(options)).to eq(["boot_disk", attached_disk1, attached_disk2])
       end
     end
 
-    context "when additional disks are to be attached but one does not exist" do
-      let(:options) { { additional_disks: %w{good_disk bad_disk} } }
+    context "when an additional disk is to be attached but does not exist" do
+      let(:options) { { additional_disks: %w{bad_disk} } }
 
       it "raises an exception" do
-        expect(connection).to receive(:get_disk).with(project, zone, "good_disk").and_return("disk_obj_1")
         expect(connection).to receive(:get_disk).with(project, zone, "bad_disk").and_raise(Google::Apis::ClientError.new("disk not found"))
         expect(service.ui).to receive(:error).with("Unable to attach disk bad_disk to the instance: disk not found")
         expect { service.instance_disks_for(options) }.to raise_error(Google::Apis::ClientError)

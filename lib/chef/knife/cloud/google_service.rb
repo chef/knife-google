@@ -231,7 +231,7 @@ class Chef::Knife::Cloud
           raise
         end
 
-        disks << disk
+        disks << Google::Apis::ComputeV1::AttachedDisk.new.tap { |x| x.source = disk.self_link }
       end
 
       disks
