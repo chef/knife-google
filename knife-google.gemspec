@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.license = "Apache-2.0"
   s.email = ["paulrossman@google.com", "partnereng@chef.io"]
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README.md", "LICENSE", "CONTRIB.md"]
+  s.extra_rdoc_files = ["README.md", "LICENSE"]
   s.summary = "Google Compute Engine Support for Chef's Knife Command"
   s.description = s.summary
   s.homepage = "https://github.com/chef/knife-google"
