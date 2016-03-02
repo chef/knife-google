@@ -4,9 +4,16 @@
 [![Build Status](https://travis-ci.org/chef/knife-google.svg?branch=master)](https://travis-ci.org/chef/knife-google)
 [![Dependency Status](https://gemnasium.com/chef/knife-google.svg)](https://gemnasium.com/chef/knife-google)
 
-A plugin for Chef's [knife](https://docs.chef.io/knife.html) tool to create and manage
-[Google Compute Engine](https://cloud.google.com/products/compute-engine)
-resources.
+## Overview
+
+This is the official Chef [Knife](http://docs.chef.io/knife.html) plugin for
+[Google Compute Engine](https://cloud.google.com/products/compute-engine).
+This plugin gives knife the ability to create, bootstrap, and manage
+Google Compute Engine (GCE) instances.
+
+## Compatibility
+
+This plugin has been tested with Chef 12.x and uses the [Google API Ruby Client](https://github.com/google/google-api-ruby-client).
 
 # Getting Started
 
@@ -37,7 +44,7 @@ gem "knife-google", "~> 2.0"
 Before getting started with this plugin, you must first create a
 [Google Cloud Platform](https://cloud.google.com/) (GCP) "project" and add the
 Google Compute Engine service to your project.  While GCP has many other services,
-such as App Enging and Cloud Storage, this plugin only provides an integration with
+such as App Engine and Cloud Storage, this plugin only provides an integration with
 Google Compute Engine (GCE). 
 
 ## Authentication and Authorization
@@ -51,11 +58,13 @@ Google Cloud API. The auth library expects that there is a JSON credentials file
 The easiest way to create this is to download and install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run the
 `gcloud auth login` command which will create the credentials file for you.
 
-If you already have a file you'd like to use that is in a different location, set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable with the full path to that file
+If you already have a file you'd like to use that is in a different location, set the
+`GOOGLE_APPLICATION_CREDENTIALS` environment variable with the full path to that file.
 
 ##  Configuration
 
-All knife-google commands require a project name and zone name to be supplied. You can supply these on the command line:
+All knife-google commands require a project name, and most commands require zone name to be supplied.
+You can supply these on the command line:
 
 ```sh
 knife google server list --gce-project my-test-project --gce-zone us-east1-b
@@ -72,7 +81,18 @@ knife[:gce_zone]    = 'us-east1-b'
 
 In order to Linux bootstrap nodes, you will first need to ensure your SSH
 keys are set up correctly. Ensure your SSH public key is properly entered 
-into your project's Metadata tab in the GCP Console. 
+into your project's Metadata tab in the GCP Console. GCE will add your key
+to the appropriate user's `~/.ssh/authorized_keys` file when Chef first
+connects to perform the bootstrap process.
+
+ * If you don't have one, create a key using `ssh-keygen`
+ * Log in to the GCP console, select your project, go to Compute Engine, and go to the Metadata tab.
+ * Select the "SSH Keys" tab.
+ * Add a new item, and paste in your public key.
+    * Note: to change the username automatically detected for the key, prefix your key with the username
+      you plan to use as the `--ssh-user` when creating a server. For example, if you plan to connect
+      as "chefuser", your key should look like: `chefuser:ssh-rsa AAAAB3N...`
+ * Click "Save".
 
 You can find [more information on configuring SSH keys](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) in
 the Google Compute Engine documentation.
@@ -136,6 +156,9 @@ None.
 
 Display all regions available to the currently-configured project, what each region's status is, and what zones exist in each region.
 
+Regions are collections of zones. For additional information on regions, please
+refer to the [GCE documentation](https://cloud.google.com/compute/docs/zones).
+
 ### Parameters
 
 None.
@@ -150,7 +173,12 @@ None.
 
 ## knife google server create INSTANCE_NAME
 
-Create a GCE server instance and bootstrap it with Chef.
+Create a GCE server instance and bootstrap it with Chef. You must supply an instance name,
+a machine type, and an image to use.
+
+For a Linux instance, Chef will connect to the instance over SSH based on the `--ssh-user`
+parameter. This user must have SSH keys configured properly in the project's metadata.
+See the [SSH Keys](#ssh-keys) section for more information.
 
 ### Parameters
 
@@ -187,7 +215,11 @@ knife google server create test-instance-1 --gce-image centos-7-v20160219 --gce-
 
 ## knife google server delete INSTANCE_NAME [INSTANCE_NAME]
 
-Deletes one or more GCE server instance. Additionally, if requested, the client and node object for the given instance will be deleted off of the Chef Server as well.
+Deletes one or more GCE server instance. Additionally, if requested, the client and node object
+for the given instance will be deleted off of the Chef Server as well.
+
+The boot disk will be deleted as well unless `--no-gce-boot-disk-autodelete` was specified during
+the server creation.
 
 ### Parameters
 
@@ -204,6 +236,8 @@ knife google server delete my-instance-1 my-instance-2 --purge
 
 Display the instances in the currently-configured project and zone, their statuses, machine types, IP addresses, and network.
 
+This command will display all instances in the project/zone, even if they weren't created with knife-google.
+
 ### Parameters
 
 None.
@@ -219,6 +253,9 @@ Display information about a single GCE instance, including its status, machine t
 ## knife google zone list
 
 List all available zones in the currently-configured project and what each zone's status is.
+A zone is an isolated location within a region that is independent of other
+zones in the same region. For additional information on zones, please refer
+to the [GCE documentation](https://cloud.google.com/compute/docs/zones).
 
 ### Parameters
 
