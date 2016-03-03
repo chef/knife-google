@@ -67,10 +67,19 @@ describe Chef::Knife::Cloud::GoogleService do
   describe '#connection' do
     it "returns a properly configured ComputeService" do
       compute_service = double("compute_service")
+      client_options  = double("client_options")
+
       allow(service).to receive(:connection).and_call_original
+
+      expect(Google::Apis::ClientOptions).to receive(:new).and_return(client_options)
+      expect(client_options).to receive(:application_name=).with("knife-google")
+      expect(client_options).to receive(:application_version=).with(Knife::Google::VERSION)
+
       expect(Google::Apis::ComputeV1::ComputeService).to receive(:new).and_return(compute_service)
       expect(service).to receive(:authorization).and_return("authorization_object")
       expect(compute_service).to receive(:authorization=).with("authorization_object")
+      expect(compute_service).to receive(:client_options=).with(client_options)
+
       expect(service.connection).to eq(compute_service)
     end
   end
