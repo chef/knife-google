@@ -22,6 +22,7 @@ require "chef/knife/cloud/helpers"
 require "chef/knife/cloud/google_service_helpers"
 require "google/apis/compute_v1"
 require "ipaddr"
+require "knife-google/version"
 
 class Chef::Knife::Cloud
   class GoogleService < Service
@@ -43,6 +44,10 @@ class Chef::Knife::Cloud
 
       @connection = Google::Apis::ComputeV1::ComputeService.new
       @connection.authorization = authorization
+      @connection.client_options = Google::Apis::ClientOptions.new.tap do |opts|
+        opts.application_name    = "knife-google"
+        opts.application_version = Knife::Google::VERSION
+      end
 
       @connection
     end
