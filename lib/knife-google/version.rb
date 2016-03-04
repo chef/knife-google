@@ -14,7 +14,7 @@
 #
 module Knife
   module Google
-    VERSION = "2.0.0".freeze
+    VERSION = "2.1.0".freeze
     MAJOR, MINOR, TINY = VERSION.split(".")
   end
 end
