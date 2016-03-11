@@ -152,6 +152,39 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
   end
 
+  describe '#preemptible?' do
+    it "returns the preemptible setting from the config" do
+      expect(command).to receive(:locate_config_value).with(:preemptible).and_return("test_preempt")
+      expect(command.preemptible?).to eq("test_preempt")
+    end
+  end
+
+  describe '#auto_migrate?' do
+    it "returns false if the instance is preemptible" do
+      expect(command).to receive(:preemptible?).and_return(true)
+      expect(command.auto_migrate?).to eq(false)
+    end
+
+    it "returns the setting from the config if preemptible is false" do
+      expect(command).to receive(:preemptible?).and_return(false)
+      expect(command).to receive(:locate_config_value).with(:auto_migrate).and_return("test_migrate")
+      expect(command.auto_migrate?).to eq("test_migrate")
+    end
+  end
+
+  describe '#auto_restart?' do
+    it "returns false if the instance is preemptible" do
+      expect(command).to receive(:preemptible?).and_return(true)
+      expect(command.auto_restart?).to eq(false)
+    end
+
+    it "returns the setting from the config if preemptible is false" do
+      expect(command).to receive(:preemptible?).and_return(false)
+      expect(command).to receive(:locate_config_value).with(:auto_restart).and_return("test_restart")
+      expect(command.auto_restart?).to eq("test_restart")
+    end
+  end
+
   describe '#ip_address_for_bootstrap' do
     it "returns the public IP by default" do
       expect(command).to receive(:locate_config_value).with(:use_private_ip).and_return(false)
