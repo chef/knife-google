@@ -85,6 +85,12 @@ class Chef::Knife::Cloud
       boolean:     true,
       default:     true
 
+    option :preemptible,
+      long:        "--[no-]gce-preemptible",
+      description: "Create the instance as a preemptible instance, allowing GCE to shut it down at any time. Defaults to false.",
+      boolean:     true,
+      default:     false
+
     option :can_ip_forward,
       long:        "--[no-]gce-can-ip-forward",
       description: "Allow server network forwarding",
@@ -148,8 +154,9 @@ class Chef::Knife::Cloud
         image_project:          locate_config_value(:image_project),
         network:                locate_config_value(:network),
         public_ip:              locate_config_value(:public_ip),
-        auto_migrate:           locate_config_value(:auto_migrate),
-        auto_restart:           locate_config_value(:auto_restart),
+        auto_migrate:           auto_migrate?,
+        auto_restart:           auto_restart?,
+        preemptible:            preemptible?,
         boot_disk_autodelete:   locate_config_value(:boot_disk_autodelete),
         boot_disk_name:         locate_config_value(:boot_disk_name),
         boot_disk_size:         boot_disk_size,
@@ -177,6 +184,8 @@ class Chef::Knife::Cloud
       raise "Please provide your Google Cloud console email address via --gce-email. " \
         "It is required when resetting passwords on Windows hosts." if locate_config_value(:bootstrap_protocol) == "winrm" && locate_config_value(:gce_email).nil?
 
+      ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
+      ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
       super
     end
 
@@ -212,6 +221,18 @@ class Chef::Knife::Cloud
 
     def email
       locate_config_value(:gce_email)
+    end
+
+    def preemptible?
+      locate_config_value(:preemptible)
+    end
+
+    def auto_migrate?
+      preemptible? ? false : locate_config_value(:auto_migrate)
+    end
+
+    def auto_restart?
+      preemptible? ? false : locate_config_value(:auto_restart)
     end
 
     def ip_address_for_bootstrap

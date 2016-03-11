@@ -191,7 +191,7 @@ class Chef::Knife::Cloud
     end
 
     def check_api_call(&block)
-      block.call
+      yield
     rescue Google::Apis::ClientError
       false
     else
@@ -353,8 +353,9 @@ class Chef::Knife::Cloud
 
     def instance_scheduling_for(options)
       scheduling = Google::Apis::ComputeV1::Scheduling.new
-      scheduling.automatic_restart = options[:auto_restart].to_s
+      scheduling.automatic_restart   = options[:auto_restart].to_s
       scheduling.on_host_maintenance = migrate_setting_for(options[:auto_migrate])
+      scheduling.preemptible         = options[:preemptible].to_s
 
       scheduling
     end
@@ -472,7 +473,7 @@ class Chef::Knife::Cloud
       begin
         Timeout.timeout(wait_time) do
           loop do
-            item = block.call
+            item = yield
             current_status = item.status
 
             if current_status == requested_status

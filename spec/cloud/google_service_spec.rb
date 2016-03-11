@@ -567,12 +567,13 @@ describe Chef::Knife::Cloud::GoogleService do
   describe '#instance_scheduling_for' do
     it "returns a properly-formatted scheduling object" do
       scheduling = double("scheduling")
-      options    = { auto_restart: "auto_restart", auto_migrate: "auto_migrate" }
+      options    = { auto_restart: "auto_restart", auto_migrate: "auto_migrate", preemptible: "preempt" }
 
       expect(service).to receive(:migrate_setting_for).with("auto_migrate").and_return("host_maintenance")
       expect(Google::Apis::ComputeV1::Scheduling).to receive(:new).and_return(scheduling)
       expect(scheduling).to receive(:automatic_restart=).with("auto_restart")
       expect(scheduling).to receive(:on_host_maintenance=).with("host_maintenance")
+      expect(scheduling).to receive(:preemptible=).with("preempt")
 
       expect(service.instance_scheduling_for(options)).to eq(scheduling)
     end
