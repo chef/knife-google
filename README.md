@@ -186,7 +186,7 @@ See the [SSH Keys](#ssh-keys) section for more information.
  * **--gce-machine-type**: required. The machine type to use when creating the server, such as `n1-standard-2` or `n1-highcpu-2-d`.
  * **--gce-network**: The name of the network to which your instance will be attached. Defaults to "default".
  * **--gce-subnet**: The name of the subnet to which your instance will be attached. Only applies to custom networks.
- * **--gce-image**: required. The name of the disk image to use when creating the server. knife-google will search your current project for this disk image. If the image cannot be found but looks like a common public image, the public image project will be searched as well.
+ * **--gce-image**: required. The name of the disk image to use when creating the server. knife-google will search your current project for this disk image. If the image cannot be found but looks like a common public image, the public image project will be searched as well. Additionally, this parameter supports the same image aliases that `gcloud compute instances create` supports. See the output of `gcloud compute instances create --help` for a full list of aliases.
     * Example: if you supply a gce-image of `centos-7-v20160219`, knife-google will first look for an image with that name in your currently-configured project. If it cannot be found, it will look in the `centos-cloud` project.
     * This behavior can be overridden with the `--gce-image-project` parameter.
  * **--gce-image-project**: optional. The name of the GCP project that contains the image specified with the `--gce-image` flag. If this is specified, knife-google will not search any known public projects for your image.

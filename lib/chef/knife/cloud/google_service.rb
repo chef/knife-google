@@ -52,6 +52,27 @@ class Chef::Knife::Cloud
       "userinfo-email"     => "userinfo.email",
     }
 
+    IMAGE_ALIAS_MAP = {
+      "centos-6"           => { project: "centos-cloud",      prefix: "centos-6" },
+      "centos-7"           => { project: "centos-cloud",      prefix: "centos-7" },
+      "container-vm"       => { project: "google-containers", prefix: "container-vm" },
+      "coreos"             => { project: "coreos-cloud",      prefix: "coreos-stable" },
+      "debian-7"           => { project: "debian-cloud",      prefix: "debian-7-wheezy" },
+      "debian-7-backports" => { project: "debian-cloud",      prefix: "backports-debian-7-wheezy" },
+      "debian-8"           => { project: "debian-cloud",      prefix: "debian-8-jessie" },
+      "opensuse-13"        => { project: "opensuse-cloud",    prefix: "opensuse-13" },
+      "rhel-6"             => { project: "rhel-cloud",        prefix: "rhel-6" },
+      "rhel-7"             => { project: "rhel-cloud",        prefix: "rhel-7" },
+      "sles-11"            => { project: "suse-cloud",        prefix: "sles-11" },
+      "sles-12"            => { project: "suse-cloud",        prefix: "sles-12" },
+      "ubuntu-12-04"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1204-precise" },
+      "ubuntu-14-04"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1404-trusty" },
+      "ubuntu-15-04"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1504-vivid" },
+      "ubuntu-15-10"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1510-wily" },
+      "windows-2008-r2"    => { project: "windows-cloud",     prefix: "windows-server-2008-r2" },
+      "windows-2012-r2"    => { project: "windows-cloud",     prefix: "windows-server-2012-r2" },
+    }
+
     def initialize(options = {})
       @project       = options[:project]
       @zone          = options[:zone]
@@ -188,7 +209,7 @@ class Chef::Knife::Cloud
       raise "Invalid network: #{options[:network]}" unless valid_network?(options[:network])
       raise "Invalid subnet: #{options[:subnet]}" if options[:subnet] && !valid_subnet?(options[:subnet])
       raise "Invalid Public IP setting: #{options[:public_ip]}" unless valid_public_ip_setting?(options[:public_ip])
-      raise "Invalid image: #{options[:image]} - check your image name, or set an image project if needed" if image_search_for(options[:image], options[:image_project]).nil?
+      raise "Invalid image: #{options[:image]} - check your image name, or set an image project if needed" if boot_disk_source_image(options[:image], options[:image_project]).nil?
     end
 
     def check_api_call
@@ -283,7 +304,7 @@ class Chef::Knife::Cloud
       params.disk_name    = boot_disk_name_for(options)
       params.disk_size_gb = options[:boot_disk_size]
       params.disk_type    = disk_type_url_for(boot_disk_type_for(options))
-      params.source_image = image_search_for(options[:image], options[:image_project])
+      params.source_image = boot_disk_source_image(options[:image], options[:image_project])
 
       disk.initialize_params = params
       disk
@@ -293,26 +314,61 @@ class Chef::Knife::Cloud
       options[:boot_disk_ssd] ? "pd-ssd" : "pd-standard"
     end
 
+    def boot_disk_source_image(image, image_project)
+      @boot_disk_source ||= image_search_for(image, image_project)
+    end
+
     def image_search_for(image, image_project)
       # if the user provided an image_project, assume they want it, no questions asked
-      return image_url_for(image_project, image) unless image_project.nil?
+      unless image_project.nil?
+        ui.msg("Searching project #{image_project} for image #{image}")
+        return image_url_for(image_project, image)
+      end
 
-      # no image project has been provided. We'll first check the user's project for the image.
+      # no image project has been provided. Check to see if the image is a known alias.
+      alias_url = image_alias_url(image)
+      unless alias_url.nil?
+        ui.msg("image #{image} is a known alias - using image URL: #{alias_url}")
+        return alias_url
+      end
+
+      # Doesn't match an alias. Let's check the user's project for the image.
       url = image_url_for(project, image)
-      return url unless url.nil?
+      unless url.nil?
+        ui.msg("Located image #{image} in project #{project} - using image URL: #{url}")
+        return url
+      end
 
       # Image not found in user's project. Is there a public project this image might exist in?
       public_project = public_project_for_image(image)
       if public_project
+        ui.msg("Searching public image project #{public_project} for image #{image}")
         return image_url_for(public_project, image)
       end
 
       # No image in user's project or public project, so it doesn't exist.
+      ui.error("Image search failed for image #{image} - no suitable image located")
       nil
     end
 
     def image_url_for(image_project, image_name)
       return "projects/#{image_project}/global/images/#{image_name}" if image_exist?(image_project, image_name)
+    end
+
+    def image_alias_url(image_alias)
+      return unless IMAGE_ALIAS_MAP.key?(image_alias)
+
+      image_project = IMAGE_ALIAS_MAP[image_alias][:project]
+      image_prefix  = IMAGE_ALIAS_MAP[image_alias][:prefix]
+
+      latest_image = connection.list_images(image_project).items
+        .select { |image| image.name.start_with?(image_prefix) }
+        .sort { |a, b| a.name <=> b.name }
+        .last
+
+      return if latest_image.nil?
+
+      latest_image.self_link
     end
 
     def boot_disk_name_for(options)
