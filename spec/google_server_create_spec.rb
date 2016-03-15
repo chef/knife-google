@@ -38,8 +38,13 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       allow(command).to receive(:check_for_missing_config_values!)
       allow(command).to receive(:valid_disk_size?).and_return(true)
       allow(command).to receive(:boot_disk_size)
-      command.config[:bootstrap_protocol] = "ssh"
-      command.config[:identity_file] = "/path/to/file"
+      allow(command).to receive(:locate_config_value).with(:bootstrap_protocol).and_return("ssh")
+      allow(command).to receive(:locate_config_value).with(:identity_file).and_return("/path/to/file")
+      allow(command).to receive(:locate_config_value).with(:auto_migrate)
+      allow(command).to receive(:locate_config_value).with(:auto_restart)
+      allow(command).to receive(:locate_config_value).with(:chef_node_name)
+      allow(command).to receive(:locate_config_value).with(:chef_node_name_prefix)
+      allow(command).to receive(:preemptible?).and_return(false)
     end
 
     context "when no instance name has been provided" do
@@ -65,6 +70,20 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       expect(command).to receive(:locate_config_value).with(:bootstrap_protocol).and_return("winrm")
       expect(command).to receive(:locate_config_value).with(:gce_email).and_return(nil)
       expect { command.validate_params! }.to raise_error(RuntimeError)
+    end
+
+    it "prints a warning if auto-migrate is true for a preemptible instance" do
+      allow(command).to receive(:preemptible?).and_return(true)
+      allow(command).to receive(:locate_config_value).with(:auto_migrate).and_return(true)
+      expect(command.ui).to receive(:warn).with("Auto-migrate disabled for preemptible instance")
+      command.validate_params!
+    end
+
+    it "prints a warning if auto-restart is true for a preemptible instance" do
+      allow(command).to receive(:preemptible?).and_return(true)
+      allow(command).to receive(:locate_config_value).with(:auto_restart).and_return(true)
+      expect(command.ui).to receive(:warn).with("Auto-restart disabled for preemptible instance")
+      command.validate_params!
     end
   end
 
@@ -130,6 +149,39 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     it "returns the email from the config" do
       expect(command).to receive(:locate_config_value).with(:gce_email).and_return("test_email")
       expect(command.email).to eq("test_email")
+    end
+  end
+
+  describe '#preemptible?' do
+    it "returns the preemptible setting from the config" do
+      expect(command).to receive(:locate_config_value).with(:preemptible).and_return("test_preempt")
+      expect(command.preemptible?).to eq("test_preempt")
+    end
+  end
+
+  describe '#auto_migrate?' do
+    it "returns false if the instance is preemptible" do
+      expect(command).to receive(:preemptible?).and_return(true)
+      expect(command.auto_migrate?).to eq(false)
+    end
+
+    it "returns the setting from the config if preemptible is false" do
+      expect(command).to receive(:preemptible?).and_return(false)
+      expect(command).to receive(:locate_config_value).with(:auto_migrate).and_return("test_migrate")
+      expect(command.auto_migrate?).to eq("test_migrate")
+    end
+  end
+
+  describe '#auto_restart?' do
+    it "returns false if the instance is preemptible" do
+      expect(command).to receive(:preemptible?).and_return(true)
+      expect(command.auto_restart?).to eq(false)
+    end
+
+    it "returns the setting from the config if preemptible is false" do
+      expect(command).to receive(:preemptible?).and_return(false)
+      expect(command).to receive(:locate_config_value).with(:auto_restart).and_return("test_restart")
+      expect(command.auto_restart?).to eq("test_restart")
     end
   end
 
