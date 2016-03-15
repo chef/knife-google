@@ -102,6 +102,10 @@ class Chef::Knife::Cloud
       description: "The network for this server; default is 'default'",
       default:     "default"
 
+    option :subnet,
+      long:        "--gce-subnet SUBNET",
+      description: "The name of the subnet in the network on which to deploy the instance"
+
     option :tags,
       short:       "-T TAG1,TAG2,TAG3",
       long:        "--gce-tags TAG1,TAG2,TAG3",
@@ -153,6 +157,7 @@ class Chef::Knife::Cloud
         image:                  locate_config_value(:image),
         image_project:          locate_config_value(:image_project),
         network:                locate_config_value(:network),
+        subnet:                 locate_config_value(:subnet),
         public_ip:              locate_config_value(:public_ip),
         auto_migrate:           auto_migrate?,
         auto_restart:           auto_restart?,

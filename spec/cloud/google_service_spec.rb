@@ -189,6 +189,7 @@ describe Chef::Knife::Cloud::GoogleService do
       {
         machine_type:  "test_type",
         network:       "test_network",
+        subnet:        "test_subnet",
         public_ip:     "public_ip",
         image:         "test_image",
         image_project: "test_image_project",
@@ -198,6 +199,7 @@ describe Chef::Knife::Cloud::GoogleService do
     before do
       allow(service).to receive(:valid_machine_type?).and_return(true)
       allow(service).to receive(:valid_network?).and_return(true)
+      allow(service).to receive(:valid_subnet?).and_return(true)
       allow(service).to receive(:valid_public_ip_setting?).and_return(true)
       allow(service).to receive(:image_search_for).and_return(true)
     end
@@ -213,6 +215,11 @@ describe Chef::Knife::Cloud::GoogleService do
 
     it "raises an exception if the network is not valid" do
       expect(service).to receive(:valid_network?).with("test_network").and_return(false)
+      expect { service.validate_server_create_options!(options) }.to raise_error(RuntimeError)
+    end
+
+    it "raises an exception if the network is not valid" do
+      expect(service).to receive(:valid_subnet?).with("test_subnet").and_return(false)
       expect { service.validate_server_create_options!(options) }.to raise_error(RuntimeError)
     end
 
@@ -267,6 +274,20 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
+  describe '#valid_subnet?' do
+    it "returns false if no subnet was specified" do
+      expect(service.valid_subnet?(nil)).to eq(false)
+    end
+
+    it "checks the network using check_api_call" do
+      expect(service).to receive(:region).and_return("test_region")
+      expect(connection).to receive(:get_subnetwork).with(project, "test_region", "test_subnet")
+      expect(service).to receive(:check_api_call).and_call_original
+
+      service.valid_subnet?("test_subnet")
+    end
+  end
+
   describe '#image_exist?' do
     it "checks the image using check_api_call" do
       expect(connection).to receive(:get_image).with("image_project", "image_name")
@@ -309,6 +330,14 @@ describe Chef::Knife::Cloud::GoogleService do
     it "returns true if IPAddr can parse the address" do
       expect(IPAddr).to receive(:new).with("1.2.3.4")
       expect(service.valid_ip_address?("1.2.3.4")).to eq(true)
+    end
+  end
+
+  describe '#region' do
+    it "returns the region for a given zone" do
+      zone_obj = double("zone_obj", region: "/path/to/test_region")
+      expect(connection).to receive(:get_zone).with(project, zone).and_return(zone_obj)
+      expect(service.region).to eq("test_region")
     end
   end
 
@@ -543,24 +572,63 @@ describe Chef::Knife::Cloud::GoogleService do
   end
 
   describe '#instance_network_interfaces_for' do
-    it "returns an array containing a properly-formatted interface" do
-      interface = double("interface")
-      options   = { network: "test_network", public_ip: "public_ip" }
+    let(:interface) { double("interface" ) }
+    let(:options)   { { network: "test_network", public_ip: "public_ip" } }
 
-      expect(service).to receive(:network_url_for).with("test_network").and_return("network_url")
-      expect(service).to receive(:instance_access_configs_for).with("public_ip").and_return("access_configs")
+    before do
+      allow(service).to receive(:network_url_for)
+      allow(service).to receive(:subnet_url_for)
+      allow(service).to receive(:instance_access_configs_for)
+      allow(Google::Apis::ComputeV1::NetworkInterface).to receive(:new).and_return(interface)
+      allow(interface).to receive(:network=)
+      allow(interface).to receive(:subnetwork=)
+      allow(interface).to receive(:access_configs=)
+    end
 
+    it "creates a network interface object and returns it" do
       expect(Google::Apis::ComputeV1::NetworkInterface).to receive(:new).and_return(interface)
-      expect(interface).to receive(:network=).with("network_url")
-      expect(interface).to receive(:access_configs=).with("access_configs")
-
       expect(service.instance_network_interfaces_for(options)).to eq([interface])
+    end
+
+    it "sets the network" do
+      expect(service).to receive(:network_url_for).with("test_network").and_return("network_url")
+      expect(interface).to receive(:network=).with("network_url")
+      service.instance_network_interfaces_for(options)
+    end
+
+    it "sets the access configs" do
+      expect(service).to receive(:instance_access_configs_for).with("public_ip").and_return("access_configs")
+      expect(interface).to receive(:access_configs=).with("access_configs")
+      service.instance_network_interfaces_for(options)
+    end
+
+    it "does not set a subnetwork" do
+      expect(service).not_to receive(:subnet_url_for)
+      expect(interface).not_to receive(:subnetwork=)
+      service.instance_network_interfaces_for(options)
+    end
+
+    context "when a subnet exists" do
+      let(:options) { { network: "test_network", subnet: "test_subnet", public_ip: "public_ip" } }
+
+      it "sets the subnetwork" do
+        expect(service).to receive(:subnet_url_for).with("test_subnet").and_return("subnet_url")
+        expect(interface).to receive(:subnetwork=).with("subnet_url")
+        service.instance_network_interfaces_for(options)
+      end
     end
   end
 
   describe '#network_url_for' do
     it "returns a properly-formatted network URL" do
       expect(service.network_url_for("test_network")).to eq("projects/test_project/global/networks/test_network")
+    end
+  end
+
+  describe '#subnet_url_for' do
+    it "returns a properly-formatted subnet URL" do
+      expect(service).to receive(:region).and_return("test_region")
+      expect(service.subnet_url_for("test_subnet")).to eq("projects/test_project/regions/test_region/subnetworks/test_subnet")
     end
   end
 

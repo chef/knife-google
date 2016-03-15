@@ -186,11 +186,12 @@ class Chef::Knife::Cloud
     def validate_server_create_options!(options)
       raise "Invalid machine type: #{options[:machine_type]}" unless valid_machine_type?(options[:machine_type])
       raise "Invalid network: #{options[:network]}" unless valid_network?(options[:network])
+      raise "Invalid subnet: #{options[:subnet]}" if options[:subnet] && !valid_subnet?(options[:subnet])
       raise "Invalid Public IP setting: #{options[:public_ip]}" unless valid_public_ip_setting?(options[:public_ip])
       raise "Invalid image: #{options[:image]} - check your image name, or set an image project if needed" if image_search_for(options[:image], options[:image_project]).nil?
     end
 
-    def check_api_call(&block)
+    def check_api_call
       yield
     rescue Google::Apis::ClientError
       false
@@ -206,6 +207,11 @@ class Chef::Knife::Cloud
     def valid_network?(network)
       return false if network.nil?
       check_api_call { connection.get_network(project, network) }
+    end
+
+    def valid_subnet?(subnet)
+      return false if subnet.nil?
+      check_api_call { connection.get_subnetwork(project, region, subnet) }
     end
 
     def image_exist?(image_project, image_name)
@@ -230,6 +236,10 @@ class Chef::Knife::Cloud
       false
     else
       true
+    end
+
+    def region
+      @region ||= connection.get_zone(project, zone).region.split("/").last
     end
 
     def instance_object_for(options)
@@ -331,6 +341,7 @@ class Chef::Knife::Cloud
     def instance_network_interfaces_for(options)
       interface = Google::Apis::ComputeV1::NetworkInterface.new
       interface.network = network_url_for(options[:network])
+      interface.subnetwork = subnet_url_for(options[:subnet]) if options[:subnet]
       interface.access_configs = instance_access_configs_for(options[:public_ip])
 
       Array(interface)
@@ -349,6 +360,10 @@ class Chef::Knife::Cloud
 
     def network_url_for(network)
       "projects/#{project}/global/networks/#{network}"
+    end
+
+    def subnet_url_for(subnet)
+      "projects/#{project}/regions/#{region}/subnetworks/#{subnet}"
     end
 
     def instance_scheduling_for(options)
@@ -467,7 +482,7 @@ class Chef::Knife::Cloud
       items
     end
 
-    def wait_for_status(requested_status, &block)
+    def wait_for_status(requested_status)
       last_status = ""
 
       begin
