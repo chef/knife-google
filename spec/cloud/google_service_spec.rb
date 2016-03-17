@@ -61,6 +61,7 @@ describe Chef::Knife::Cloud::GoogleService do
   before do
     service.ui = Chef::Knife::UI.new($stdout, $stderr, $stdin, {})
     allow(service.ui).to receive(:msg)
+    allow(service.ui).to receive(:error)
     allow(service).to receive(:connection).and_return(connection)
   end
 
@@ -482,31 +483,44 @@ describe Chef::Knife::Cloud::GoogleService do
     end
 
     context "when the user does not supply an image project" do
-      context "when the image exists in the user's project" do
-        it "returns the image URL" do
-          expect(service).to receive(:image_url_for).with(project, "test_image").and_return("image_url")
-          expect(service.image_search_for("test_image", nil)).to eq("image_url")
+      context "when the image provided is an alias" do
+        it "returns the alias URL" do
+          expect(service).to receive(:image_alias_url).with("test_image").and_return("image_alias_url")
+          expect(service.image_search_for("test_image", nil)).to eq("image_alias_url")
         end
       end
 
-      context "when the image does not exist in the user's project" do
+      context "when the image provided is not an alias" do
         before do
-          expect(service).to receive(:image_url_for).with(project, "test_image").and_return(nil)
+          expect(service).to receive(:image_alias_url).and_return(nil)
         end
 
-        context "when the image matches a known public project" do
-          it "returns the image URL from the public project" do
-            expect(service).to receive(:public_project_for_image).with("test_image").and_return("public_project")
-            expect(service).to receive(:image_url_for).with("public_project", "test_image").and_return("image_url")
+        context "when the image exists in the user's project" do
+          it "returns the image URL" do
+            expect(service).to receive(:image_url_for).with(project, "test_image").and_return("image_url")
             expect(service.image_search_for("test_image", nil)).to eq("image_url")
           end
         end
 
-        context "when the image does not match a known project" do
-          it "returns nil" do
-            expect(service).to receive(:public_project_for_image).with("test_image").and_return(nil)
-            expect(service).not_to receive(:image_url_for)
-            expect(service.image_search_for("test_image", nil)).to eq(nil)
+        context "when the image does not exist in the user's project" do
+          before do
+            expect(service).to receive(:image_url_for).with(project, "test_image").and_return(nil)
+          end
+
+          context "when the image matches a known public project" do
+            it "returns the image URL from the public project" do
+              expect(service).to receive(:public_project_for_image).with("test_image").and_return("public_project")
+              expect(service).to receive(:image_url_for).with("public_project", "test_image").and_return("image_url")
+              expect(service.image_search_for("test_image", nil)).to eq("image_url")
+            end
+          end
+
+          context "when the image does not match a known project" do
+            it "returns nil" do
+              expect(service).to receive(:public_project_for_image).with("test_image").and_return(nil)
+              expect(service).not_to receive(:image_url_for)
+              expect(service.image_search_for("test_image", nil)).to eq(nil)
+            end
           end
         end
       end
@@ -522,6 +536,50 @@ describe Chef::Knife::Cloud::GoogleService do
     it "returns a properly formatted image URL if the image exists" do
       expect(service).to receive(:image_exist?).with("image_project", "image_name").and_return(true)
       expect(service.image_url_for("image_project", "image_name")).to eq("projects/image_project/global/images/image_name")
+    end
+  end
+
+  describe '#image_alias_url' do
+    context "when the image_alias is not a valid alias" do
+      it "returns nil" do
+        expect(service.image_alias_url("fake_alias")).to eq(nil)
+      end
+    end
+
+    context "when the image_alias is a valid alias" do
+      before do
+        allow(connection).to receive(:list_images).and_return(response)
+      end
+
+      context "when the response contains no images" do
+        let(:response) { double("response", items: []) }
+
+        it "returns nil" do
+          expect(service.image_alias_url("centos-7")).to eq(nil)
+        end
+      end
+
+      context "when the response contains images but none match the name" do
+        let(:image1)   { double("image1", name: "centos-6") }
+        let(:image2)   { double("image2", name: "centos-6") }
+        let(:image3)   { double("image3", name: "ubuntu-14") }
+        let(:response) { double("response", items: [ image1, image2, image3 ]) }
+
+        it "returns nil" do
+          expect(service.image_alias_url("centos-7")).to eq(nil)
+        end
+      end
+
+      context "when the response contains images that match the name" do
+        let(:image1)   { double("image1", name: "centos-7-v20160201", self_link: "image1_selflink") }
+        let(:image2)   { double("image2", name: "centos-7-v20160301", self_link: "image2_selflink") }
+        let(:image3)   { double("image3", name: "centos-6", self_link: "image3_selflink") }
+        let(:response) { double("response", items: [ image1, image2, image3 ]) }
+
+        it "returns the link for image2 which is the most recent image" do
+          expect(service.image_alias_url("centos-7")).to eq("image2_selflink")
+        end
+      end
     end
   end
 
