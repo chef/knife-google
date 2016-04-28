@@ -682,24 +682,24 @@ describe Chef::Knife::Cloud::GoogleService do
 
     context "for None public_ip" do
       it "empty public_ip none|None|NONE|~" do
-        expect(service.instance_access_configs_for('none')).to eq([])
+        expect(service.instance_access_configs_for("none")).to eq([])
 
-        expect(service.instance_access_configs_for('None')).to eq([])
+        expect(service.instance_access_configs_for("None")).to eq([])
 
-        expect(service.instance_access_configs_for('NONE')).to eq([])
+        expect(service.instance_access_configs_for("NONE")).to eq([])
       end
     end
 
     context "for valid public_ip" do
       it "valid public_ip" do
-        access_config = service.instance_access_configs_for('8.8.8.8')
-        expect(access_config.first.nat_ip).to eq('8.8.8.8')
+        access_config = service.instance_access_configs_for("8.8.8.8")
+        expect(access_config.first.nat_ip).to eq("8.8.8.8")
       end
     end
 
     context "for invalid public_ip" do
       it "empty public_ip none|None|NONE|~" do
-        access_config = service.instance_access_configs_for('oh no not a valid IP')
+        access_config = service.instance_access_configs_for("oh no not a valid IP")
         expect(access_config.first.nat_ip).to eq(nil)
       end
     end
