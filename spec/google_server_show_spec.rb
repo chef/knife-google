@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleServerShow do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     before do
       allow(command).to receive(:check_for_missing_config_values!)
     end

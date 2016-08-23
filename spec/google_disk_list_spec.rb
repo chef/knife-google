@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleDiskList do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     it "checks for missing config values" do
       expect(command).to receive(:check_for_missing_config_values!)
 
@@ -38,14 +38,14 @@ describe Chef::Knife::Cloud::GoogleDiskList do
     end
   end
 
-  describe '#query_resource' do
+  describe "#query_resource" do
     it "uses the service to list disks" do
       expect(service).to receive(:list_disks).and_return("disks")
       expect(command.query_resource).to eq("disks")
     end
   end
 
-  describe '#format_status_value' do
+  describe "#format_status_value" do
     it "returns green when the status is ready" do
       expect(command.ui).to receive(:color).with("ready", :green)
       command.format_status_value("ready")
@@ -57,13 +57,13 @@ describe Chef::Knife::Cloud::GoogleDiskList do
     end
   end
 
-  describe '#format_disk_type' do
+  describe "#format_disk_type" do
     it "returns a properly-formatted disk type" do
       expect(command.format_disk_type("a/b/c/disk_type")).to eq("disk_type")
     end
   end
 
-  describe '#format_source_image' do
+  describe "#format_source_image" do
     it "returns 'unknown' if the source is nil" do
       expect(command.format_source_image(nil)).to eq("unknown")
     end
@@ -77,7 +77,7 @@ describe Chef::Knife::Cloud::GoogleDiskList do
     end
   end
 
-  describe '#format_users' do
+  describe "#format_users" do
     it "returns 'unknown' if the source is nil" do
       expect(command.format_users(nil)).to eq("none")
     end

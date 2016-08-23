@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleServerList do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     it "checks for missing config values" do
       expect(command).to receive(:check_for_missing_config_values!)
 
@@ -38,7 +38,7 @@ describe Chef::Knife::Cloud::GoogleServerList do
     end
   end
 
-  describe '#format_status_value' do
+  describe "#format_status_value" do
     it "returns green when the status is ready" do
       expect(command.ui).to receive(:color).with("ready", :green)
       command.format_status_value("ready")
