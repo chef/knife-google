@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.summary = "Google Compute Engine Support for Chef's Knife Command"
   s.description = s.summary
   s.homepage = "https://github.com/chef/knife-google"
+  s.required_ruby_version = ">= 2.2.2"
 
   s.add_dependency "chef",              "~> 12.0"
   s.add_dependency "knife-cloud",       "~> 1.2.0"
@@ -22,9 +23,9 @@ Gem::Specification.new do |s|
 
   s.files = `git ls-files -z`.split("\x0")
 
-  s.add_development_dependency "rake",      "~> 10.0"
+  s.add_development_dependency "rake",      "~> 11.0"
   s.add_development_dependency "rspec",     "~> 3.1"
   s.add_development_dependency "simplecov", "~> 0.9"
-  s.add_development_dependency "rubocop"
   s.add_development_dependency "pry"
+  s.add_development_dependency "chefstyle"
 end
