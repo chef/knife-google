@@ -1,7 +1,8 @@
 # knife-google Change Log
 
 
-## v2.2.1 (2016-08-23)
+## v2.2.1 (2016-09-27)
+ * [pr#112](https://github.com/chef/knife-google/pull/112) Fixed the zone and region listing
  * [pr#109](https://github.com/chef/knife-google/pull/109) Add aliases to match image families and add Ubuntu 16.04
 
 ## v2.2.0 (2016-03-17)
