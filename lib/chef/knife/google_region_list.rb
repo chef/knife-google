@@ -27,7 +27,7 @@ class Chef::Knife::Cloud
     include GoogleServiceHelpers
     include GoogleServiceOptions
 
-    banner "knife google zone list"
+    banner "knife google region list"
 
     def validate_params!
       check_for_missing_config_values!
