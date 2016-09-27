@@ -1,7 +1,10 @@
 # knife-google Change Log
 
-## v2.2.0 (2016-03-17)
 
+## v2.2.1 (2016-08-23)
+ * [pr#109](https://github.com/chef/knife-google/pull/109) Add aliases to match image families and add Ubuntu 16.04
+
+## v2.2.0 (2016-03-17)
  * [pr#102](https://github.com/chef/knife-google/pull/102) Added support for preemptible instances
  * [pr#103](https://github.com/chef/knife-google/pull/103) Added support for deploying instances on subnetworks
  * [pr#103](https://github.com/chef/knife-google/pull/104) Added gcloud-style image aliases (i.e. image "centos-7" will get you the latest CentOS 7 disk image)

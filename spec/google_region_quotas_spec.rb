@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleRegionQuotas do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     it "checks for missing config values" do
       expect(command).to receive(:check_for_missing_config_values!)
 
@@ -38,7 +38,7 @@ describe Chef::Knife::Cloud::GoogleRegionQuotas do
     end
   end
 
-  describe '#execute_command' do
+  describe "#execute_command" do
     let(:ui)      { double("ui") }
     let(:regions) { [region1] }
 
@@ -90,13 +90,13 @@ describe Chef::Knife::Cloud::GoogleRegionQuotas do
     end
   end
 
-  describe '#format_name' do
+  describe "#format_name" do
     it "returns a properly-formatted name" do
       expect(command.format_name("something_cool_here")).to eq("Something Cool Here")
     end
   end
 
-  describe '#format_number' do
+  describe "#format_number" do
     it "returns an integer as a string if the number is a whole number" do
       expect(command.format_number(2.0)).to eq("2")
     end

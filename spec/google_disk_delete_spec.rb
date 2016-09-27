@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleDiskDelete do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     before do
       allow(command).to receive(:check_for_missing_config_values!)
     end
@@ -53,7 +53,7 @@ describe Chef::Knife::Cloud::GoogleDiskDelete do
     end
   end
 
-  describe '#execute_command' do
+  describe "#execute_command" do
     it "calls the service to delete each disk" do
       expect(service).to receive(:delete_disk).with("disk1")
       expect(service).to receive(:delete_disk).with("disk2")

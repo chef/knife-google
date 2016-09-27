@@ -33,7 +33,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     before do
       allow(command).to receive(:check_for_missing_config_values!)
       allow(command).to receive(:valid_disk_size?).and_return(true)
@@ -87,7 +87,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
   end
 
-  describe '#before_bootstrap' do
+  describe "#before_bootstrap" do
     before do
       allow(command).to receive(:ip_address_for_bootstrap)
       allow(command).to receive(:locate_config_value)
@@ -125,41 +125,41 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
   end
 
-  describe '#get_node_name' do
+  describe "#get_node_name" do
     it "overrides the original method to return nil" do
       expect(command.get_node_name("name", "prefix")).to eq(nil)
     end
   end
 
-  describe '#project' do
+  describe "#project" do
     it "returns the project from the config" do
       expect(command).to receive(:locate_config_value).with(:gce_project).and_return("test_project")
       expect(command.project).to eq("test_project")
     end
   end
 
-  describe '#zone' do
+  describe "#zone" do
     it "returns the zone from the config" do
       expect(command).to receive(:locate_config_value).with(:gce_zone).and_return("test_zone")
       expect(command.zone).to eq("test_zone")
     end
   end
 
-  describe '#email' do
+  describe "#email" do
     it "returns the email from the config" do
       expect(command).to receive(:locate_config_value).with(:gce_email).and_return("test_email")
       expect(command.email).to eq("test_email")
     end
   end
 
-  describe '#preemptible?' do
+  describe "#preemptible?" do
     it "returns the preemptible setting from the config" do
       expect(command).to receive(:locate_config_value).with(:preemptible).and_return("test_preempt")
       expect(command.preemptible?).to eq("test_preempt")
     end
   end
 
-  describe '#auto_migrate?' do
+  describe "#auto_migrate?" do
     it "returns false if the instance is preemptible" do
       expect(command).to receive(:preemptible?).and_return(true)
       expect(command.auto_migrate?).to eq(false)
@@ -172,7 +172,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
   end
 
-  describe '#auto_restart?' do
+  describe "#auto_restart?" do
     it "returns false if the instance is preemptible" do
       expect(command).to receive(:preemptible?).and_return(true)
       expect(command.auto_restart?).to eq(false)
@@ -185,7 +185,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
   end
 
-  describe '#ip_address_for_bootstrap' do
+  describe "#ip_address_for_bootstrap" do
     it "returns the public IP by default" do
       expect(command).to receive(:locate_config_value).with(:use_private_ip).and_return(false)
       expect(command).to receive(:public_ip_for).and_return("1.2.3.4")
@@ -205,21 +205,21 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
   end
 
-  describe '#metadata' do
+  describe "#metadata" do
     it "returns a hash of metadata" do
       expect(command).to receive(:locate_config_value).with(:metadata).and_return(["key1=value1", "key2=value2"])
       expect(command.metadata).to eq({ "key1" => "value1", "key2" => "value2" })
     end
   end
 
-  describe '#boot_disk_size' do
+  describe "#boot_disk_size" do
     it "returns the disk size as an integer" do
       expect(command).to receive(:locate_config_value).with(:boot_disk_size).and_return("20")
       expect(command.boot_disk_size).to eq(20)
     end
   end
 
-  describe '#reset_windows_password' do
+  describe "#reset_windows_password" do
     it "returns the password from the gcewinpass instance" do
       winpass = double("winpass", new_password: "my_password")
       expect(GoogleComputeWindowsPassword).to receive(:new).and_return(winpass)

@@ -65,7 +65,7 @@ describe Chef::Knife::Cloud::GoogleService do
     allow(service).to receive(:connection).and_return(connection)
   end
 
-  describe '#connection' do
+  describe "#connection" do
     it "returns a properly configured ComputeService" do
       compute_service = double("compute_service")
       client_options  = double("client_options")
@@ -85,7 +85,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#authorization' do
+  describe "#authorization" do
     it "returns a Google::Auth authorization object" do
       auth_object = double("auth_object")
       expect(Google::Auth).to receive(:get_application_default).and_return(auth_object)
@@ -93,7 +93,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#create_server' do
+  describe "#create_server" do
     it "creates and returns the created instance" do
       create_instance_obj = double("instance_obj")
       create_options      = { name: "test_instance" }
@@ -110,7 +110,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#delete_server' do
+  describe "#delete_server" do
     context "when the instance does not exist" do
       before do
         allow(service.ui).to receive(:warn)
@@ -144,29 +144,29 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#get_server' do
+  describe "#get_server" do
     it "returns an instance" do
       expect(connection).to receive(:get_instance).with(project, zone, "test_instance").and_return("instance")
       expect(service.get_server("test_instance")).to eq("instance")
     end
   end
 
-  describe '#list_zones' do
+  describe "#list_zones" do
     subject { service.list_zones }
     it_behaves_like "a paginated list fetcher", :list_zones, :items, "test_project"
   end
 
-  describe '#list_disks' do
+  describe "#list_disks" do
     subject { service.list_disks }
     it_behaves_like "a paginated list fetcher", :list_disks, :items, "test_project", "test_zone"
   end
 
-  describe '#list_regions' do
+  describe "#list_regions" do
     subject { service.list_regions }
     it_behaves_like "a paginated list fetcher", :list_regions, :items, "test_project"
   end
 
-  describe '#list_project_quotas' do
+  describe "#list_project_quotas" do
     let(:response) { double("response") }
 
     before do
@@ -185,7 +185,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#validate_server_create_options!' do
+  describe "#validate_server_create_options!" do
     let(:options) do
       {
         machine_type:  "test_type",
@@ -235,13 +235,13 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#check_api_call' do
+  describe "#check_api_call" do
     it "returns false if the block raises a ClientError" do
       expect(service.check_api_call { raise Google::Apis::ClientError.new("whoops") }).to eq(false)
     end
 
     it "raises an exception if the block raises something other than a ClientError" do
-      expect { service.check_api_call { raise RuntimeError.new("whoops") } }.to raise_error(RuntimeError)
+      expect { service.check_api_call { raise "whoops" } }.to raise_error(RuntimeError)
     end
 
     it "returns true if the block does not raise an exception" do
@@ -249,7 +249,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#valid_machine_type?' do
+  describe "#valid_machine_type?" do
     it "returns false if no matchine type was specified" do
       expect(service.valid_machine_type?(nil)).to eq(false)
     end
@@ -262,7 +262,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#valid_network?' do
+  describe "#valid_network?" do
     it "returns false if no network was specified" do
       expect(service.valid_network?(nil)).to eq(false)
     end
@@ -275,7 +275,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#valid_subnet?' do
+  describe "#valid_subnet?" do
     it "returns false if no subnet was specified" do
       expect(service.valid_subnet?(nil)).to eq(false)
     end
@@ -289,7 +289,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#image_exist?' do
+  describe "#image_exist?" do
     it "checks the image using check_api_call" do
       expect(connection).to receive(:get_image).with("image_project", "image_name")
       expect(service).to receive(:check_api_call).and_call_original
@@ -298,7 +298,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#valid_public_ip_setting?' do
+  describe "#valid_public_ip_setting?" do
     it "returns true if the public_ip is nil" do
       expect(service.valid_public_ip_setting?(nil)).to eq(true)
     end
@@ -322,7 +322,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#valid_ip_address' do
+  describe "#valid_ip_address" do
     it "returns false if IPAddr is unable to parse the address" do
       expect(IPAddr).to receive(:new).with("not_an_ip").and_raise(IPAddr::InvalidAddressError)
       expect(service.valid_ip_address?("not_an_ip")).to eq(false)
@@ -334,7 +334,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#region' do
+  describe "#region" do
     it "returns the region for a given zone" do
       zone_obj = double("zone_obj", region: "/path/to/test_region")
       expect(connection).to receive(:get_zone).with(project, zone).and_return(zone_obj)
@@ -342,7 +342,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#instance_object_for' do
+  describe "#instance_object_for" do
     let(:instance_object) { double("instance_object") }
     let(:options) do
       {
@@ -387,7 +387,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#instance_disks_for' do
+  describe "#instance_disks_for" do
 
     before do
       expect(service).to receive(:instance_boot_disk_for).with(options).and_return("boot_disk")
@@ -433,7 +433,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#instance_boot_disk_for' do
+  describe "#instance_boot_disk_for" do
     it "sets up a disk object and returns it" do
       disk    = double("disk")
       params  = double("params")
@@ -464,7 +464,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#boot_disk_type_for' do
+  describe "#boot_disk_type_for" do
     it "returns pd-ssd if boot_disk_ssd is true" do
       expect(service.boot_disk_type_for(boot_disk_ssd: true)).to eq("pd-ssd")
     end
@@ -474,7 +474,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#image_search_for' do
+  describe "#image_search_for" do
     context "when the user supplies an image project" do
       it "returns the image URL based on the image project" do
         expect(service).to receive(:image_url_for).with("test_project", "test_image").and_return("image_url")
@@ -527,7 +527,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#image_url_for' do
+  describe "#image_url_for" do
     it "returns nil if the image does not exist" do
       expect(service).to receive(:image_exist?).with("image_project", "image_name").and_return(false)
       expect(service.image_url_for("image_project", "image_name")).to eq(nil)
@@ -539,7 +539,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#image_alias_url' do
+  describe "#image_alias_url" do
     context "when the image_alias is not a valid alias" do
       it "returns nil" do
         expect(service.image_alias_url("fake_alias")).to eq(nil)
@@ -583,7 +583,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#boot_disk_name_for' do
+  describe "#boot_disk_name_for" do
     it "returns the boot disk name if supplied by the user" do
       options = { name: "instance_name", boot_disk_name: "disk_name" }
       expect(service.boot_disk_name_for(options)).to eq("disk_name")
@@ -595,13 +595,13 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#machine_type_url_for' do
+  describe "#machine_type_url_for" do
     it "returns a properly-formatted machine type URL" do
       expect(service.machine_type_url_for("test_type")).to eq("zones/test_zone/machineTypes/test_type")
     end
   end
 
-  describe '#instance_metadata_for' do
+  describe "#instance_metadata_for" do
     it "returns nil if the passed-in metadata is nil" do
       expect(service.instance_metadata_for(nil)).to eq(nil)
     end
@@ -629,7 +629,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#instance_network_interfaces_for' do
+  describe "#instance_network_interfaces_for" do
     let(:interface) { double("interface" ) }
     let(:options)   { { network: "test_network", public_ip: "public_ip" } }
 
@@ -677,20 +677,20 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#network_url_for' do
+  describe "#network_url_for" do
     it "returns a properly-formatted network URL" do
       expect(service.network_url_for("test_network")).to eq("projects/test_project/global/networks/test_network")
     end
   end
 
-  describe '#subnet_url_for' do
+  describe "#subnet_url_for" do
     it "returns a properly-formatted subnet URL" do
       expect(service).to receive(:region).and_return("test_region")
       expect(service.subnet_url_for("test_subnet")).to eq("projects/test_project/regions/test_region/subnetworks/test_subnet")
     end
   end
 
-  describe '#instance_scheduling_for' do
+  describe "#instance_scheduling_for" do
     it "returns a properly-formatted scheduling object" do
       scheduling = double("scheduling")
       options    = { auto_restart: "auto_restart", auto_migrate: "auto_migrate", preemptible: "preempt" }
@@ -705,7 +705,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#migrate_setting_for' do
+  describe "#migrate_setting_for" do
     it "returns MIGRATE when auto_migrate is true" do
       expect(service.migrate_setting_for(true)).to eq("MIGRATE")
     end
@@ -715,7 +715,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#instance_service_accounts_for' do
+  describe "#instance_service_accounts_for" do
     it "returns nil if service_account_scopes is nil" do
       expect(service.instance_service_accounts_for({})).to eq(nil)
     end
@@ -741,7 +741,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#service_account_scope_url' do
+  describe "#service_account_scope_url" do
     it "returns the passed-in scope if it already looks like a scope URL" do
       scope = "https://www.googleapis.com/auth/fake_scope"
       expect(service.service_account_scope_url(scope)).to eq(scope)
@@ -753,7 +753,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#translate_scope_alias' do
+  describe "#translate_scope_alias" do
     it "returns a scope for a given alias" do
       expect(service.translate_scope_alias("storage-rw")).to eq("devstorage.read_write")
     end
@@ -763,7 +763,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#instance_tags_for' do
+  describe "#instance_tags_for" do
     it "returns nil if tags is nil" do
       expect(service.instance_tags_for(nil)).to eq(nil)
     end
@@ -782,7 +782,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#network_for' do
+  describe "#network_for" do
     it "returns the network name if it exists" do
       interface = double("interface", network: "/some/path/to/default_network")
       instance = double("instance", network_interfaces: [interface])
@@ -798,14 +798,14 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#machine_type_for' do
+  describe "#machine_type_for" do
     it "returns the machine type name" do
       instance = double("instance", machine_type: "/some/path/to/test_type")
       expect(service.machine_type_for(instance)).to eq("test_type")
     end
   end
 
-  describe '#public_project_for_image' do
+  describe "#public_project_for_image" do
     {
       "centos"         => "centos-cloud",
       "container-vm"   => "google-containers",
@@ -823,13 +823,13 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#disk_type_url_for' do
+  describe "#disk_type_url_for" do
     it "returns a properly-formatted disk type URL" do
       expect(service.disk_type_url_for("disk_type")).to eq("zones/test_zone/diskTypes/disk_type")
     end
   end
 
-  describe '#paginated_results' do
+  describe "#paginated_results" do
     let(:response)      { double("response") }
     let(:api_method)    { :list_stuff }
     let(:items_method)  { :items }
@@ -893,7 +893,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#wait_for_status' do
+  describe "#wait_for_status" do
     let(:item) { double("item") }
 
     before do
@@ -940,7 +940,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#wait_for_operation' do
+  describe "#wait_for_operation" do
     let(:operation) { double("operation", name: "operation-123") }
 
     it "raises a properly-formatted exception when errors exist" do
@@ -963,14 +963,14 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#zone_operation' do
+  describe "#zone_operation" do
     it "fetches the operation from the API and returns it" do
       expect(connection).to receive(:get_zone_operation).with(project, zone, "operation-123").and_return("operation")
       expect(service.zone_operation("operation-123")).to eq("operation")
     end
   end
 
-  describe '#operation_errors' do
+  describe "#operation_errors" do
     let(:operation) { double("operation") }
     let(:error_obj) { double("error_obj") }
 

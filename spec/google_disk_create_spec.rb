@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleDiskCreate do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     before do
       allow(command).to receive(:check_for_missing_config_values!)
       allow(command).to receive(:valid_disk_size?).and_return(true)
@@ -59,7 +59,7 @@ describe Chef::Knife::Cloud::GoogleDiskCreate do
     end
   end
 
-  describe '#execute_command' do
+  describe "#execute_command" do
     it "calls the service to create the disk" do
       expect(command).to receive(:locate_config_value).with(:disk_size).and_return("size")
       expect(command).to receive(:locate_config_value).with(:disk_type).and_return("type")
