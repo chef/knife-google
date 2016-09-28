@@ -1,5 +1,7 @@
 # knife-google Change Log
 
+## v3.0.0 (2016-09-27)
+ * [pr#111](https://github.com/chef/knife-google/pull/111) Bumped version of Ruby support
 
 ## v2.2.1 (2016-09-27)
  * [pr#112](https://github.com/chef/knife-google/pull/112) Fixed the zone and region listing
