@@ -22,10 +22,4 @@ Gem::Specification.new do |s|
   s.add_dependency "gcewinpass",        "~> 1.0"
 
   s.files = `git ls-files -z`.split("\x0")
-
-  s.add_development_dependency "rake",      "~> 11.0"
-  s.add_development_dependency "rspec",     "~> 3.1"
-  s.add_development_dependency "simplecov", "~> 0.9"
-  s.add_development_dependency "pry"
-  s.add_development_dependency "chefstyle"
 end
