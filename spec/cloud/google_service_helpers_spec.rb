@@ -26,7 +26,7 @@ end
 describe Chef::Knife::Cloud::GoogleServiceHelpers do
   let(:tester) { Tester.new }
 
-  describe '#create_service_instance' do
+  describe "#create_service_instance" do
     it "creates a GoogleService instance" do
       expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("test_project")
       expect(tester).to receive(:locate_config_value).with(:gce_zone).and_return("test_zone")
@@ -48,7 +48,7 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
     end
   end
 
-  describe '#check_for_missing_config_values' do
+  describe "#check_for_missing_config_values" do
     it "does not raise an exception if all parameters are present" do
       expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("project")
       expect(tester).to receive(:locate_config_value).with(:gce_zone).and_return("zone")
@@ -70,7 +70,7 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
     end
   end
 
-  describe '#private_ip_for' do
+  describe "#private_ip_for" do
     it "returns the IP address if it exists" do
       network_interface = double("network_interface", network_ip: "1.2.3.4")
       server            = double("server", network_interfaces: [network_interface])
@@ -86,7 +86,7 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
     end
   end
 
-  describe '#public_ip_for' do
+  describe "#public_ip_for" do
     it "returns the IP address if it exists" do
       access_config     = double("access_config", nat_ip: "4.3.2.1")
       network_interface = double("network_interface", access_configs: [access_config])
@@ -104,7 +104,7 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
     end
   end
 
-  describe '#valid_disk_size?' do
+  describe "#valid_disk_size?" do
     it "returns true if the disk is between 10 and 10,000" do
       expect(tester.valid_disk_size?(50)).to eq(true)
     end

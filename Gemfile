@@ -2,4 +2,8 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "chefstyle", git: "https://github.com/chef/chefstyle"
+gem "rake",      "~> 11.0"
+gem "rspec",     "~> 3.1"
+gem "simplecov", "~> 0.9"
+gem "pry"
+gem "chefstyle"

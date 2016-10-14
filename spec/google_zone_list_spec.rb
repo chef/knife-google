@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleZoneList do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     it "checks for missing config values" do
       expect(command).to receive(:check_for_missing_config_values!)
 
@@ -38,14 +38,14 @@ describe Chef::Knife::Cloud::GoogleZoneList do
     end
   end
 
-  describe '#query_resource' do
+  describe "#query_resource" do
     it "uses the service to list zones" do
       expect(service).to receive(:list_zones).and_return("zones")
       expect(command.query_resource).to eq("zones")
     end
   end
 
-  describe '#format_status_value' do
+  describe "#format_status_value" do
     it "returns green when the status is up" do
       expect(command.ui).to receive(:color).with("up", :green)
       command.format_status_value("up")

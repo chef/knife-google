@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleProjectQuotas do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     it "checks for missing config values" do
       expect(command).to receive(:check_for_missing_config_values!)
 
@@ -38,20 +38,20 @@ describe Chef::Knife::Cloud::GoogleProjectQuotas do
     end
   end
 
-  describe '#query_resource' do
+  describe "#query_resource" do
     it "uses the service to list project quotas" do
       expect(service).to receive(:list_project_quotas).and_return("quotas")
       expect(command.query_resource).to eq("quotas")
     end
   end
 
-  describe '#format_name' do
+  describe "#format_name" do
     it "returns a properly-formatted name" do
       expect(command.format_name("something_cool_here")).to eq("Something Cool Here")
     end
   end
 
-  describe '#format_number' do
+  describe "#format_number" do
     it "returns an integer as a string if the number is a whole number" do
       expect(command.format_number(2.0)).to eq("2")
     end

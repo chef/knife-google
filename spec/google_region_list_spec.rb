@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleRegionList do
 
   it_behaves_like Chef::Knife::Cloud::Command, described_class.new
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     it "checks for missing config values" do
       expect(command).to receive(:check_for_missing_config_values!)
 
@@ -38,14 +38,14 @@ describe Chef::Knife::Cloud::GoogleRegionList do
     end
   end
 
-  describe '#query_resource' do
+  describe "#query_resource" do
     it "uses the service to list regions" do
       expect(service).to receive(:list_regions).and_return("regions")
       expect(command.query_resource).to eq("regions")
     end
   end
 
-  describe '#format_status_value' do
+  describe "#format_status_value" do
     it "returns green when the status is up" do
       expect(command.ui).to receive(:color).with("up", :green)
       command.format_status_value("up")
@@ -57,7 +57,7 @@ describe Chef::Knife::Cloud::GoogleRegionList do
     end
   end
 
-  describe '#format_zones' do
+  describe "#format_zones" do
     it "returns properly-formatted zones" do
       expect(command.format_zones(["a/b/zone1", "c/d/zone2"])).to eq("zone1, zone2")
     end

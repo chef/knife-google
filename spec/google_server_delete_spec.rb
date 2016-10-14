@@ -30,7 +30,7 @@ describe Chef::Knife::Cloud::GoogleServerDelete do
 
   it_behaves_like Chef::Knife::Cloud::ServerDeleteCommand, described_class.new(["test_instance"])
 
-  describe '#validate_params!' do
+  describe "#validate_params!" do
     it "checks for missing config values" do
       expect(command).to receive(:check_for_missing_config_values!)
       command.validate_params!
