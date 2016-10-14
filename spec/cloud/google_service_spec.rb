@@ -677,7 +677,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#instance_access_configs_for' do
+  describe "#instance_access_configs_for" do
     let(:interface) { double("interface" ) }
 
     context "for None public_ip" do
@@ -705,7 +705,7 @@ describe Chef::Knife::Cloud::GoogleService do
     end
   end
 
-  describe '#network_url_for' do
+  describe "#network_url_for" do
     it "returns a properly-formatted network URL" do
       expect(service.network_url_for("test_network")).to eq("projects/test_project/global/networks/test_network")
     end
