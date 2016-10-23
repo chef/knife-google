@@ -408,7 +408,9 @@ class Chef::Knife::Cloud
     end
 
     def instance_access_configs_for(public_ip)
-      return [] if public_ip.nil? || public_ip == "NONE"
+      public_ip.downcase! if public_ip.respond_to?(:downcase)
+
+      return [] if public_ip.nil? || public_ip == "none"
 
       access_config = Google::Apis::ComputeV1::AccessConfig.new
       access_config.name = "External NAT"
