@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Paul Rossman (<paulrossman@google.com>)
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)

@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 $:.push File.expand_path("../lib", __FILE__)
 require "knife-google/version"
 
@@ -21,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency "google-api-client", "~> 0.9.0"
   s.add_dependency "gcewinpass",        "~> 1.0"
 
-  s.add_development_dependency 'github_changelog_generator'
+  s.add_development_dependency "github_changelog_generator"
 
   s.files = `git ls-files -z`.split("\x0")
 end

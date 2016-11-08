@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
 # Copyright:: Copyright 2016 Chef Software, Inc.

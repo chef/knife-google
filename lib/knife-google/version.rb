@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright 2015 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,7 @@
 #
 module Knife
   module Google
-    VERSION = "3.1.0".freeze
+    VERSION = "3.1.0"
     MAJOR, MINOR, TINY = VERSION.split(".")
   end
 end
