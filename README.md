@@ -58,6 +58,8 @@ Google Cloud API. The auth library expects that there is a JSON credentials file
 The easiest way to create this is to download and install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run the
 `gcloud auth login` command which will create the credentials file for you.
 
+**Update:** `gcloud auth login` no longer writes application default credentials. Please run `gcloud auth application-default login` for appropriate application credentials file.
+
 If you already have a file you'd like to use that is in a different location, set the
 `GOOGLE_APPLICATION_CREDENTIALS` environment variable with the full path to that file.
 
