@@ -245,11 +245,10 @@ class Chef::Knife::Cloud
     end
 
     def valid_public_ip_setting?(public_ip)
-      public_ip.downcase! if public_ip.respond_to?(:downcase)
-
-      if public_ip.nil? || public_ip == "ephemeral" || public_ip == "none"
+      case
+      when public_ip.nil? || public_ip.match(/(ephemeral|none)/i)
         true
-      elsif valid_ip_address?(public_ip)
+      when valid_ip_address?(public_ip)
         true
       else
         false
@@ -409,9 +408,7 @@ class Chef::Knife::Cloud
     end
 
     def instance_access_configs_for(public_ip)
-      public_ip.downcase! if public_ip.respond_to?(:downcase)
-
-      return [] if public_ip.nil? || public_ip == "none"
+      return [] if public_ip.nil? || public_ip.match(/none/i)
 
       access_config = Google::Apis::ComputeV1::AccessConfig.new
       access_config.name = "External NAT"
