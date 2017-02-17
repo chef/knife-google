@@ -1,7 +1,18 @@
 # Change Log
 
-## [v3.1.0](https://github.com/chef/knife-google/tree/v3.1.0) (2016-11-08)
+## [3.1.1](https://github.com/chef/knife-google/tree/v3.1.1)
 
+[Full Changelog](https://github.com/chef/knife-google/compare/v3.1.0...v3.1.1)
+
+**Closed issues:**
+
+- Can't Modify Frozen String [\#118](https://github.com/chef/knife-google/issues/118)
+
+**Merged pull requests:**
+
+- Fix for \#118 [\#119](https://github.com/chef/knife-google/pull/119) ([jjasghar](https://github.com/jjasghar))
+
+## [v3.1.0](https://github.com/chef/knife-google/tree/v3.1.0) (2016-11-08)
 [Full Changelog](https://github.com/chef/knife-google/compare/v3.0.0...v3.1.0)
 
 **Closed issues:**
@@ -10,6 +21,7 @@
 
 **Merged pull requests:**
 
+- v3.1.0 [\#115](https://github.com/chef/knife-google/pull/115) ([jjasghar](https://github.com/jjasghar))
 - Move deps to the Gemfile [\#114](https://github.com/chef/knife-google/pull/114) ([tas50](https://github.com/tas50))
 - make public\_ip work for any case 'none' at 'instance\_access\_configs\_for' [\#106](https://github.com/chef/knife-google/pull/106) ([abhishekkr](https://github.com/abhishekkr))
 
