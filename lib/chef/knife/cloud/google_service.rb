@@ -367,7 +367,7 @@ class Chef::Knife::Cloud
 
       latest_image = connection.list_images(image_project).items
         .select { |image| image.name.start_with?(image_prefix) }
-        .sort { |a, b| a.name <=> b.name }
+        .sort_by(&:name)
         .last
 
       return if latest_image.nil?

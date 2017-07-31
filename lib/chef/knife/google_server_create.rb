@@ -187,8 +187,10 @@ class Chef::Knife::Cloud
       check_for_missing_config_values!(:machine_type, :image, :boot_disk_size, :network)
       raise "You must supply an instance name." if @name_args.first.nil?
       raise "Boot disk size must be between 10 and 10,000" unless valid_disk_size?(boot_disk_size)
-      raise "Please provide your Google Cloud console email address via --gce-email. " \
-        "It is required when resetting passwords on Windows hosts." if locate_config_value(:bootstrap_protocol) == "winrm" && locate_config_value(:gce_email).nil?
+      if locate_config_value(:bootstrap_protocol) == "winrm" && locate_config_value(:gce_email).nil?
+        raise "Please provide your Google Cloud console email address via --gce-email. " \
+          "It is required when resetting passwords on Windows hosts."
+      end
 
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
