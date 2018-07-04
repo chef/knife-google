@@ -1,4 +1,17 @@
-# Change Log
+# knife-google Change Log
+
+Note: this log contains only changes from knife-google release 1.1.0 and later
+-- it does not contain the changes from prior releases. To view change history
+prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
+
+<!-- latest_release -->
+<!-- latest_release -->
+
+<!-- release_rollup -->
+<!-- release_rollup -->
+
+<!-- latest_stable_release -->
+<!-- latest_stable_release -->
 
 ## [3.1.1](https://github.com/chef/knife-google/tree/v3.1.1)
 
