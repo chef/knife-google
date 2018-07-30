@@ -1,5 +1,18 @@
 # Change Log
 
+## [3.3.0](https://github.com/chef/knife-google/tree/v3.3.0)
+
+[Full Changelog](https://github.com/chef/knife-google/compare/v3.2.0...v3.3.0)
+
+- Increased the dependency on google-api-client from 0.9.X to 0.19.X to bring in the latest improvements to the API
+- Remove the dependency on Chef entirely since it's assumed Chef is already installed
+
+## [3.2.0](https://github.com/chef/knife-google/tree/v3.2.0)
+
+[Full Changelog](https://github.com/chef/knife-google/compare/v3.1.1...v3.2.0)
+
+- Loosen the dependency on Chef so this gem can work with Chef 13+
+
 ## [3.1.1](https://github.com/chef/knife-google/tree/v3.1.1)
 
 [Full Changelog](https://github.com/chef/knife-google/compare/v3.1.0...v3.1.1)
