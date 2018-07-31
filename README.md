@@ -271,36 +271,35 @@ WinRM is used by Chef to bootstrap Windows nodes. The default settings of the GC
  * inbound firewall rule in Windows Firewall to allow the inbound WinRM connections
  * enable the appropriate WinRM transports
 
-# License and Authors
+## Development Documentation
+
+All documentation is written using YARD. You can generate a by running:
+
+```
+rake docs
+```
+
+## Contributing
+
+For information on contributing to this project please see our [Contributing Documentation](https://github.com/chef/chef/blob/master/CONTRIBUTING.md)
+
+## License & Copyright
 
 Version 3.0.0 of knife-google was rewritten by Chef Partner Engineering but is largely inspired by initial versions of knife-google, thanks to the work of the great folks at Google.
 
-Author:: Chef Partner Engineering (<partnereng@chef.io>)
+- Copyright:: Copyright (c) 2016-2018 Chef Software, Inc.
+- License:: Apache License, Version 2.0
 
-Copyright:: Copyright (c) 2016 Chef Software, Inc.
+```text
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-License:: Apache License, Version 2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the License at
-
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
-http://www.apache.org/licenses/LICENSE-2.0
-```
-
-Unless required by applicable law or agreed to in writing, software distributed under the
-License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-either express or implied. See the License for the specific language governing permissions
-and limitations under the License.
-
-# Contributing
-
-We'd love to hear from you if you find this isn't working for you. Please submit a GitHub issue with any problems you encounter.
-
-Additionally, contributions are welcome!  If you'd like to send up any fixes or changes:
-
-1. Fork it ( https://github.com/chef/knife-google/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request

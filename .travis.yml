@@ -1,20 +1,24 @@
+sudo: false
 language: ruby
 cache: bundler
-dist: trusty
-sudo: false
-rvm:
-  - 2.4.2
-  - 2.4.1
-  - 2.3.4
-  - ruby-head
-  
+
 matrix:
+  include:
+    - rvm: 2.3.7
+    - rvm: 2.4.4
+    - rvm: 2.5.1
+    - rvm: ruby-head
   allow_failures:
     - rvm: ruby-head
 
 branches:
   only:
   - master
+
+bundler_args: --without docs development
+
+script: bundle exec rake
+
 notifications:
   slack:
     on_success: change
