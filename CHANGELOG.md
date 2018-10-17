@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 3.3.2 -->
-## [v3.3.2](https://github.com/chef/knife-google/tree/v3.3.2) (2018-08-06)
+<!-- latest_release 3.3.3 -->
+## [v3.3.3](https://github.com/chef/knife-google/tree/v3.3.3) (2018-10-17)
 
 #### Merged Pull Requests
-- Empty commit to test expeditor [#136](https://github.com/chef/knife-google/pull/136) ([btm](https://github.com/btm))
+- Allow for newer google-api-client releases [#137](https://github.com/chef/knife-google/pull/137) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.3.0 -->
 ### Changes since 3.3.0 release
 
 #### Merged Pull Requests
+- Allow for newer google-api-client releases [#137](https://github.com/chef/knife-google/pull/137) ([tas50](https://github.com/tas50)) <!-- 3.3.3 -->
 - Empty commit to test expeditor [#136](https://github.com/chef/knife-google/pull/136) ([btm](https://github.com/btm)) <!-- 3.3.2 -->
 <!-- release_rollup -->
 
