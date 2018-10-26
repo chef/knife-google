@@ -51,7 +51,7 @@ class Chef::Knife::Cloud
       "useraccounts-ro"    => "cloud.useraccounts.readonly",
       "useraccounts-rw"    => "cloud.useraccounts",
       "userinfo-email"     => "userinfo.email",
-    }
+    }.freeze
 
     IMAGE_ALIAS_MAP = {
       "centos-6"           => { project: "centos-cloud",      prefix: "centos-6" },
@@ -76,7 +76,7 @@ class Chef::Knife::Cloud
       "ubuntu-1604-lts"    => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1604-xenial" },
       "windows-2008-r2"    => { project: "windows-cloud",     prefix: "windows-server-2008-r2" },
       "windows-2012-r2"    => { project: "windows-cloud",     prefix: "windows-server-2012-r2" },
-    }
+    }.freeze
 
     def initialize(options = {})
       @project       = options[:project]
