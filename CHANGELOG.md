@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 3.3.4 -->
-## [v3.3.4](https://github.com/chef/knife-google/tree/v3.3.4) (2018-10-17)
+<!-- latest_release 3.3.5 -->
+## [v3.3.5](https://github.com/chef/knife-google/tree/v3.3.5) (2018-10-31)
 
 #### Merged Pull Requests
-- Remove github_changelog_generator development dependency [#138](https://github.com/chef/knife-google/pull/138) ([tas50](https://github.com/tas50))
+- Documenting the knife-google manual testing prerequisite [#141](https://github.com/chef/knife-google/pull/141) ([Vasu1105](https://github.com/Vasu1105))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.3.3 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Documenting the knife-google manual testing prerequisite [#141](https://github.com/chef/knife-google/pull/141) ([Vasu1105](https://github.com/Vasu1105)) <!-- 3.3.5 -->
 - Remove github_changelog_generator development dependency [#138](https://github.com/chef/knife-google/pull/138) ([tas50](https://github.com/tas50)) <!-- 3.3.4 -->
 <!-- release_rollup -->
 
