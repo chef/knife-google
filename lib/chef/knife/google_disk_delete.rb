@@ -31,7 +31,7 @@ class Chef::Knife::Cloud
     banner "knife google disk delete NAME [NAME] (options)"
 
     def validate_params!
-      check_for_missing_config_values!
+      check_for_missing_config_values!(:gce_zone)
       raise "You must specify at least one disk to delete." if @name_args.empty?
       super
     end

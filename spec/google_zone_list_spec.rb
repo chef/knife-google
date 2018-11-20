@@ -21,7 +21,12 @@ require "spec_helper"
 require "chef/knife/google_zone_list"
 require "support/shared_examples_for_command"
 
+class Tester
+  include Chef::Knife::Cloud::GoogleServiceHelpers
+end
+
 describe Chef::Knife::Cloud::GoogleZoneList do
+  let(:tester) { Tester.new }
   let(:command) { described_class.new }
   let(:service) { double("service") }
 
@@ -36,6 +41,14 @@ describe Chef::Knife::Cloud::GoogleZoneList do
       expect(command).to receive(:check_for_missing_config_values!)
 
       command.validate_params!
+    end
+
+    it "raises an exception if the gce_project is missing" do
+      ui = double("ui")
+      expect(tester).to receive(:ui).and_return(ui)
+      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return(nil)
+      expect(ui).to receive(:error).with("The following required parameters are missing: gce_project")
+      expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end
   end
 

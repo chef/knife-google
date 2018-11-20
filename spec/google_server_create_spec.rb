@@ -22,7 +22,12 @@ require "chef/knife/google_server_create"
 require "support/shared_examples_for_command"
 require "gcewinpass"
 
+class Tester
+  include Chef::Knife::Cloud::GoogleServiceHelpers
+end
+
 describe Chef::Knife::Cloud::GoogleServerCreate do
+  let(:tester) { Tester.new }
   let(:command) { described_class.new(["test_instance"]) }
   let(:service) { double("service") }
   let(:server)  { double("server") }
@@ -57,7 +62,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
 
     it "checks for missing config values" do
-      expect(command).to receive(:check_for_missing_config_values!).with(:machine_type, :image, :boot_disk_size, :network)
+      expect(command).to receive(:check_for_missing_config_values!).with(:gce_zone, :machine_type, :image, :boot_disk_size, :network)
 
       command.validate_params!
     end
@@ -65,6 +70,14 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     it "raises an exception if the boot disk size is not valid" do
       expect(command).to receive(:valid_disk_size?).and_return(false)
       expect { command.validate_params! }.to raise_error(RuntimeError)
+    end
+
+    it "raises an exception if the gce_project is missing" do
+      ui = double("ui")
+      expect(tester).to receive(:ui).and_return(ui)
+      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return(nil)
+      expect(ui).to receive(:error).with("The following required parameters are missing: gce_project")
+      expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end
 
     it "raises an exception if bootstrap is WinRM but no gcloud user email as supplied" do

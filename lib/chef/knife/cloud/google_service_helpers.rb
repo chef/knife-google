@@ -19,7 +19,7 @@
 
 class Chef::Knife::Cloud
   module GoogleServiceHelpers
-    REQUIRED_KEYS = [:gce_project, :gce_zone].freeze
+    REQUIRED_KEYS = [:gce_project].freeze
 
     def create_service_instance
       Chef::Knife::Cloud::GoogleService.new(

@@ -34,7 +34,7 @@ class Chef
         banner "knife google server show INSTANCE_NAME (options)"
 
         def validate_params!
-          check_for_missing_config_values!
+          check_for_missing_config_values!(:gce_zone)
           raise "You must supply an instance name to display" if @name_args.empty?
           raise "You may only supply one instance name" if @name_args.size > 1
           super
