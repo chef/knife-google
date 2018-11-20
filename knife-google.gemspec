@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
   s.add_dependency "google-api-client", ">= 0.19.8", "< 0.25" # each version introduces breaking changes which we need to validate
   s.add_dependency "gcewinpass",        "~> 1.1"
 
-  s.files = `git ls-files -z`.split("\x0")
+  s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(\..*|Gemfile|Rakefile|VERSION|spec|RELEASE_NOTES.md)}) }
 end
