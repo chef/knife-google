@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 3.3.7 -->
+## [v3.3.7](https://github.com/chef/knife-google/tree/v3.3.7) (2018-11-20)
+
+#### Merged Pull Requests
+- Only ship the necessary libraries in the gem [#143](https://github.com/chef/knife-google/pull/143) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=3.3.6 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Only ship the necessary libraries in the gem [#143](https://github.com/chef/knife-google/pull/143) ([tas50](https://github.com/tas50)) <!-- 3.3.7 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
