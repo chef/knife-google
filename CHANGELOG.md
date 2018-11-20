@@ -4,29 +4,26 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 3.3.6 -->
-## [v3.3.6](https://github.com/chef/knife-google/tree/v3.3.6) (2018-11-20)
-
-#### Merged Pull Requests
-- MSYS-917 Allows knife google zone list, region list, region quotas, project quotas to run without giving --gce_zone option [#142](https://github.com/chef/knife-google/pull/142) ([Vasu1105](https://github.com/Vasu1105))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=3.3.3 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- MSYS-917 Allows knife google zone list, region list, region quotas, project quotas to run without giving --gce_zone option [#142](https://github.com/chef/knife-google/pull/142) ([Vasu1105](https://github.com/Vasu1105)) <!-- 3.3.6 -->
-- Documenting the knife-google manual testing prerequisite [#141](https://github.com/chef/knife-google/pull/141) ([Vasu1105](https://github.com/Vasu1105)) <!-- 3.3.5 -->
-- Remove github_changelog_generator development dependency [#138](https://github.com/chef/knife-google/pull/138) ([tas50](https://github.com/tas50)) <!-- 3.3.4 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v3.3.6](https://github.com/chef/knife-google/tree/v3.3.6) (2018-11-20)
+
+#### Merged Pull Requests
+- Remove github_changelog_generator development dependency [#138](https://github.com/chef/knife-google/pull/138) ([tas50](https://github.com/tas50))
+- Documenting the knife-google manual testing prerequisite [#141](https://github.com/chef/knife-google/pull/141) ([Vasu1105](https://github.com/Vasu1105))
+- MSYS-917 Allows knife google zone list, region list, region quotas, project quotas to run without giving --gce_zone option [#142](https://github.com/chef/knife-google/pull/142) ([Vasu1105](https://github.com/Vasu1105))
+<!-- latest_stable_release -->
+
 ## [v3.3.3](https://github.com/chef/knife-google/tree/v3.3.3) (2018-10-17)
 
 #### Merged Pull Requests
 - Empty commit to test expeditor [#136](https://github.com/chef/knife-google/pull/136) ([btm](https://github.com/btm))
 - Allow for newer google-api-client releases [#137](https://github.com/chef/knife-google/pull/137) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 
 
