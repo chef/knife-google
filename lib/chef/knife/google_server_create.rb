@@ -184,7 +184,7 @@ class Chef::Knife::Cloud
     end
 
     def validate_params!
-      check_for_missing_config_values!(:machine_type, :image, :boot_disk_size, :network)
+      check_for_missing_config_values!(:gce_zone, :machine_type, :image, :boot_disk_size, :network)
       raise "You must supply an instance name." if @name_args.first.nil?
       raise "Boot disk size must be between 10 and 10,000" unless valid_disk_size?(boot_disk_size)
       if locate_config_value(:bootstrap_protocol) == "winrm" && locate_config_value(:gce_email).nil?

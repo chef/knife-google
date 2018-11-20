@@ -31,7 +31,7 @@ class Chef::Knife::Cloud
     banner "knife google disk list"
 
     def validate_params!
-      check_for_missing_config_values!
+      check_for_missing_config_values!(:gce_zone)
       super
     end
 

@@ -21,7 +21,12 @@ require "spec_helper"
 require "chef/knife/google_disk_delete"
 require "support/shared_examples_for_command"
 
+class Tester
+  include Chef::Knife::Cloud::GoogleServiceHelpers
+end
+
 describe Chef::Knife::Cloud::GoogleDiskDelete do
+  let(:tester) { Tester.new }
   let(:command) { described_class.new(%w{disk1 disk2}) }
   let(:service) { double("service") }
 
@@ -37,13 +42,21 @@ describe Chef::Knife::Cloud::GoogleDiskDelete do
     end
 
     it "checks for missing config values" do
-      expect(command).to receive(:check_for_missing_config_values!)
+      expect(command).to receive(:check_for_missing_config_values!).with(:gce_zone)
 
       command.validate_params!
     end
 
     it "does not raise an exception if all params are good" do
       expect { command.validate_params! }.not_to raise_error
+    end
+
+    it "raises an exception if the gce_project is missing" do
+      ui = double("ui")
+      expect(tester).to receive(:ui).and_return(ui)
+      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return(nil)
+      expect(ui).to receive(:error).with("The following required parameters are missing: gce_project")
+      expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end
 
     context "when no disk name is provided" do

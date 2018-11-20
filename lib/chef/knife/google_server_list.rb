@@ -32,7 +32,7 @@ class Chef::Knife::Cloud
     banner "knife google server list"
 
     def validate_params!
-      check_for_missing_config_values!
+      check_for_missing_config_values!(:gce_zone)
       super
     end
 

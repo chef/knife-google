@@ -52,7 +52,6 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
   describe "#check_for_missing_config_values" do
     it "does not raise an exception if all parameters are present" do
       expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("project")
-      expect(tester).to receive(:locate_config_value).with(:gce_zone).and_return("zone")
       expect(tester).to receive(:locate_config_value).with(:key1).and_return("value1")
       expect(tester).to receive(:locate_config_value).with(:key2).and_return("value2")
 
@@ -63,10 +62,9 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
       ui = double("ui")
       expect(tester).to receive(:ui).and_return(ui)
       expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("project")
-      expect(tester).to receive(:locate_config_value).with(:gce_zone).and_return(nil)
       expect(tester).to receive(:locate_config_value).with(:key1).and_return("value1")
       expect(tester).to receive(:locate_config_value).with(:key2).and_return(nil)
-      expect(ui).to receive(:error).with("The following required parameters are missing: gce_zone, key2")
+      expect(ui).to receive(:error).with("The following required parameters are missing: key2")
       expect { tester.check_for_missing_config_values!(:key1, :key2) }.to raise_error(RuntimeError)
     end
   end
