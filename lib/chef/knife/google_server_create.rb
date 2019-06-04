@@ -180,7 +180,7 @@ class Chef::Knife::Cloud
     def set_default_config
       # dumb hack for knife-cloud, which expects the user to pass in the WinRM password to use when bootstrapping.
       # We won't know the password until the instance is created and we forceably reset it.
-      config[:winrm_password] = "will_change_this_later"
+      config[:connection_password] = "will_change_this_later"
     end
 
     def validate_params!
@@ -202,10 +202,9 @@ class Chef::Knife::Cloud
 
       config[:chef_node_name] = locate_config_value(:chef_node_name) ? locate_config_value(:chef_node_name) : instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
-
       if locate_config_value(:bootstrap_protocol) == "winrm"
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
-        config[:winrm_password] = reset_windows_password
+        config[:connection_password] = reset_windows_password
       end
     end
 
@@ -271,7 +270,7 @@ class Chef::Knife::Cloud
         zone:          zone,
         instance_name: instance_name,
         email:         email,
-        username:      locate_config_value(:winrm_user),
+        username:      locate_config_value(:connection_user),
         debug:         gcewinpass_debug_mode
       ).new_password
     end
