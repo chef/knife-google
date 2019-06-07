@@ -180,20 +180,21 @@ class Chef::Knife::Cloud
     def set_default_config
       # dumb hack for knife-cloud, which expects the user to pass in the WinRM password to use when bootstrapping.
       # We won't know the password until the instance is created and we forceably reset it.
-      config[:winrm_password] = "will_change_this_later"
+      config[:connection_password] = "will_change_this_later"
     end
 
     def validate_params!
       check_for_missing_config_values!(:gce_zone, :machine_type, :image, :boot_disk_size, :network)
       raise "You must supply an instance name." if @name_args.first.nil?
       raise "Boot disk size must be between 10 and 10,000" unless valid_disk_size?(boot_disk_size)
-      if locate_config_value(:bootstrap_protocol) == "winrm" && locate_config_value(:gce_email).nil?
+      if locate_config_value(:connection_protocol) == "winrm" && locate_config_value(:gce_email).nil?
         raise "Please provide your Google Cloud console email address via --gce-email. " \
           "It is required when resetting passwords on Windows hosts."
       end
 
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
+      ui.warn("[DEPRECATED] --bootstrap-protocol option is deprecated. Use --connection-protocol option instead.")  if locate_config_value(:bootstrap_protocol)
       super
     end
 
@@ -202,10 +203,9 @@ class Chef::Knife::Cloud
 
       config[:chef_node_name] = locate_config_value(:chef_node_name) ? locate_config_value(:chef_node_name) : instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
-
-      if locate_config_value(:bootstrap_protocol) == "winrm"
+      if locate_config_value(:connection_protocol) == "winrm"
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
-        config[:winrm_password] = reset_windows_password
+        config[:connection_password] = reset_windows_password
       end
     end
 
@@ -271,7 +271,7 @@ class Chef::Knife::Cloud
         zone:          zone,
         instance_name: instance_name,
         email:         email,
-        username:      locate_config_value(:winrm_user),
+        username:      locate_config_value(:connection_user),
         debug:         gcewinpass_debug_mode
       ).new_password
     end
