@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 4.0.0 -->
-## [v4.0.0](https://github.com/chef/knife-google/tree/v4.0.0) (2019-06-07)
+<!-- latest_release 4.0.1 -->
+## [v4.0.1](https://github.com/chef/knife-google/tree/v4.0.1) (2019-06-07)
 
 #### Merged Pull Requests
-- [MSYS-1040] Added support for chef 15 [#150](https://github.com/chef/knife-google/pull/150) ([kapilchouhan99](https://github.com/kapilchouhan99))
+- Depend on knife-cloud v2, which supports Chef 15+ [#151](https://github.com/chef/knife-google/pull/151) ([btm](https://github.com/btm))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.3.7 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Depend on knife-cloud v2, which supports Chef 15+ [#151](https://github.com/chef/knife-google/pull/151) ([btm](https://github.com/btm)) <!-- 4.0.1 -->
 - [MSYS-1040] Added support for chef 15 [#150](https://github.com/chef/knife-google/pull/150) ([kapilchouhan99](https://github.com/kapilchouhan99)) <!-- 4.0.0 -->
 <!-- release_rollup -->
 
