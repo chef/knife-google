@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 4.0.0 -->
+## [v4.0.0](https://github.com/chef/knife-google/tree/v4.0.0) (2019-06-07)
+
+#### Merged Pull Requests
+- [MSYS-1040] Added support for chef 15 [#150](https://github.com/chef/knife-google/pull/150) ([kapilchouhan99](https://github.com/kapilchouhan99))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=3.3.7 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- [MSYS-1040] Added support for chef 15 [#150](https://github.com/chef/knife-google/pull/150) ([kapilchouhan99](https://github.com/kapilchouhan99)) <!-- 4.0.0 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
@@ -248,4 +256,3 @@ prior to release 1.1.0, please visit the [source repository](https://github.com/
 - V1beta12 works [\#3](https://github.com/chef/knife-google/pull/3) ([leopd](https://github.com/leopd))
 - Updated for clarity. If the PROJECT\_ID is required then it should show i... [\#2](https://github.com/chef/knife-google/pull/2) ([jamescott](https://github.com/jamescott))
 - Changed --server-name short option to -s [\#1](https://github.com/chef/knife-google/pull/1) ([paulmooring](https://github.com/paulmooring))
-
