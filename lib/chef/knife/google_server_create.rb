@@ -187,13 +187,14 @@ class Chef::Knife::Cloud
       check_for_missing_config_values!(:gce_zone, :machine_type, :image, :boot_disk_size, :network)
       raise "You must supply an instance name." if @name_args.first.nil?
       raise "Boot disk size must be between 10 and 10,000" unless valid_disk_size?(boot_disk_size)
-      if locate_config_value(:bootstrap_protocol) == "winrm" && locate_config_value(:gce_email).nil?
+      if locate_config_value(:connection_protocol) == "winrm" && locate_config_value(:gce_email).nil?
         raise "Please provide your Google Cloud console email address via --gce-email. " \
           "It is required when resetting passwords on Windows hosts."
       end
 
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
+      ui.warn("[DEPRECATED] --bootstrap-protocol option is deprecated. Use --connection-protocol option instead.")  if locate_config_value(:bootstrap_protocol)
       super
     end
 
@@ -202,7 +203,7 @@ class Chef::Knife::Cloud
 
       config[:chef_node_name] = locate_config_value(:chef_node_name) ? locate_config_value(:chef_node_name) : instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
-      if locate_config_value(:bootstrap_protocol) == "winrm"
+      if locate_config_value(:connection_protocol) == "winrm"
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
         config[:connection_password] = reset_windows_password
       end
