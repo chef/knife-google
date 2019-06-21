@@ -12,7 +12,7 @@ group :test do
   gem "chefstyle"
   gem "rspec", "~> 3.1"
   gem "rake"
-  gem "chef", ">= 12.0"
+  gem "chef", ">= 15.0"
 end
 
 group :development do
