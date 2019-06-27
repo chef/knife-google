@@ -193,6 +193,7 @@ class Chef::Knife::Cloud
       end
 
       raise "Please provide connection port via --connection-port." unless locate_config_value(:connection_port)
+      raise "Please provide image os type via --image-os-type." unless locate_config_value(:image_os_type)
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
       ui.warn("[DEPRECATED] --bootstrap-protocol option is deprecated. Use --connection-protocol option instead.") if locate_config_value(:bootstrap_protocol)
@@ -204,7 +205,8 @@ class Chef::Knife::Cloud
 
       config[:chef_node_name] = locate_config_value(:chef_node_name) ? locate_config_value(:chef_node_name) : instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
-      if locate_config_value(:connection_protocol) == "winrm"
+ 
+      if locate_config_value(:image_os_type) == "windows"
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
         config[:connection_password] = reset_windows_password
       end
