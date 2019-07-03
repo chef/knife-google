@@ -196,7 +196,6 @@ class Chef::Knife::Cloud
       raise "Please provide image os type via --image-os-type." unless locate_config_value(:image_os_type)
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
-      ui.warn("[DEPRECATED] --bootstrap-protocol option is deprecated. Use --connection-protocol option instead.") if locate_config_value(:bootstrap_protocol)
       super
     end
 

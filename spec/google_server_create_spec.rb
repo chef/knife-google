@@ -48,6 +48,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       allow(command).to receive(:locate_config_value).with(:connection_protocol).and_return("ssh")
       allow(command).to receive(:locate_config_value).with(:ssh_identity_file).and_return("/path/to/file")
       allow(command).to receive(:locate_config_value).with(:connection_port).and_return(22)
+      allow(command).to receive(:locate_config_value).with(:image_os_type).and_return("windows")
       allow(command).to receive(:locate_config_value).with(:auto_migrate)
       allow(command).to receive(:locate_config_value).with(:auto_restart)
       allow(command).to receive(:locate_config_value).with(:chef_node_name)
@@ -82,16 +83,20 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end
 
+    it "raises an exception if the image_os_type is missing" do
+      expect(command).to receive(:locate_config_value).with(:image_os_type).and_return(nil)
+      expect { command.validate_params! }.to raise_error(RuntimeError)
+    end
+
+    it "raises an exception if the connection_port is missing" do
+      expect(command).to receive(:locate_config_value).with(:connection_port).and_return(nil)
+      expect { command.validate_params! }.to raise_error(RuntimeError)
+    end
+
     it "raises an exception if bootstrap is WinRM but no gcloud user email as supplied" do
       expect(command).to receive(:locate_config_value).with(:connection_protocol).and_return("winrm")
       expect(command).to receive(:locate_config_value).with(:gce_email).and_return(nil)
       expect { command.validate_params! }.to raise_error(RuntimeError)
-    end
-
-    it "prints a warning if bootstrap_protocol is set" do
-      allow(command).to receive(:locate_config_value).with(:bootstrap_protocol).and_return("ssh")
-      expect(command.ui).to receive(:warn).with("[DEPRECATED] --bootstrap-protocol option is deprecated. Use --connection-protocol option instead.")
-      command.validate_params!
     end
 
     it "prints a warning if auto-migrate is true for a preemptible instance" do
@@ -139,9 +144,9 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       expect(command.config[:bootstrap_ip_address]).to eq("1.2.3.4")
     end
 
-    it "sets the winrm password if winrm is used" do
+    it "sets the password if image_os_type is windows" do
       allow(command.ui).to receive(:msg)
-      expect(command).to receive(:locate_config_value).with(:connection_protocol).at_least(:once).and_return("winrm")
+      expect(command).to receive(:locate_config_value).with(:image_os_type).and_return("windows")
       expect(command).to receive(:reset_windows_password).and_return("new_password")
       command.before_bootstrap
 
