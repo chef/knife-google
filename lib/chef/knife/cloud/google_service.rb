@@ -227,16 +227,19 @@ class Chef::Knife::Cloud
 
     def valid_machine_type?(machine_type)
       return false if machine_type.nil?
+
       check_api_call { connection.get_machine_type(project, zone, machine_type) }
     end
 
     def valid_network?(network)
       return false if network.nil?
+
       check_api_call { connection.get_network(project, network) }
     end
 
     def valid_subnet?(subnet)
       return false if subnet.nil?
+
       check_api_call { connection.get_subnetwork(project, region, subnet) }
     end
 
@@ -451,6 +454,7 @@ class Chef::Knife::Cloud
 
     def service_account_scope_url(scope)
       return scope if scope.start_with?("https://www.googleapis.com/auth/")
+
       "https://www.googleapis.com/auth/#{translate_scope_alias(scope)}"
     end
 

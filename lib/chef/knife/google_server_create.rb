@@ -187,6 +187,7 @@ class Chef::Knife::Cloud
       check_for_missing_config_values!(:gce_zone, :machine_type, :image, :boot_disk_size, :network)
       raise "You must supply an instance name." if @name_args.first.nil?
       raise "Boot disk size must be between 10 and 10,000" unless valid_disk_size?(boot_disk_size)
+
       if locate_config_value(:connection_protocol) == "winrm" && locate_config_value(:gce_email).nil?
         raise "Please provide your Google Cloud console email address via --gce-email. " \
           "It is required when resetting passwords on Windows hosts."
@@ -194,6 +195,7 @@ class Chef::Knife::Cloud
 
       raise "Please provide connection port via --connection-port." unless locate_config_value(:connection_port)
       raise "Please provide image os type via --image-os-type." unless locate_config_value(:image_os_type)
+
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
       super
@@ -204,7 +206,7 @@ class Chef::Knife::Cloud
 
       config[:chef_node_name] = locate_config_value(:chef_node_name) ? locate_config_value(:chef_node_name) : instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
- 
+
       if locate_config_value(:image_os_type) == "windows"
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
         config[:connection_password] = reset_windows_password
@@ -249,6 +251,7 @@ class Chef::Knife::Cloud
       ip = locate_config_value(:use_private_ip) ? private_ip_for(server) : public_ip_for(server)
 
       raise "Unable to determine instance IP address for bootstrapping" if ip == "unknown"
+
       ip
     end
 

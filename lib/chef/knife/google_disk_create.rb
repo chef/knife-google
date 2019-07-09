@@ -50,6 +50,7 @@ class Chef::Knife::Cloud
       check_for_missing_config_values!(:gce_zone, :disk_size, :disk_type)
       raise "Please specify a disk name." unless @name_args.first
       raise "Disk size must be between 10 and 10,000" unless valid_disk_size?(locate_config_value(:disk_size))
+
       super
     end
 

@@ -50,7 +50,7 @@ class Chef::Knife::Cloud
     end
 
     def format_name(name)
-      name.split("_").map { |x| x.capitalize }.join(" ")
+      name.split("_").map(&:capitalize).join(" ")
     end
 
     def format_number(number)
