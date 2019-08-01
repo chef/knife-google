@@ -154,26 +154,26 @@ class Chef::Knife::Cloud
       super
 
       @create_options = {
-        name:                   instance_name,
-        image:                  locate_config_value(:image),
-        image_project:          locate_config_value(:image_project),
-        network:                locate_config_value(:network),
-        subnet:                 locate_config_value(:subnet),
-        public_ip:              locate_config_value(:public_ip),
-        auto_migrate:           auto_migrate?,
-        auto_restart:           auto_restart?,
-        preemptible:            preemptible?,
-        boot_disk_autodelete:   locate_config_value(:boot_disk_autodelete),
-        boot_disk_name:         locate_config_value(:boot_disk_name),
-        boot_disk_size:         boot_disk_size,
-        boot_disk_ssd:          locate_config_value(:boot_disk_ssd),
-        additional_disks:       locate_config_value(:additional_disks),
-        can_ip_forward:         locate_config_value(:can_ip_forward),
-        machine_type:           locate_config_value(:machine_type),
+        name: instance_name,
+        image: locate_config_value(:image),
+        image_project: locate_config_value(:image_project),
+        network: locate_config_value(:network),
+        subnet: locate_config_value(:subnet),
+        public_ip: locate_config_value(:public_ip),
+        auto_migrate: auto_migrate?,
+        auto_restart: auto_restart?,
+        preemptible: preemptible?,
+        boot_disk_autodelete: locate_config_value(:boot_disk_autodelete),
+        boot_disk_name: locate_config_value(:boot_disk_name),
+        boot_disk_size: boot_disk_size,
+        boot_disk_ssd: locate_config_value(:boot_disk_ssd),
+        additional_disks: locate_config_value(:additional_disks),
+        can_ip_forward: locate_config_value(:can_ip_forward),
+        machine_type: locate_config_value(:machine_type),
         service_account_scopes: locate_config_value(:service_account_scopes),
-        service_account_name:   locate_config_value(:service_account_name),
-        metadata:               metadata,
-        tags:                   locate_config_value(:tags),
+        service_account_name: locate_config_value(:service_account_name),
+        metadata: metadata,
+        tags: locate_config_value(:tags),
       }
     end
 
@@ -187,14 +187,17 @@ class Chef::Knife::Cloud
       check_for_missing_config_values!(:gce_zone, :machine_type, :image, :boot_disk_size, :network)
       raise "You must supply an instance name." if @name_args.first.nil?
       raise "Boot disk size must be between 10 and 10,000" unless valid_disk_size?(boot_disk_size)
+
       if locate_config_value(:connection_protocol) == "winrm" && locate_config_value(:gce_email).nil?
         raise "Please provide your Google Cloud console email address via --gce-email. " \
           "It is required when resetting passwords on Windows hosts."
       end
 
+      raise "Please provide connection port via --connection-port." unless locate_config_value(:connection_port)
+      raise "Please provide image os type via --image-os-type." unless locate_config_value(:image_os_type)
+
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
-      ui.warn("[DEPRECATED] --bootstrap-protocol option is deprecated. Use --connection-protocol option instead.")  if locate_config_value(:bootstrap_protocol)
       super
     end
 
@@ -203,7 +206,8 @@ class Chef::Knife::Cloud
 
       config[:chef_node_name] = locate_config_value(:chef_node_name) ? locate_config_value(:chef_node_name) : instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
-      if locate_config_value(:connection_protocol) == "winrm"
+
+      if locate_config_value(:image_os_type) == "windows"
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
         config[:connection_password] = reset_windows_password
       end
@@ -247,6 +251,7 @@ class Chef::Knife::Cloud
       ip = locate_config_value(:use_private_ip) ? private_ip_for(server) : public_ip_for(server)
 
       raise "Unable to determine instance IP address for bootstrapping" if ip == "unknown"
+
       ip
     end
 

@@ -189,11 +189,11 @@ describe Chef::Knife::Cloud::GoogleService do
   describe "#validate_server_create_options!" do
     let(:options) do
       {
-        machine_type:  "test_type",
-        network:       "test_network",
-        subnet:        "test_subnet",
-        public_ip:     "public_ip",
-        image:         "test_image",
+        machine_type: "test_type",
+        network: "test_network",
+        subnet: "test_subnet",
+        public_ip: "public_ip",
+        image: "test_image",
         image_project: "test_image_project",
       }
     end
@@ -347,11 +347,11 @@ describe Chef::Knife::Cloud::GoogleService do
     let(:instance_object) { double("instance_object") }
     let(:options) do
       {
-        name:           "test_instance",
+        name: "test_instance",
         can_ip_forward: "ip_forwarding",
-        machine_type:   "test_machine_type",
-        metadata:       "test_metadata",
-        tags:           "test_tags",
+        machine_type: "test_machine_type",
+        metadata: "test_metadata",
+        tags: "test_tags",
       }
     end
 
@@ -440,10 +440,10 @@ describe Chef::Knife::Cloud::GoogleService do
       params  = double("params")
       options = {
         boot_disk_autodelete: "autodelete_param",
-        boot_disk_size:       "disk_size",
-        boot_disk_ssd:        "disk_ssd",
-        image:                "disk_image",
-        image_project:        "disk_image_project",
+        boot_disk_size: "disk_size",
+        boot_disk_ssd: "disk_ssd",
+        image: "disk_image",
+        image_project: "disk_image_project",
       }
 
       expect(service).to receive(:boot_disk_name_for).with(options).and_return("disk_name")
@@ -836,15 +836,15 @@ describe Chef::Knife::Cloud::GoogleService do
 
   describe "#public_project_for_image" do
     {
-      "centos"         => "centos-cloud",
-      "container-vm"   => "google-containers",
-      "coreos"         => "coreos-cloud",
-      "debian"         => "debian-cloud",
+      "centos" => "centos-cloud",
+      "container-vm" => "google-containers",
+      "coreos" => "coreos-cloud",
+      "debian" => "debian-cloud",
       "opensuse-cloud" => "opensuse-cloud",
-      "rhel"           => "rhel-cloud",
-      "sles"           => "suse-cloud",
-      "ubuntu"         => "ubuntu-os-cloud",
-      "windows"        => "windows-cloud",
+      "rhel" => "rhel-cloud",
+      "sles" => "suse-cloud",
+      "ubuntu" => "ubuntu-os-cloud",
+      "windows" => "windows-cloud",
     }.each do |image_name, project_name|
       it "returns project #{project_name} for an image named #{image_name}" do
         expect(service.public_project_for_image(image_name)).to eq(project_name)

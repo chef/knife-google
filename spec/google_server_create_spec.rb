@@ -19,7 +19,7 @@
 
 require "spec_helper"
 require "chef/knife/google_server_create"
-require "support/shared_examples_for_command"
+require "support/shared_examples_for_command_bootstrap"
 require "gcewinpass"
 
 class Tester
@@ -37,7 +37,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     allow(command).to receive(:server).and_return(server)
   end
 
-  it_behaves_like Chef::Knife::Cloud::Command, described_class.new
+  it_behaves_like Chef::Knife::Cloud::BootstrapCommand, described_class.new
 
   describe "#validate_params!" do
     before do
@@ -45,7 +45,10 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       allow(command).to receive(:valid_disk_size?).and_return(true)
       allow(command).to receive(:boot_disk_size)
       allow(command).to receive(:locate_config_value).with(:bootstrap_protocol).and_return("ssh")
-      allow(command).to receive(:locate_config_value).with(:identity_file).and_return("/path/to/file")
+      allow(command).to receive(:locate_config_value).with(:connection_protocol).and_return("ssh")
+      allow(command).to receive(:locate_config_value).with(:ssh_identity_file).and_return("/path/to/file")
+      allow(command).to receive(:locate_config_value).with(:connection_port).and_return(22)
+      allow(command).to receive(:locate_config_value).with(:image_os_type).and_return("windows")
       allow(command).to receive(:locate_config_value).with(:auto_migrate)
       allow(command).to receive(:locate_config_value).with(:auto_restart)
       allow(command).to receive(:locate_config_value).with(:chef_node_name)
@@ -80,13 +83,24 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end
 
+    it "raises an exception if the image_os_type is missing" do
+      expect(command).to receive(:locate_config_value).with(:image_os_type).and_return(nil)
+      expect { command.validate_params! }.to raise_error(RuntimeError)
+    end
+
+    it "raises an exception if the connection_port is missing" do
+      expect(command).to receive(:locate_config_value).with(:connection_port).and_return(nil)
+      expect { command.validate_params! }.to raise_error(RuntimeError)
+    end
+
     it "raises an exception if bootstrap is WinRM but no gcloud user email as supplied" do
-      expect(command).to receive(:locate_config_value).with(:bootstrap_protocol).and_return("winrm")
+      expect(command).to receive(:locate_config_value).with(:connection_protocol).and_return("winrm")
       expect(command).to receive(:locate_config_value).with(:gce_email).and_return(nil)
       expect { command.validate_params! }.to raise_error(RuntimeError)
     end
 
     it "prints a warning if auto-migrate is true for a preemptible instance" do
+      allow(command).to receive(:locate_config_value).with(:bootstrap_protocol).and_return(false)
       allow(command).to receive(:preemptible?).and_return(true)
       allow(command).to receive(:locate_config_value).with(:auto_migrate).and_return(true)
       expect(command.ui).to receive(:warn).with("Auto-migrate disabled for preemptible instance")
@@ -94,6 +108,7 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
 
     it "prints a warning if auto-restart is true for a preemptible instance" do
+      allow(command).to receive(:locate_config_value).with(:bootstrap_protocol).and_return(false)
       allow(command).to receive(:preemptible?).and_return(true)
       allow(command).to receive(:locate_config_value).with(:auto_restart).and_return(true)
       expect(command.ui).to receive(:warn).with("Auto-restart disabled for preemptible instance")
@@ -129,13 +144,13 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       expect(command.config[:bootstrap_ip_address]).to eq("1.2.3.4")
     end
 
-    it "sets the winrm password if winrm is used" do
+    it "sets the password if image_os_type is windows" do
       allow(command.ui).to receive(:msg)
-      expect(command).to receive(:locate_config_value).with(:bootstrap_protocol).at_least(:once).and_return("winrm")
+      expect(command).to receive(:locate_config_value).with(:image_os_type).and_return("windows")
       expect(command).to receive(:reset_windows_password).and_return("new_password")
       command.before_bootstrap
 
-      expect(command.config[:winrm_password]).to eq("new_password")
+      expect(command.config[:connection_password]).to eq("new_password")
     end
   end
 

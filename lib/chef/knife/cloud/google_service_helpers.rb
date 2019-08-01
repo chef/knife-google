@@ -38,7 +38,7 @@ class Chef::Knife::Cloud
       missing = keys_to_check.select { |x| locate_config_value(x).nil? }
 
       unless missing.empty?
-        message = "The following required parameters are missing: #{missing.join(', ')}"
+        message = "The following required parameters are missing: #{missing.join(", ")}"
         ui.error(message)
         raise message
       end

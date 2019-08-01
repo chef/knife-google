@@ -32,50 +32,50 @@ class Chef::Knife::Cloud
     attr_reader :project, :zone, :wait_time, :refresh_rate, :max_pages, :max_page_size
 
     SCOPE_ALIAS_MAP = {
-      "bigquery"           => "bigquery",
-      "cloud-platform"     => "cloud-platform",
-      "compute-ro"         => "compute.readonly",
-      "compute-rw"         => "compute",
-      "datastore"          => "datastore",
-      "logging-write"      => "logging.write",
-      "monitoring"         => "monitoring",
-      "monitoring-write"   => "monitoring.write",
-      "service-control"    => "servicecontrol",
+      "bigquery" => "bigquery",
+      "cloud-platform" => "cloud-platform",
+      "compute-ro" => "compute.readonly",
+      "compute-rw" => "compute",
+      "datastore" => "datastore",
+      "logging-write" => "logging.write",
+      "monitoring" => "monitoring",
+      "monitoring-write" => "monitoring.write",
+      "service-control" => "servicecontrol",
       "service-management" => "service.management",
-      "sql"                => "sqlservice",
-      "sql-admin"          => "sqlservice.admin",
-      "storage-full"       => "devstorage.full_control",
-      "storage-ro"         => "devstorage.read_only",
-      "storage-rw"         => "devstorage.read_write",
-      "taskqueue"          => "taskqueue",
-      "useraccounts-ro"    => "cloud.useraccounts.readonly",
-      "useraccounts-rw"    => "cloud.useraccounts",
-      "userinfo-email"     => "userinfo.email",
+      "sql" => "sqlservice",
+      "sql-admin" => "sqlservice.admin",
+      "storage-full" => "devstorage.full_control",
+      "storage-ro" => "devstorage.read_only",
+      "storage-rw" => "devstorage.read_write",
+      "taskqueue" => "taskqueue",
+      "useraccounts-ro" => "cloud.useraccounts.readonly",
+      "useraccounts-rw" => "cloud.useraccounts",
+      "userinfo-email" => "userinfo.email",
     }.freeze
 
     IMAGE_ALIAS_MAP = {
-      "centos-6"           => { project: "centos-cloud",      prefix: "centos-6" },
-      "centos-7"           => { project: "centos-cloud",      prefix: "centos-7" },
-      "container-vm"       => { project: "google-containers", prefix: "container-vm" },
-      "coreos"             => { project: "coreos-cloud",      prefix: "coreos-stable" },
-      "debian-7"           => { project: "debian-cloud",      prefix: "debian-7-wheezy" },
-      "debian-7-backports" => { project: "debian-cloud",      prefix: "backports-debian-7-wheezy" },
-      "debian-8"           => { project: "debian-cloud",      prefix: "debian-8-jessie" },
-      "opensuse-13"        => { project: "opensuse-cloud",    prefix: "opensuse-13" },
-      "rhel-6"             => { project: "rhel-cloud",        prefix: "rhel-6" },
-      "rhel-7"             => { project: "rhel-cloud",        prefix: "rhel-7" },
-      "sles-11"            => { project: "suse-cloud",        prefix: "sles-11" },
-      "sles-12"            => { project: "suse-cloud",        prefix: "sles-12" },
-      "ubuntu-12-04"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1204-precise" },
-      "ubuntu-1204-lts"    => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1204-precise" },
-      "ubuntu-14-04"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1404-trusty" },
-      "ubuntu-1404-lts"    => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1404-trusty" },
-      "ubuntu-15-04"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1504-vivid" },
-      "ubuntu-15-10"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1510-wily" },
-      "ubuntu-16-04"       => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1604-xenial" },
-      "ubuntu-1604-lts"    => { project: "ubuntu-os-cloud",   prefix: "ubuntu-1604-xenial" },
-      "windows-2008-r2"    => { project: "windows-cloud",     prefix: "windows-server-2008-r2" },
-      "windows-2012-r2"    => { project: "windows-cloud",     prefix: "windows-server-2012-r2" },
+      "centos-6" => { project: "centos-cloud", prefix: "centos-6" },
+      "centos-7" => { project: "centos-cloud", prefix: "centos-7" },
+      "container-vm" => { project: "google-containers", prefix: "container-vm" },
+      "coreos" => { project: "coreos-cloud", prefix: "coreos-stable" },
+      "debian-7" => { project: "debian-cloud", prefix: "debian-7-wheezy" },
+      "debian-7-backports" => { project: "debian-cloud", prefix: "backports-debian-7-wheezy" },
+      "debian-8" => { project: "debian-cloud", prefix: "debian-8-jessie" },
+      "opensuse-13" => { project: "opensuse-cloud", prefix: "opensuse-13" },
+      "rhel-6" => { project: "rhel-cloud", prefix: "rhel-6" },
+      "rhel-7" => { project: "rhel-cloud", prefix: "rhel-7" },
+      "sles-11" => { project: "suse-cloud", prefix: "sles-11" },
+      "sles-12" => { project: "suse-cloud", prefix: "sles-12" },
+      "ubuntu-12-04" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1204-precise" },
+      "ubuntu-1204-lts" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1204-precise" },
+      "ubuntu-14-04" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1404-trusty" },
+      "ubuntu-1404-lts" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1404-trusty" },
+      "ubuntu-15-04" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1504-vivid" },
+      "ubuntu-15-10" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1510-wily" },
+      "ubuntu-16-04" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1604-xenial" },
+      "ubuntu-1604-lts" => { project: "ubuntu-os-cloud", prefix: "ubuntu-1604-xenial" },
+      "windows-2008-r2" => { project: "windows-cloud", prefix: "windows-server-2008-r2" },
+      "windows-2012-r2" => { project: "windows-cloud", prefix: "windows-server-2012-r2" },
     }.freeze
 
     def initialize(options = {})
@@ -227,16 +227,19 @@ class Chef::Knife::Cloud
 
     def valid_machine_type?(machine_type)
       return false if machine_type.nil?
+
       check_api_call { connection.get_machine_type(project, zone, machine_type) }
     end
 
     def valid_network?(network)
       return false if network.nil?
+
       check_api_call { connection.get_network(project, network) }
     end
 
     def valid_subnet?(subnet)
       return false if subnet.nil?
+
       check_api_call { connection.get_subnetwork(project, region, subnet) }
     end
 
@@ -451,6 +454,7 @@ class Chef::Knife::Cloud
 
     def service_account_scope_url(scope)
       return scope if scope.start_with?("https://www.googleapis.com/auth/")
+
       "https://www.googleapis.com/auth/#{translate_scope_alias(scope)}"
     end
 
