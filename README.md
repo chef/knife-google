@@ -3,6 +3,14 @@
 [![Gem Version](https://badge.fury.io/rb/knife-google.svg)](http://badge.fury.io/rb/knife-google)
 [![Build Status](https://travis-ci.org/chef/knife-google.svg?branch=master)](https://travis-ci.org/chef/knife-google)
 
+**Umbrella Project: [Knife](https://github.com/chef/chef-oss-practices/blob/master/projects/knife.md)**
+
+**Project State: [Active](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md#active)**
+
+**Issues [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md): 14 days**
+
+**Pull Request [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md): 14 days**
+
 ## Overview
 
 This is the official Chef [Knife](http://docs.chef.io/knife.html) plugin for
