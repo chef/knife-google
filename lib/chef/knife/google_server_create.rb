@@ -198,6 +198,7 @@ class Chef::Knife::Cloud
 
       ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
       ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
+
       super
     end
 
