@@ -39,6 +39,28 @@ shared_examples_for "a paginated list fetcher" do |fetch_method, items_method, *
   end
 end
 
+shared_examples_for "list of images" do
+  it "retrieves paginated results from the API for each project" do
+    @available_projects.each do |project|
+      expect(service).to receive(:paginated_results).with(:list_images, :items, project)
+    end
+    subject
+  end
+
+  it "returns an empty array if there are no results" do
+    @available_projects.each do |project|
+      expect(service).to receive(:paginated_results).with(:list_images, :items, project).and_return(nil)
+    end
+    expect(subject).to eq([])
+  end
+end
+
+shared_examples_for "list of available projects" do
+  it "returns list of projects" do
+    expect(@available_projects).to eq(expected_projects_list)
+  end
+end
+
 describe Chef::Knife::Cloud::GoogleService do
   let(:project)        { "test_project" }
   let(:zone)           { "test_zone" }
@@ -165,6 +187,128 @@ describe Chef::Knife::Cloud::GoogleService do
   describe "#list_regions" do
     subject { service.list_regions }
     it_behaves_like "a paginated list fetcher", :list_regions, :items, "test_project"
+  end
+
+  describe "#list_images" do
+    subject { service.list_images }
+    before do
+      @available_projects = service.available_projects
+    end
+
+    context "when the custom image is available" do
+      let(:expected_result) do
+        [
+          "test_project results",
+          "centos-cloud results",
+          "coreos-cloud results",
+          "debian-cloud results",
+          "cos-cloud results",
+          "rhel-cloud results",
+          "rhel-sap-cloud results",
+          "suse-cloud results",
+          "suse-sap-cloud results",
+          "ubuntu-os-cloud results",
+          "windows-cloud results",
+          "windows-sql-cloud results",
+        ]
+      end
+
+      it_behaves_like "list of images"
+
+      it "returns the results if they exist for each project" do
+        @available_projects.each do |project|
+          expect(service).to receive(:paginated_results).with(:list_images, :items, project).and_return("#{project} results")
+        end
+        expect(subject).to eq(expected_result)
+      end
+    end
+
+    context "when the custom image is not available" do
+      let(:expected_result) do
+        [
+          "centos-cloud results",
+          "coreos-cloud results",
+          "debian-cloud results",
+          "cos-cloud results",
+          "rhel-cloud results",
+          "rhel-sap-cloud results",
+          "suse-cloud results",
+          "suse-sap-cloud results",
+          "ubuntu-os-cloud results",
+          "windows-cloud results",
+          "windows-sql-cloud results",
+        ]
+      end
+
+      before do
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "test_project").and_return([])
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "centos-cloud").and_return("centos-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "coreos-cloud").and_return("coreos-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "debian-cloud").and_return("debian-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "cos-cloud").and_return("cos-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "rhel-cloud").and_return("rhel-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "rhel-sap-cloud").and_return("rhel-sap-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "suse-cloud").and_return("suse-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "suse-sap-cloud").and_return("suse-sap-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "ubuntu-os-cloud").and_return("ubuntu-os-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "windows-cloud").and_return("windows-cloud results")
+        allow(service).to receive(:paginated_results).with(:list_images, :items, "windows-sql-cloud").and_return("windows-sql-cloud results")
+      end
+
+      it_behaves_like "list of images"
+
+      it "returns the results if they exist for each project expect custom project" do
+        expect(subject).to eq(expected_result)
+      end
+    end
+  end
+
+  describe "#available_projects" do
+    before do
+      @available_projects = service.available_projects
+    end
+
+    context "when the custom project passes in gce_project option" do
+      let(:expected_projects_list) do
+        %w{
+          test_project
+          centos-cloud
+          coreos-cloud
+          debian-cloud
+          cos-cloud
+          rhel-cloud
+          rhel-sap-cloud
+          suse-cloud
+          suse-sap-cloud
+          ubuntu-os-cloud
+          windows-cloud
+          windows-sql-cloud
+        }
+      end
+
+      it_behaves_like "list of available projects"
+    end
+
+    context "when the public project passes in gce_project option" do
+      let(:project) { "rhel-cloud" }
+      let(:expected_projects_list) do
+        %w{
+          rhel-cloud
+          centos-cloud
+          coreos-cloud
+          debian-cloud
+          cos-cloud
+          rhel-sap-cloud
+          suse-cloud
+          suse-sap-cloud
+          ubuntu-os-cloud
+          windows-cloud
+          windows-sql-cloud
+        }
+      end
+
+      it_behaves_like "list of available projects"
+    end
   end
 
   describe "#list_project_quotas" do

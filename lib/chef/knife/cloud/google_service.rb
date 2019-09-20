@@ -78,6 +78,20 @@ class Chef::Knife::Cloud
       "windows-2012-r2" => { project: "windows-cloud", prefix: "windows-server-2012-r2" },
     }.freeze
 
+    PUBLIC_PROJECTS = %w{
+      centos-cloud
+      coreos-cloud
+      debian-cloud
+      cos-cloud
+      rhel-cloud
+      rhel-sap-cloud
+      suse-cloud
+      suse-sap-cloud
+      ubuntu-os-cloud
+      windows-cloud
+      windows-sql-cloud
+    }.freeze
+
     def initialize(options = {})
       @project       = options[:project]
       @zone          = options[:zone]
@@ -195,6 +209,12 @@ class Chef::Knife::Cloud
 
     def list_zones
       paginated_results(:list_zones, :items, project) || []
+    end
+
+    # Retrieves the list of custom images and public images.
+    # Custom images are images you create that belong to your project.
+    def list_images
+      available_projects.map { |project| paginated_results(:list_images, :items, project) || [] }.flatten
     end
 
     def list_disks
@@ -602,6 +622,10 @@ class Chef::Knife::Cloud
       return [] if operation.error.nil?
 
       operation.error.errors
+    end
+
+    def available_projects
+      [project] | PUBLIC_PROJECTS
     end
   end
 end
