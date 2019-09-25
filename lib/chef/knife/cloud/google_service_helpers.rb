@@ -27,8 +27,8 @@ class Chef::Knife::Cloud
         zone:          locate_config_value(:gce_zone),
         wait_time:     locate_config_value(:request_timeout),
         refresh_rate:  locate_config_value(:request_refresh_rate),
-        max_pages:     locate_config_value(:max_pages),
-        max_page_size: locate_config_value(:max_page_size)
+        max_pages:     locate_config_value(:gce_max_pages),
+        max_page_size: locate_config_value(:gce_max_page_size)
       )
     end
 
