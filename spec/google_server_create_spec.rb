@@ -248,11 +248,39 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
     end
   end
 
+  describe "#number_of_local_ssd" do
+    it "returns the number of local ssd as an integer" do
+      expect(command).to receive(:locate_config_value).with(:number_of_local_ssd).and_return("5")
+      expect(command.number_of_local_ssd).to eq(5)
+    end
+  end
+
   describe "#reset_windows_password" do
     it "returns the password from the gcewinpass instance" do
       winpass = double("winpass", new_password: "my_password")
       expect(GoogleComputeWindowsPassword).to receive(:new).and_return(winpass)
       expect(command.reset_windows_password).to eq("my_password")
+    end
+  end
+
+  describe "local_ssd option is passed on CLI" do
+    let(:google_server_create) { Chef::Knife::Cloud::GoogleServerCreate.new(["--gce-local-ssd"]) }
+    it "when a local_ssd is present" do
+      expect(google_server_create.config[:local_ssd]).to eq(true)
+    end
+  end
+
+  describe "interface option is passed on CLI" do
+    let(:google_server_create) { Chef::Knife::Cloud::GoogleServerCreate.new(["--gce-interface", "nvme"]) }
+    it "when a interface is present" do
+      expect(google_server_create.config[:interface]).to eq("nvme")
+    end
+  end
+
+  describe "number_of_local_ssd option is passed on CLI" do
+    let(:google_server_create) { Chef::Knife::Cloud::GoogleServerCreate.new(["--gce-number-of-local-ssd", "5"]) }
+    it "when a number_of_local_ssd is present" do
+      expect(google_server_create.config[:number_of_local_ssd]).to eq("5")
     end
   end
 end
