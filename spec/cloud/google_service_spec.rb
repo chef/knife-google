@@ -61,6 +61,18 @@ shared_examples_for "list of available projects" do
   end
 end
 
+shared_examples_for "invoke common_operation" do
+  it "returns disk and params object" do
+    expect(service).to receive(:disk_type_url_for).with(disk_type).and_return("disk_type_url")
+    expect(Google::Apis::ComputeV1::AttachedDisk).to receive(:new).and_return(@disk)
+    expect(Google::Apis::ComputeV1::AttachedDiskInitializeParams).to receive(:new).and_return(@params)
+    expect(@disk).to receive(:auto_delete=).with("autodelete_param")
+    expect(@params).to receive(:disk_type=).with("disk_type_url")
+
+    expect(service.common_operation(@options, disk_type)).to eq([@disk, @params])
+  end
+end
+
 describe Chef::Knife::Cloud::GoogleService do
   let(:project)        { "test_project" }
   let(:zone)           { "test_zone" }
@@ -339,6 +351,7 @@ describe Chef::Knife::Cloud::GoogleService do
         public_ip: "public_ip",
         image: "test_image",
         image_project: "test_image_project",
+        number_of_local_ssd: "8",
       }
     end
 
@@ -376,6 +389,11 @@ describe Chef::Knife::Cloud::GoogleService do
 
     it "raises an exception if the image parameters are not valid" do
       expect(service).to receive(:image_search_for).with("test_image", "test_image_project").and_return(nil)
+      expect { service.validate_server_create_options!(options) }.to raise_error(RuntimeError)
+    end
+
+    it "raises an exception if the number_of_local_ssd is greater than 8" do
+      options[:number_of_local_ssd] = 9
       expect { service.validate_server_create_options!(options) }.to raise_error(RuntimeError)
     end
   end
@@ -606,6 +624,50 @@ describe Chef::Knife::Cloud::GoogleService do
       expect(params).to receive(:source_image=).with("source_image")
 
       expect(service.instance_boot_disk_for(options)).to eq(disk)
+    end
+  end
+
+  describe "#adding_local_ssd" do
+    it "sets up a local_ssd disk object and returns it" do
+      disk    = double("disk")
+      params  = double("params")
+      options = {
+        boot_disk_autodelete: "autodelete_param",
+        interface: "SCSI",
+      }
+
+      expect(service).to receive(:disk_type_url_for).with("local-ssd").and_return("local_ssd_url")
+      expect(Google::Apis::ComputeV1::AttachedDisk).to receive(:new).and_return(disk)
+      expect(Google::Apis::ComputeV1::AttachedDiskInitializeParams).to receive(:new).and_return(params)
+      expect(disk).to receive(:auto_delete=).with("autodelete_param")
+      expect(disk).to receive(:interface=).with("SCSI")
+      expect(disk).to receive(:type=).with("SCRATCH")
+      expect(disk).to receive(:initialize_params=).with(params)
+      expect(params).to receive(:disk_type=).with("local_ssd_url")
+
+      expect(service.adding_local_ssd(options)).to eq(disk)
+    end
+  end
+
+  describe "#common_operation" do
+    before do
+      @disk    = double("disk")
+      @params  = double("params")
+      @options = {
+        boot_disk_autodelete: "autodelete_param",
+      }
+    end
+
+    context "when its calling from instance_boot_disk_for method" do
+      let(:disk_type) { service.boot_disk_type_for(@options) }
+
+      it_behaves_like "invoke common_operation"
+    end
+
+    context "when its calling from adding_local_ssd method" do
+      let(:disk_type) { "local-ssd" }
+
+      it_behaves_like "invoke common_operation"
     end
   end
 

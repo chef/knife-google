@@ -146,6 +146,23 @@ class Chef::Knife::Cloud
       long:        "--gce-email EMAIL_ADDRESS",
       description: "email address of the logged-in Google Cloud user; required for bootstrapping windows hosts"
 
+    option :local_ssd,
+      long:        "--gce-local-ssd",
+      description: "Local SSDs are physically attached to the server that hosts your VM instance. Local SSDs have higher throughput and lower latency than standard persistent disks or SSD persistent disks.",
+      boolean:     true,
+      default:     false
+
+    option :interface,
+      long: "--gce-interface INTERFACE",
+      description: "The kind of disk interface exposed to the VM for this SSD. Valid values are SCSI and NVME. SCSI is the default and is supported by more guest operating systems. NVME may provide higher performance.",
+      default: "scsi",
+      in: %w{scsi nvme}
+
+    option :number_of_local_ssd,
+      long: "--gce-number-of-local-ssd NUMBER_OF_DISKS",
+      description: "Specifies the number of local SSDs to be created per node. Each local SSD is 375 GB in size, but you can attach up to eight local SSD devices for 3 TB of total local SSD storage space per instance.",
+      default: "1"
+
     deps do
       require "gcewinpass"
     end
@@ -168,6 +185,9 @@ class Chef::Knife::Cloud
         boot_disk_size: boot_disk_size,
         boot_disk_ssd: locate_config_value(:boot_disk_ssd),
         additional_disks: locate_config_value(:additional_disks),
+        local_ssd: locate_config_value(:local_ssd),
+        interface: locate_config_value(:interface),
+        number_of_local_ssd: number_of_local_ssd,
         can_ip_forward: locate_config_value(:can_ip_forward),
         machine_type: locate_config_value(:machine_type),
         service_account_scopes: locate_config_value(:service_account_scopes),
@@ -269,6 +289,10 @@ class Chef::Knife::Cloud
 
     def boot_disk_size
       locate_config_value(:boot_disk_size).to_i
+    end
+
+    def number_of_local_ssd
+      locate_config_value(:number_of_local_ssd).to_i
     end
 
     def reset_windows_password

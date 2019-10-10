@@ -235,6 +235,7 @@ class Chef::Knife::Cloud
       raise "Invalid subnet: #{options[:subnet]}" if options[:subnet] && !valid_subnet?(options[:subnet])
       raise "Invalid Public IP setting: #{options[:public_ip]}" unless valid_public_ip_setting?(options[:public_ip])
       raise "Invalid image: #{options[:image]} - check your image name, or set an image project if needed" if boot_disk_source_image(options[:image], options[:image_project]).nil?
+      raise "Maximum number of local SSDs for an instance should be 8, while #{options[:number_of_local_ssd]} is requested." if options[:number_of_local_ssd].to_i > 8
     end
 
     def check_api_call
@@ -308,6 +309,7 @@ class Chef::Knife::Cloud
     def instance_disks_for(options)
       disks = []
       disks << instance_boot_disk_for(options)
+      options[:number_of_local_ssd].to_i.times { disks << adding_local_ssd(options) } if options[:local_ssd]
       options[:additional_disks].each do |disk_name|
         begin
           disk = connection.get_disk(project, zone, disk_name)
@@ -323,18 +325,32 @@ class Chef::Knife::Cloud
     end
 
     def instance_boot_disk_for(options)
-      disk = Google::Apis::ComputeV1::AttachedDisk.new
-      params = Google::Apis::ComputeV1::AttachedDiskInitializeParams.new
-
+      disk, params = common_operation(options, boot_disk_type_for(options))
       disk.boot           = true
-      disk.auto_delete    = options[:boot_disk_autodelete]
       params.disk_name    = boot_disk_name_for(options)
       params.disk_size_gb = options[:boot_disk_size]
-      params.disk_type    = disk_type_url_for(boot_disk_type_for(options))
       params.source_image = boot_disk_source_image(options[:image], options[:image_project])
 
       disk.initialize_params = params
       disk
+    end
+
+    # To create a instance with an attached local SSD
+    def adding_local_ssd(options)
+      disk, params = common_operation(options, "local-ssd")
+      disk.type = "SCRATCH"
+      disk.interface = options[:interface]
+
+      disk.initialize_params = params
+      disk
+    end
+
+    def common_operation(options, disk_type)
+      disk = Google::Apis::ComputeV1::AttachedDisk.new
+      params = Google::Apis::ComputeV1::AttachedDiskInitializeParams.new
+      disk.auto_delete = options[:boot_disk_autodelete]
+      params.disk_type = disk_type_url_for(disk_type)
+      [disk, params]
     end
 
     def boot_disk_type_for(options)
