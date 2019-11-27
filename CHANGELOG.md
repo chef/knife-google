@@ -4,26 +4,23 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 4.2.1 -->
+<!-- latest_release -->
+<!-- latest_release -->
+
+<!-- release_rollup -->
+<!-- release_rollup -->
+
+<!-- latest_stable_release -->
 ## [v4.2.1](https://github.com/chef/knife-google/tree/v4.2.1) (2019-11-27)
 
 #### Merged Pull Requests
 - Updating google-api-client version. [#159](https://github.com/chef/knife-google/pull/159) ([skpaterson](https://github.com/skpaterson))
-<!-- latest_release -->
-
-<!-- release_rollup since=4.2.0 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Updating google-api-client version. [#159](https://github.com/chef/knife-google/pull/159) ([skpaterson](https://github.com/skpaterson)) <!-- 4.2.1 -->
-<!-- release_rollup -->
-
 <!-- latest_stable_release -->
+
 ## [v4.2.0](https://github.com/chef/knife-google/tree/v4.2.0) (2019-10-10)
 
 #### Merged Pull Requests
 - Fix for support multiple --local-ssd interfaces [#156](https://github.com/chef/knife-google/pull/156) ([kapilchouhan99](https://github.com/kapilchouhan99))
-<!-- latest_stable_release -->
 
 ## [v4.1.0](https://github.com/chef/knife-google/tree/v4.1.0) (2019-09-25)
 
