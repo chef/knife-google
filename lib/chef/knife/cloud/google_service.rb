@@ -20,10 +20,10 @@
 require "chef/knife/cloud/exceptions"
 require "chef/knife/cloud/service"
 require "chef/knife/cloud/helpers"
-require "chef/knife/cloud/google_service_helpers"
+require_relative "google_service_helpers"
 require "google/apis/compute_v1"
 require "ipaddr"
-require "knife-google/version"
+require_relative "../../../knife-google/version"
 
 class Chef::Knife::Cloud
   class GoogleService < Service
