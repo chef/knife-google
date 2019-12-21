@@ -1,7 +1,6 @@
 $:.unshift File.expand_path("../../lib", __FILE__)
 require "chef"
 
-
 # Clear config between each example
 # to avoid dependencies between examples
 RSpec.configure do |c|
