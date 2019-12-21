@@ -12,7 +12,13 @@ group :test do
   gem "chefstyle"
   gem "rspec", "~> 3.1"
   gem "rake"
-  gem "chef", ">= 15.0"
+
+  # make sure we can still test on Ruby 2.4
+  if RUBY_VERSION.match?(/2\.4/)
+    gem "chef", "~> 14"
+  else
+    gem "chef"
+  end
 end
 
 group :development do
