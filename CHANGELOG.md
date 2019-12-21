@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 4.2.2 -->
+## [v4.2.2](https://github.com/chef/knife-google/tree/v4.2.2) (2019-12-21)
+
+#### Merged Pull Requests
+- Migrate to Buildkite [#164](https://github.com/chef/knife-google/pull/164) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=4.2.1 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Migrate to Buildkite [#164](https://github.com/chef/knife-google/pull/164) ([tas50](https://github.com/tas50)) <!-- 4.2.2 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
