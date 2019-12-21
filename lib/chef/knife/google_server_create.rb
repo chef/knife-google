@@ -20,9 +20,9 @@
 require "chef/knife"
 require "chef/knife/cloud/server/create_command"
 require "chef/knife/cloud/server/create_options"
-require "chef/knife/cloud/google_service"
-require "chef/knife/cloud/google_service_helpers"
-require "chef/knife/cloud/google_service_options"
+require_relative "cloud/google_service"
+require_relative "cloud/google_service_helpers"
+require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
   class GoogleServerCreate < ServerCreateCommand
