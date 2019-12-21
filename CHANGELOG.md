@@ -4,28 +4,25 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 4.2.4 -->
-## [v4.2.4](https://github.com/chef/knife-google/tree/v4.2.4) (2019-12-21)
-
-#### Merged Pull Requests
-- Substitute require for require_relative [#163](https://github.com/chef/knife-google/pull/163) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=4.2.1 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Substitute require for require_relative [#163](https://github.com/chef/knife-google/pull/163) ([tas50](https://github.com/tas50)) <!-- 4.2.4 -->
-- Properly set the Ruby requirement to 2.5+ [#165](https://github.com/chef/knife-google/pull/165) ([tas50](https://github.com/tas50)) <!-- 4.2.3 -->
-- Migrate to Buildkite [#164](https://github.com/chef/knife-google/pull/164) ([tas50](https://github.com/tas50)) <!-- 4.2.2 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v4.2.4](https://github.com/chef/knife-google/tree/v4.2.4) (2019-12-21)
+
+#### Merged Pull Requests
+- Migrate to Buildkite [#164](https://github.com/chef/knife-google/pull/164) ([tas50](https://github.com/tas50))
+- Properly set the Ruby requirement to 2.5+ [#165](https://github.com/chef/knife-google/pull/165) ([tas50](https://github.com/tas50))
+- Substitute require for require_relative [#163](https://github.com/chef/knife-google/pull/163) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v4.2.1](https://github.com/chef/knife-google/tree/v4.2.1) (2019-11-27)
 
 #### Merged Pull Requests
 - Updating google-api-client version. [#159](https://github.com/chef/knife-google/pull/159) ([skpaterson](https://github.com/skpaterson))
-<!-- latest_stable_release -->
 
 ## [v4.2.0](https://github.com/chef/knife-google/tree/v4.2.0) (2019-10-10)
 
