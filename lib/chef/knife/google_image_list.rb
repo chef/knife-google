@@ -22,7 +22,6 @@ require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
   class GoogleImageList < ResourceListCommand
-    include GoogleServiceHelpers
     include GoogleServiceOptions
 
     banner "knife google image list"

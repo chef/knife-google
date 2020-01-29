@@ -23,7 +23,6 @@ require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
   class GoogleProjectQuotas < ResourceListCommand
-    include GoogleServiceHelpers
     include GoogleServiceOptions
 
     banner "knife google project quotas"

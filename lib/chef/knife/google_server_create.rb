@@ -25,7 +25,6 @@ require_relative "cloud/google_service_options"
 class Chef::Knife::Cloud
   class GoogleServerCreate < ServerCreateCommand
     include GoogleServiceOptions
-    include GoogleServiceHelpers
     include ServerCreateOptions
 
     banner "knife google server create NAME -m MACHINE_TYPE -I IMAGE (options)"
