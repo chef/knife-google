@@ -27,7 +27,6 @@ class Chef::Knife::Cloud
     include GoogleServiceHelpers
     include GoogleServiceOptions
 
-
     deps do
       require_relative "cloud/google_service"
     end

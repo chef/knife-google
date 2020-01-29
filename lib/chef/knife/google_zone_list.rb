@@ -28,7 +28,6 @@ class Chef::Knife::Cloud
 
     banner "knife google zone list"
 
-
     deps do
       require_relative "cloud/google_service"
     end

@@ -30,7 +30,6 @@ class Chef::Knife::Cloud
 
     banner "knife google server create NAME -m MACHINE_TYPE -I IMAGE (options)"
 
-
     deps do
       require_relative "cloud/google_service"
     end

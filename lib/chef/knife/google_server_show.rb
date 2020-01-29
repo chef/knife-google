@@ -31,7 +31,6 @@ class Chef
 
         banner "knife google server show INSTANCE_NAME (options)"
 
-
         deps do
           require_relative "cloud/google_service"
         end

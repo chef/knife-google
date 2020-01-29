@@ -32,7 +32,6 @@ class Chef
 
         banner "knife google server delete INSTANCE_NAME [INSTANCE_NAME] (options)"
 
-
         deps do
           require_relative "cloud/google_service"
         end

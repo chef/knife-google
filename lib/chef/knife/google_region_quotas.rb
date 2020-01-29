@@ -28,7 +28,6 @@ class Chef::Knife::Cloud
 
     banner "knife google region quotas"
 
-
     deps do
       require_relative "cloud/google_service"
     end

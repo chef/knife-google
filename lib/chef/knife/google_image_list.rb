@@ -27,7 +27,6 @@ class Chef::Knife::Cloud
 
     banner "knife google image list"
 
-
     deps do
       require_relative "cloud/google_service"
     end
