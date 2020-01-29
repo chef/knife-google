@@ -20,8 +20,6 @@
 require "chef/knife"
 require "chef/knife/cloud/server/create_command"
 require "chef/knife/cloud/server/create_options"
-require_relative "cloud/google_service"
-require_relative "cloud/google_service_helpers"
 require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
@@ -31,6 +29,10 @@ class Chef::Knife::Cloud
     include ServerCreateOptions
 
     banner "knife google server create NAME -m MACHINE_TYPE -I IMAGE (options)"
+
+    deps do
+      require_relative "cloud/google_service"
+    end
 
     option :machine_type,
       short:       "-m MACHINE_TYPE",

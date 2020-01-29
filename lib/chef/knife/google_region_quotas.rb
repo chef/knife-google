@@ -19,8 +19,6 @@
 
 require "chef/knife"
 require "chef/knife/cloud/list_resource_command"
-require_relative "cloud/google_service"
-require_relative "cloud/google_service_helpers"
 require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
@@ -29,6 +27,10 @@ class Chef::Knife::Cloud
     include GoogleServiceOptions
 
     banner "knife google region quotas"
+
+    deps do
+      require_relative "cloud/google_service"
+    end
 
     def validate_params!
       check_for_missing_config_values!

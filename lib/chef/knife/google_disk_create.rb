@@ -19,8 +19,6 @@
 
 require "chef/knife"
 require "chef/knife/cloud/command"
-require_relative "cloud/google_service"
-require_relative "cloud/google_service_helpers"
 require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
@@ -29,6 +27,10 @@ class Chef::Knife::Cloud
     include GoogleServiceOptions
 
     banner "knife google disk create NAME --gce-disk-size N (options)"
+
+    deps do
+      require_relative "cloud/google_service"
+    end
 
     option :disk_size,
       long:        "--gce-disk-size SIZE",

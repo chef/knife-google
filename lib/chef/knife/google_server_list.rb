@@ -20,14 +20,16 @@
 require "chef/knife"
 require "chef/knife/cloud/server/list_command"
 require "chef/knife/cloud/server/list_options"
-require_relative "cloud/google_service"
-require_relative "cloud/google_service_helpers"
 require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
   class GoogleServerList < ServerListCommand
     include GoogleServiceHelpers
     include GoogleServiceOptions
+
+    deps do
+      require_relative "cloud/google_service"
+    end
 
     banner "knife google server list"
 
