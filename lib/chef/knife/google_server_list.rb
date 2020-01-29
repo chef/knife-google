@@ -24,7 +24,6 @@ require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
   class GoogleServerList < ServerListCommand
-    include GoogleServiceHelpers
     include GoogleServiceOptions
 
     deps do

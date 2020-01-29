@@ -23,7 +23,6 @@ require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
   class GoogleDiskDelete < Command
-    include GoogleServiceHelpers
     include GoogleServiceOptions
 
     banner "knife google disk delete NAME [NAME] (options)"

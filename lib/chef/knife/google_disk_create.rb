@@ -23,7 +23,6 @@ require_relative "cloud/google_service_options"
 
 class Chef::Knife::Cloud
   class GoogleDiskCreate < Command
-    include GoogleServiceHelpers
     include GoogleServiceOptions
 
     banner "knife google disk create NAME --gce-disk-size N (options)"

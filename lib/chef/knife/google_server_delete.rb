@@ -27,7 +27,6 @@ class Chef
     class Cloud
       class GoogleServerDelete < ServerDeleteCommand
         include ServerDeleteOptions
-        include GoogleServiceHelpers
         include GoogleServiceOptions
 
         banner "knife google server delete INSTANCE_NAME [INSTANCE_NAME] (options)"

@@ -26,7 +26,6 @@ class Chef
     class Cloud
       class GoogleServerShow < ServerShowCommand
         include ServerShowOptions
-        include GoogleServiceHelpers
         include GoogleServiceOptions
 
         banner "knife google server show INSTANCE_NAME (options)"
