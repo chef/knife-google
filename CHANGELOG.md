@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 4.2.5 -->
-## [v4.2.5](https://github.com/chef/knife-google/tree/v4.2.5) (2019-12-30)
+<!-- latest_release 4.2.6 -->
+## [v4.2.6](https://github.com/chef/knife-google/tree/v4.2.6) (2020-01-29)
 
 #### Merged Pull Requests
-- Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.35.0 to &gt;= 0.23.9, &lt; 0.37.0 [#162](https://github.com/chef/knife-google/pull/162) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+-  Lazy load the google SDK to prevent impacting knife performance [#166](https://github.com/chef/knife-google/pull/166) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=4.2.4 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+-  Lazy load the google SDK to prevent impacting knife performance [#166](https://github.com/chef/knife-google/pull/166) ([tas50](https://github.com/tas50)) <!-- 4.2.6 -->
 - Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.35.0 to &gt;= 0.23.9, &lt; 0.37.0 [#162](https://github.com/chef/knife-google/pull/162) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 4.2.5 -->
 <!-- release_rollup -->
 
