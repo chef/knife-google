@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 4.2.8 -->
+## [v4.2.8](https://github.com/chef/knife-google/tree/v4.2.8) (2020-02-12)
+
+#### Merged Pull Requests
+- Remove duplicate deps block in server create plugin [#168](https://github.com/chef/knife-google/pull/168) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=4.2.7 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Remove duplicate deps block in server create plugin [#168](https://github.com/chef/knife-google/pull/168) ([tas50](https://github.com/tas50)) <!-- 4.2.8 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
