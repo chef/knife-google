@@ -30,6 +30,7 @@ class Chef::Knife::Cloud
     banner "knife google server create NAME -m MACHINE_TYPE -I IMAGE (options)"
 
     deps do
+      require "gcewinpass"
       require_relative "cloud/google_service"
     end
 
@@ -163,10 +164,6 @@ class Chef::Knife::Cloud
       long: "--gce-number-of-local-ssd NUMBER_OF_DISKS",
       description: "Specifies the number of local SSDs to be created per node. Each local SSD is 375 GB in size, but you can attach up to eight local SSD devices for 3 TB of total local SSD storage space per instance.",
       default: "1"
-
-    deps do
-      require "gcewinpass"
-    end
 
     def before_exec_command
       super
