@@ -5,7 +5,6 @@
 set -ue
 
 export USER="root"
-
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
 echo "--- bundle install"
