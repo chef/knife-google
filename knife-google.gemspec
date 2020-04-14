@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.5"
 
   s.add_dependency "knife-cloud",       ">= 2.0.0"
-  s.add_dependency "google-api-client", ">= 0.23.9", "< 0.38.0" # each version introduces breaking changes which we need to validate
+  s.add_dependency "google-api-client", ">= 0.23.9", "< 0.39.0" # each version introduces breaking changes which we need to validate
   s.add_dependency "gcewinpass",        "~> 1.1"
 end
