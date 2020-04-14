@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 4.2.11 -->
-## [v4.2.11](https://github.com/chef/knife-google/tree/v4.2.11) (2020-04-09)
+<!-- latest_release 4.2.12 -->
+## [v4.2.12](https://github.com/chef/knife-google/tree/v4.2.12) (2020-04-14)
 
 #### Merged Pull Requests
-- Add windows testing [#171](https://github.com/chef/knife-google/pull/171) ([tas50](https://github.com/tas50))
+- Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.38.0 to &gt;= 0.23.9, &lt; 0.39.0 [#172](https://github.com/chef/knife-google/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=4.2.8 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.38.0 to &gt;= 0.23.9, &lt; 0.39.0 [#172](https://github.com/chef/knife-google/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 4.2.12 -->
 - Add windows testing [#171](https://github.com/chef/knife-google/pull/171) ([tas50](https://github.com/tas50)) <!-- 4.2.11 -->
 - Cache gem installs in Expeditor [#170](https://github.com/chef/knife-google/pull/170) ([dheerajd-msys](https://github.com/dheerajd-msys)) <!-- 4.2.10 -->
 - Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.37.0 to &gt;= 0.23.9, &lt; 0.38.0 [#169](https://github.com/chef/knife-google/pull/169) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 4.2.9 -->
