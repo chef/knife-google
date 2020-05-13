@@ -28,6 +28,8 @@ class Chef::Knife::Cloud
 
     deps do
       require_relative "cloud/google_service"
+      require_relative "cloud/google_service_helpers"
+      include GoogleServiceHelpers
     end
 
     def validate_params!
