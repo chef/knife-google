@@ -32,6 +32,8 @@ class Chef::Knife::Cloud
     deps do
       require "gcewinpass"
       require_relative "cloud/google_service"
+      require_relative "cloud/google_service_helpers"
+      include GoogleServiceHelpers
     end
 
     option :machine_type,
