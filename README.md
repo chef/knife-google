@@ -1,7 +1,7 @@
 # knife-google
 
 [![Gem Version](https://badge.fury.io/rb/knife-google.svg)](http://badge.fury.io/rb/knife-google)
-[![Build Status](https://travis-ci.org/chef/knife-google.svg?branch=master)](https://travis-ci.org/chef/knife-google)
+[![Build status](https://badge.buildkite.com/61869012bf68c1cf24ffd63892e82972e378f0b40712a002b9.svg?branch=master)](https://buildkite.com/chef-oss/chef-knife-google-master-verify)
 
 **Umbrella Project: [Knife](https://github.com/chef/chef-oss-practices/blob/master/projects/knife.md)**
 
@@ -52,11 +52,11 @@ Before getting started with this plugin, you must first create a
 [Google Cloud Platform](https://cloud.google.com/) (GCP) "project" and add the
 Google Compute Engine service to your project.  While GCP has many other services,
 such as App Engine and Cloud Storage, this plugin only provides an integration with
-Google Compute Engine (GCE). 
+Google Compute Engine (GCE).
 
 ## Authentication and Authorization
 
-The [underlying API](https://github.com/google/google-api-ruby-client) this plugin uses relies on the 
+The [underlying API](https://github.com/google/google-api-ruby-client) this plugin uses relies on the
 [Google Auth Library](https://github.com/google/google-auth-library-ruby) to handle authentication to the
 Google Cloud API. The auth library expects that there is a JSON credentials file located at:
 
@@ -89,7 +89,7 @@ knife[:gce_zone]    = 'us-east1-b'
 ## SSH Keys
 
 In order to Linux bootstrap nodes, you will first need to ensure your SSH
-keys are set up correctly. Ensure your SSH public key is properly entered 
+keys are set up correctly. Ensure your SSH public key is properly entered
 into your project's Metadata tab in the GCP Console. GCE will add your key
 to the appropriate user's `~/.ssh/authorized_keys` file when Chef first
 connects to perform the bootstrap process.
@@ -110,7 +110,7 @@ the Google Compute Engine documentation.
 
 To see all knife-google commands, run: `knife google`
 
-All commands have additional help output. Simply append `--help` to any command. 
+All commands have additional help output. Simply append `--help` to any command.
 For example, to see additional help and flags available for the `knife google disk create` command,
 run: `knife google disk create --help`
 
