@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 4.2.12 -->
-## [v4.2.12](https://github.com/chef/knife-google/tree/v4.2.12) (2020-04-14)
+<!-- latest_release 4.2.13 -->
+## [v4.2.13](https://github.com/chef/knife-google/tree/v4.2.13) (2020-05-21)
 
 #### Merged Pull Requests
-- Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.38.0 to &gt;= 0.23.9, &lt; 0.39.0 [#172](https://github.com/chef/knife-google/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Fix for undefined method check_for_missing_config_values! [#174](https://github.com/chef/knife-google/pull/174) ([kapilchouhan99](https://github.com/kapilchouhan99))
 <!-- latest_release -->
 
 <!-- release_rollup since=4.2.8 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Fix for undefined method check_for_missing_config_values! [#174](https://github.com/chef/knife-google/pull/174) ([kapilchouhan99](https://github.com/kapilchouhan99)) <!-- 4.2.13 -->
 - Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.38.0 to &gt;= 0.23.9, &lt; 0.39.0 [#172](https://github.com/chef/knife-google/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 4.2.12 -->
 - Add windows testing [#171](https://github.com/chef/knife-google/pull/171) ([tas50](https://github.com/tas50)) <!-- 4.2.11 -->
 - Cache gem installs in Expeditor [#170](https://github.com/chef/knife-google/pull/170) ([dheerajd-msys](https://github.com/dheerajd-msys)) <!-- 4.2.10 -->
