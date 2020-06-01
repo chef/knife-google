@@ -23,12 +23,12 @@ class Chef::Knife::Cloud
 
     def create_service_instance
       Chef::Knife::Cloud::GoogleService.new(
-        project:       locate_config_value(:gce_project),
-        zone:          locate_config_value(:gce_zone),
-        wait_time:     locate_config_value(:request_timeout),
-        refresh_rate:  locate_config_value(:request_refresh_rate),
-        max_pages:     locate_config_value(:gce_max_pages),
-        max_page_size: locate_config_value(:gce_max_page_size)
+        project:       config[:gce_project],
+        zone:          config[:gce_zone],
+        wait_time:     config[:request_timeout],
+        refresh_rate:  config[:request_refresh_rate],
+        max_pages:     config[:gce_max_pages],
+        max_page_size: config[:gce_max_page_size]
       )
     end
 

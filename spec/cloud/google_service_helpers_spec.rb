@@ -26,12 +26,12 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
 
   describe "#create_service_instance" do
     it "creates a GoogleService instance" do
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("test_project")
-      expect(tester).to receive(:locate_config_value).with(:gce_zone).and_return("test_zone")
-      expect(tester).to receive(:locate_config_value).with(:request_timeout).and_return(123)
-      expect(tester).to receive(:locate_config_value).with(:request_refresh_rate).and_return(321)
-      expect(tester).to receive(:locate_config_value).with(:gce_max_pages).and_return(456)
-      expect(tester).to receive(:locate_config_value).with(:gce_max_page_size).and_return(654)
+      tester.config[:gce_project] = "test_project"
+      tester.config[:gce_zone] = "test_zone"
+      tester.config[:request_timeout] = 123
+      tester.config[:request_refresh_rate] = 321
+      tester.config[:gce_max_pages] = 456
+      tester.config[:gce_max_page_size] = 654
 
       expect(Chef::Knife::Cloud::GoogleService).to receive(:new).with(
         project:       "test_project",
