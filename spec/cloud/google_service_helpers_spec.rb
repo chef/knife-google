@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2016 Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,9 @@
 # limitations under the License.
 #
 
+require "spec_helper"
 require "chef/knife/cloud/google_service"
 require "chef/knife/cloud/google_service_helpers"
-
-class Tester
-  include Chef::Knife::Cloud::GoogleServiceHelpers
-end
 
 describe Chef::Knife::Cloud::GoogleServiceHelpers do
   let(:tester) { Tester.new }
@@ -51,9 +48,9 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
 
   describe "#check_for_missing_config_values" do
     it "does not raise an exception if all parameters are present" do
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("project")
-      expect(tester).to receive(:locate_config_value).with(:key1).and_return("value1")
-      expect(tester).to receive(:locate_config_value).with(:key2).and_return("value2")
+      tester.config[:gce_project] = "project"
+      tester.config[:key1] = "value1"
+      tester.config[:key2] = "value2"
 
       expect { tester.check_for_missing_config_values!(:key1, :key2) }.not_to raise_error
     end
@@ -61,9 +58,8 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
     it "raises an exception if a parameter is missing" do
       ui = double("ui")
       expect(tester).to receive(:ui).and_return(ui)
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("project")
-      expect(tester).to receive(:locate_config_value).with(:key1).and_return("value1")
-      expect(tester).to receive(:locate_config_value).with(:key2).and_return(nil)
+      tester.config[:gce_project] = "project"
+      tester.config[:key1] = "value1"
       expect(ui).to receive(:error).with("The following required parameters are missing: key2")
       expect { tester.check_for_missing_config_values!(:key1, :key2) }.to raise_error(RuntimeError)
     end

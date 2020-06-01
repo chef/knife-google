@@ -1,6 +1,6 @@
 #
 # Author:: Kapil Chouhan (<kapil.chouhan@msystechnologies.com>)
-# Copyright:: Copyright (c) 2018-2019 Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,6 @@
 require "spec_helper"
 require "chef/knife/google_image_list"
 require "support/shared_examples_for_command"
-
-class Tester
-  include Chef::Knife::Cloud::GoogleServiceHelpers
-end
 
 describe Chef::Knife::Cloud::GoogleImageList do
   let(:tester) { Tester.new }
@@ -45,7 +41,6 @@ describe Chef::Knife::Cloud::GoogleImageList do
     it "raises an exception if the gce_project is missing" do
       ui = double("ui")
       expect(tester).to receive(:ui).and_return(ui)
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return(nil)
       expect(ui).to receive(:error).with("The following required parameters are missing: gce_project")
       expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end

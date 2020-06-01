@@ -1,7 +1,7 @@
 #
 # Author:: Ashwini Nehate(<ashwini.nehate@msystechnologies.com>)
 # Author:: Kapil Chouhan (<kapil.chouhan@msystechnologies.com>)
-# Copyright:: Copyright (c) 2008-2019 Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ require "chef/knife/cloud/service"
 shared_examples_for Chef::Knife::Cloud::BootstrapCommand do |instance|
   it "runs with correct method calls" do
     allow(instance).to receive(:execute_command)
-    allow(instance).to receive(:create_service_instance).and_return(Chef::Knife::Cloud::Service.new)
+    allow(instance).to receive(:create_service_instance).and_return(Chef::Knife::Cloud::Service.new(config: instance.config))
     expect(instance).to receive(:set_default_config).ordered
     expect(instance).to receive(:validate!).ordered
     expect(instance).to receive(:validate_params!).ordered

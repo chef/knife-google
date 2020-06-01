@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2016 Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,7 @@
 require "spec_helper"
 require "chef/knife/google_disk_create"
 require "support/shared_examples_for_command"
-
-class Tester
-  include Chef::Knife::Cloud::GoogleServiceHelpers
-end
+require "chef/knife/cloud/google_service_helpers"
 
 describe Chef::Knife::Cloud::GoogleDiskCreate do
   let(:tester) { Tester.new }
@@ -60,7 +57,6 @@ describe Chef::Knife::Cloud::GoogleDiskCreate do
     it "raises an exception if the gce_project is missing" do
       ui = double("ui")
       expect(tester).to receive(:ui).and_return(ui)
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return(nil)
       expect(ui).to receive(:error).with("The following required parameters are missing: gce_project")
       expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end
@@ -75,9 +71,9 @@ describe Chef::Knife::Cloud::GoogleDiskCreate do
 
   describe "#execute_command" do
     it "calls the service to create the disk" do
-      expect(command).to receive(:locate_config_value).with(:disk_size).and_return("size")
-      expect(command).to receive(:locate_config_value).with(:disk_type).and_return("type")
-      expect(command).to receive(:locate_config_value).with(:disk_source).and_return("source")
+      command.config[:disk_size] = "size"
+      command.config[:disk_type] = "type"
+      command.config[:disk_source] = "source"
       expect(service).to receive(:create_disk).with("disk1", "size", "type", "source")
 
       command.execute_command

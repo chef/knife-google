@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2016 Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,6 @@
 require "spec_helper"
 require "chef/knife/google_disk_delete"
 require "support/shared_examples_for_command"
-
-class Tester
-  include Chef::Knife::Cloud::GoogleServiceHelpers
-end
 
 describe Chef::Knife::Cloud::GoogleDiskDelete do
   let(:tester) { Tester.new }
@@ -54,7 +50,6 @@ describe Chef::Knife::Cloud::GoogleDiskDelete do
     it "raises an exception if the gce_project is missing" do
       ui = double("ui")
       expect(tester).to receive(:ui).and_return(ui)
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return(nil)
       expect(ui).to receive(:error).with("The following required parameters are missing: gce_project")
       expect { tester.check_for_missing_config_values! }.to raise_error(RuntimeError)
     end
