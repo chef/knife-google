@@ -2,8 +2,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "knife-cloud", path: "../knife-cloud"
-
 group :docs do
   gem "yard"
   gem "redcarpet"
