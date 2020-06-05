@@ -2,7 +2,7 @@
 #
 # Author:: Paul Rossman (<paulrossman@google.com>)
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright 2015-2016 Google Inc., Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -172,28 +172,28 @@ class Chef::Knife::Cloud
 
       @create_options = {
         name: instance_name,
-        image: locate_config_value(:image),
-        image_project: locate_config_value(:image_project),
-        network: locate_config_value(:network),
-        subnet: locate_config_value(:subnet),
-        public_ip: locate_config_value(:public_ip),
+        image: config[:image],
+        image_project: config[:image_project],
+        network: config[:network],
+        subnet: config[:subnet],
+        public_ip: config[:public_ip],
         auto_migrate: auto_migrate?,
         auto_restart: auto_restart?,
         preemptible: preemptible?,
-        boot_disk_autodelete: locate_config_value(:boot_disk_autodelete),
-        boot_disk_name: locate_config_value(:boot_disk_name),
+        boot_disk_autodelete: config[:boot_disk_autodelete],
+        boot_disk_name: config[:boot_disk_name],
         boot_disk_size: boot_disk_size,
-        boot_disk_ssd: locate_config_value(:boot_disk_ssd),
-        additional_disks: locate_config_value(:additional_disks),
-        local_ssd: locate_config_value(:local_ssd),
-        interface: locate_config_value(:interface),
+        boot_disk_ssd: config[:boot_disk_ssd],
+        additional_disks: config[:additional_disks],
+        local_ssd: config[:local_ssd],
+        interface: config[:interface],
         number_of_local_ssd: number_of_local_ssd,
-        can_ip_forward: locate_config_value(:can_ip_forward),
-        machine_type: locate_config_value(:machine_type),
-        service_account_scopes: locate_config_value(:service_account_scopes),
-        service_account_name: locate_config_value(:service_account_name),
+        can_ip_forward: config[:can_ip_forward],
+        machine_type: config[:machine_type],
+        service_account_scopes: config[:service_account_scopes],
+        service_account_name: config[:service_account_name],
         metadata: metadata,
-        tags: locate_config_value(:tags),
+        tags: config[:tags],
       }
     end
 
@@ -208,16 +208,16 @@ class Chef::Knife::Cloud
       raise "You must supply an instance name." if @name_args.first.nil?
       raise "Boot disk size must be between 10 and 10,000" unless valid_disk_size?(boot_disk_size)
 
-      if locate_config_value(:connection_protocol) == "winrm" && locate_config_value(:gce_email).nil?
+      if config[:connection_protocol] == "winrm" && config[:gce_email].nil?
         raise "Please provide your Google Cloud console email address via --gce-email. " \
           "It is required when resetting passwords on Windows hosts."
       end
 
-      raise "Please provide connection port via --connection-port." unless locate_config_value(:connection_port)
-      raise "Please provide image os type via --image-os-type." unless locate_config_value(:image_os_type)
+      raise "Please provide connection port via --connection-port." unless config[:connection_port]
+      raise "Please provide image os type via --image-os-type." unless config[:image_os_type]
 
-      ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && locate_config_value(:auto_migrate)
-      ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && locate_config_value(:auto_restart)
+      ui.warn("Auto-migrate disabled for preemptible instance") if preemptible? && config[:auto_migrate]
+      ui.warn("Auto-restart disabled for preemptible instance") if preemptible? && config[:auto_restart]
 
       super
     end
@@ -225,10 +225,10 @@ class Chef::Knife::Cloud
     def before_bootstrap
       super
 
-      config[:chef_node_name] = locate_config_value(:chef_node_name) ? locate_config_value(:chef_node_name) : instance_name
+      config[:chef_node_name] = config[:chef_node_name] ? config[:chef_node_name] : instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
 
-      if locate_config_value(:image_os_type) == "windows"
+      if config[:image_os_type] == "windows"
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
         config[:connection_password] = reset_windows_password
       end
@@ -245,31 +245,31 @@ class Chef::Knife::Cloud
     end
 
     def project
-      locate_config_value(:gce_project)
+      config[:gce_project]
     end
 
     def zone
-      locate_config_value(:gce_zone)
+      config[:gce_zone]
     end
 
     def email
-      locate_config_value(:gce_email)
+      config[:gce_email]
     end
 
     def preemptible?
-      locate_config_value(:preemptible)
+      config[:preemptible]
     end
 
     def auto_migrate?
-      preemptible? ? false : locate_config_value(:auto_migrate)
+      preemptible? ? false : config[:auto_migrate]
     end
 
     def auto_restart?
-      preemptible? ? false : locate_config_value(:auto_restart)
+      preemptible? ? false : config[:auto_restart]
     end
 
     def ip_address_for_bootstrap
-      ip = locate_config_value(:use_private_ip) ? private_ip_for(server) : public_ip_for(server)
+      ip = config[:use_private_ip] ? private_ip_for(server) : public_ip_for(server)
 
       raise "Unable to determine instance IP address for bootstrapping" if ip == "unknown"
 
@@ -281,18 +281,18 @@ class Chef::Knife::Cloud
     end
 
     def metadata
-      locate_config_value(:metadata).each_with_object({}) do |item, memo|
+      config[:metadata].each_with_object({}) do |item, memo|
         key, value = item.split("=")
         memo[key] = value
       end
     end
 
     def boot_disk_size
-      locate_config_value(:boot_disk_size).to_i
+      config[:boot_disk_size].to_i
     end
 
     def number_of_local_ssd
-      locate_config_value(:number_of_local_ssd).to_i
+      config[:number_of_local_ssd].to_i
     end
 
     def reset_windows_password
@@ -301,7 +301,7 @@ class Chef::Knife::Cloud
         zone:          zone,
         instance_name: instance_name,
         email:         email,
-        username:      locate_config_value(:connection_user),
+        username:      config[:connection_user],
         debug:         gcewinpass_debug_mode
       ).new_password
     end

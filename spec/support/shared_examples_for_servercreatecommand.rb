@@ -1,7 +1,7 @@
 #
 # Author:: Mukta Aphale (<mukta.aphale@clogeny.com>)
 # Author:: Siddheshwar More (<siddheshwar.more@clogeny.com>)
-# Copyright:: Copyright (c) 2013-2014 Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -135,7 +135,6 @@ shared_examples_for Chef::Knife::Cloud::ServerCreateCommand do |instance|
 
     it "don't delete server dependencies on delete_server_on_failure option is missing" do
       instance.config[:delete_server_on_failure] = false
-      Chef::Config[:knife].delete(:delete_server_on_failure)
       expect(instance.service).to_not receive(:delete_server_dependencies)
       expect(instance.service).to_not receive(:delete_server_on_failure)
       instance.cleanup_on_failure

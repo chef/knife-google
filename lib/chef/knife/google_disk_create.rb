@@ -2,7 +2,7 @@
 #
 # Author:: Paul Rossman (<paulrossman@google.com>)
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright 2015-2016 Google Inc., Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,16 +52,16 @@ class Chef::Knife::Cloud
     def validate_params!
       check_for_missing_config_values!(:gce_zone, :disk_size, :disk_type)
       raise "Please specify a disk name." unless @name_args.first
-      raise "Disk size must be between 10 and 10,000" unless valid_disk_size?(locate_config_value(:disk_size))
+      raise "Disk size must be between 10 and 10,000" unless valid_disk_size?(config[:disk_size])
 
       super
     end
 
     def execute_command
       name = @name_args.first
-      size = locate_config_value(:disk_size)
-      type = locate_config_value(:disk_type)
-      src  = locate_config_value(:disk_source)
+      size = config[:disk_size]
+      type = config[:disk_type]
+      src  = config[:disk_source]
 
       service.create_disk(name, size, type, src)
     end

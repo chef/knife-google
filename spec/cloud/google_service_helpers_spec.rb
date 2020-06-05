@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2016 Chef Software, Inc.
+# Copyright:: Copyright (c) Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,24 +17,21 @@
 # limitations under the License.
 #
 
+require "spec_helper"
 require "chef/knife/cloud/google_service"
 require "chef/knife/cloud/google_service_helpers"
-
-class Tester
-  include Chef::Knife::Cloud::GoogleServiceHelpers
-end
 
 describe Chef::Knife::Cloud::GoogleServiceHelpers do
   let(:tester) { Tester.new }
 
   describe "#create_service_instance" do
     it "creates a GoogleService instance" do
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("test_project")
-      expect(tester).to receive(:locate_config_value).with(:gce_zone).and_return("test_zone")
-      expect(tester).to receive(:locate_config_value).with(:request_timeout).and_return(123)
-      expect(tester).to receive(:locate_config_value).with(:request_refresh_rate).and_return(321)
-      expect(tester).to receive(:locate_config_value).with(:gce_max_pages).and_return(456)
-      expect(tester).to receive(:locate_config_value).with(:gce_max_page_size).and_return(654)
+      tester.config[:gce_project] = "test_project"
+      tester.config[:gce_zone] = "test_zone"
+      tester.config[:request_timeout] = 123
+      tester.config[:request_refresh_rate] = 321
+      tester.config[:gce_max_pages] = 456
+      tester.config[:gce_max_page_size] = 654
 
       expect(Chef::Knife::Cloud::GoogleService).to receive(:new).with(
         project:       "test_project",
@@ -51,9 +48,9 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
 
   describe "#check_for_missing_config_values" do
     it "does not raise an exception if all parameters are present" do
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("project")
-      expect(tester).to receive(:locate_config_value).with(:key1).and_return("value1")
-      expect(tester).to receive(:locate_config_value).with(:key2).and_return("value2")
+      tester.config[:gce_project] = "project"
+      tester.config[:key1] = "value1"
+      tester.config[:key2] = "value2"
 
       expect { tester.check_for_missing_config_values!(:key1, :key2) }.not_to raise_error
     end
@@ -61,9 +58,8 @@ describe Chef::Knife::Cloud::GoogleServiceHelpers do
     it "raises an exception if a parameter is missing" do
       ui = double("ui")
       expect(tester).to receive(:ui).and_return(ui)
-      expect(tester).to receive(:locate_config_value).with(:gce_project).and_return("project")
-      expect(tester).to receive(:locate_config_value).with(:key1).and_return("value1")
-      expect(tester).to receive(:locate_config_value).with(:key2).and_return(nil)
+      tester.config[:gce_project] = "project"
+      tester.config[:key1] = "value1"
       expect(ui).to receive(:error).with("The following required parameters are missing: key2")
       expect { tester.check_for_missing_config_values!(:key1, :key2) }.to raise_error(RuntimeError)
     end
