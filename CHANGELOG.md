@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 5.0.1 -->
+## [v5.0.1](https://github.com/chef/knife-google/tree/v5.0.1) (2020-06-05)
+
+#### Merged Pull Requests
+- Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.39.0 to &gt;= 0.23.9, &lt; 0.41.0 [#178](https://github.com/chef/knife-google/pull/178) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=5.0.0 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.39.0 to &gt;= 0.23.9, &lt; 0.41.0 [#178](https://github.com/chef/knife-google/pull/178) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 5.0.1 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
