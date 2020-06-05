@@ -4,21 +4,19 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.0 -->
+<!-- latest_release -->
+<!-- latest_release -->
+
+<!-- release_rollup -->
+<!-- release_rollup -->
+
+<!-- latest_stable_release -->
 ## [v5.0.0](https://github.com/chef/knife-google/tree/v5.0.0) (2020-06-05)
 
 #### Merged Pull Requests
 - Chef 16.0 fixes [#179](https://github.com/chef/knife-google/pull/179) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_release -->
-
-<!-- release_rollup since=4.2.14 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Chef 16.0 fixes [#179](https://github.com/chef/knife-google/pull/179) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 5.0.0 -->
-<!-- release_rollup -->
-
 <!-- latest_stable_release -->
+
 ## [v4.2.14](https://github.com/chef/knife-google/tree/v4.2.14) (2020-05-21)
 
 #### Merged Pull Requests
@@ -28,7 +26,6 @@ prior to release 1.1.0, please visit the [source repository](https://github.com/
 - Update google-api-client requirement from &gt;= 0.23.9, &lt; 0.38.0 to &gt;= 0.23.9, &lt; 0.39.0 [#172](https://github.com/chef/knife-google/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 - Fix for undefined method check_for_missing_config_values! [#174](https://github.com/chef/knife-google/pull/174) ([kapilchouhan99](https://github.com/kapilchouhan99))
 - Fix failing gem installs when testing on Ruby 2.5 [#177](https://github.com/chef/knife-google/pull/177) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v4.2.8](https://github.com/chef/knife-google/tree/v4.2.8) (2020-02-12)
 
