@@ -12,11 +12,11 @@ group :test do
   gem "chefstyle"
   gem "rspec", "~> 3.1"
   gem "rake"
-  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.6")
-    gem "chef-zero", "~> 14"
+  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.7")
+    gem "chef-zero", "~> 15"
     gem "chef", "~> 15"
   else
-    gem "chef"
+    gem "chef", "~> 16"
   end
 end
 
