@@ -15,7 +15,7 @@
 #
 module Knife
   module Google
-    VERSION = "4.2.14"
+    VERSION = "5.0.0"
     MAJOR, MINOR, TINY = VERSION.split(".")
   end
 end

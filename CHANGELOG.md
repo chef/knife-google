@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 5.0.0 -->
+## [v5.0.0](https://github.com/chef/knife-google/tree/v5.0.0) (2020-06-05)
+
+#### Merged Pull Requests
+- Chef 16.0 fixes [#179](https://github.com/chef/knife-google/pull/179) ([lamont-granquist](https://github.com/lamont-granquist))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=4.2.14 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Chef 16.0 fixes [#179](https://github.com/chef/knife-google/pull/179) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 5.0.0 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
