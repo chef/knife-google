@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 5.0.3 -->
+## [v5.0.3](https://github.com/chef/knife-google/tree/v5.0.3) (2020-07-13)
+
+#### Merged Pull Requests
+- Support for GCE image family [#183](https://github.com/chef/knife-google/pull/183) ([kapilchouhan99](https://github.com/kapilchouhan99))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=5.0.2 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Support for GCE image family [#183](https://github.com/chef/knife-google/pull/183) ([kapilchouhan99](https://github.com/kapilchouhan99)) <!-- 5.0.3 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
