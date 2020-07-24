@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 5.0.5 -->
+## [v5.0.5](https://github.com/chef/knife-google/tree/v5.0.5) (2020-07-24)
+
+#### Merged Pull Requests
+- Remove unsupported platform images [#185](https://github.com/chef/knife-google/pull/185) ([vsingh-msys](https://github.com/vsingh-msys))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=5.0.4 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Remove unsupported platform images [#185](https://github.com/chef/knife-google/pull/185) ([vsingh-msys](https://github.com/vsingh-msys)) <!-- 5.0.5 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
