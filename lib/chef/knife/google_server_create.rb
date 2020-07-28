@@ -199,7 +199,7 @@ class Chef::Knife::Cloud
 
     def set_default_config
       # dumb hack for knife-cloud, which expects the user to pass in the WinRM password to use when bootstrapping.
-      # We won't know the password until the instance is created and we forceably reset it.
+      # We won't know the password until the instance is created and we forcibly reset it.
       config[:connection_password] = "will_change_this_later"
     end
 

@@ -24,7 +24,7 @@ Once the above setup is done get the PROJECT_ID and Zone and set it in your knif
 knife[:gce_project] = 'my-test-project'
 knife[:gce_zone]    = 'us-east1-b'
 ```
-**NOTE** Not providing `gce_project` and `gce_zone` in knife configuartion file will run into following errors while running any knife google command.
+**NOTE** Not providing `gce_project` and `gce_zone` in knife configuration file will run into following errors while running any knife google command.
 
 ```
 ERROR: The following required parameters are missing: gce_project, gce_zone
