@@ -205,7 +205,7 @@ See the [SSH Keys](#ssh-keys) section for more information.
  * **--[no-]gce-boot-disk-autodelete**: If true, the boot disk will be automatically deleted whenever the instance is deleted. Defaults to true.
  * **--additional_disks**: A comma-separated list of disk names to attach to the instance when creating it. The disks must already exist.
  * **--[no-]gce-auto-server-restart**: If true, the instance will be automatically restarted if it was terminated for non-user-initiated actions, such as host maintenance. Defaults to true.
- * **--[no-]gce-auto-server-migrate**: If true, the instance will be automatically migrated to another host if maintenance would require the instance to be terminated. Defaulst to true.
+ * **--[no-]gce-auto-server-migrate**: If true, the instance will be automatically migrated to another host if maintenance would require the instance to be terminated. Defaults to true.
  * **--[no-]gce-can-ip-forward**: If true, the instance will be allowed to perform network forwarding. Defaults to false.
  * **--gce-tags**: A comma-separated list of tag values to add to the instance.
  * **--gce-metadata**: A comma-separated list of key=value pairs to be added to the instance metadata. Example: `--gce-metadata mykey=myvalue,yourkey=yourvalue`

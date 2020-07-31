@@ -413,7 +413,7 @@ describe Chef::Knife::Cloud::GoogleService do
   end
 
   describe "#valid_machine_type?" do
-    it "returns false if no matchine type was specified" do
+    it "returns false if no machine type was specified" do
       expect(service.valid_machine_type?(nil)).to eq(false)
     end
 
