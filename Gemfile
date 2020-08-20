@@ -25,5 +25,4 @@ group :development do
   gem "pry-byebug"
   gem "pry-stack_explorer"
   gem "rb-readline"
-  gem "simplecov", "~> 0.9"
 end
