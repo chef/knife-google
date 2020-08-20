@@ -22,7 +22,7 @@ require "chef/knife/cloud/service"
 require "chef/knife/cloud/helpers"
 require_relative "google_service_helpers"
 require "google/apis/compute_v1"
-require "ipaddr"
+require "ipaddr" unless defined?(IPAddr)
 require_relative "../../../knife-google/version"
 
 class Chef::Knife::Cloud
