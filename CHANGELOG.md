@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.6 -->
-## [v5.0.6](https://github.com/chef/knife-google/tree/v5.0.6) (2020-07-31)
+<!-- latest_release 5.0.7 -->
+## [v5.0.7](https://github.com/chef/knife-google/tree/v5.0.7) (2020-08-21)
 
 #### Merged Pull Requests
-- Fix minor typos [#186](https://github.com/chef/knife-google/pull/186) ([tas50](https://github.com/tas50))
+- Remove unused simplecov dev dep [#189](https://github.com/chef/knife-google/pull/189) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=5.0.5 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Remove unused simplecov dev dep [#189](https://github.com/chef/knife-google/pull/189) ([tas50](https://github.com/tas50)) <!-- 5.0.7 -->
 - Fix minor typos [#186](https://github.com/chef/knife-google/pull/186) ([tas50](https://github.com/tas50)) <!-- 5.0.6 -->
 <!-- release_rollup -->
 
