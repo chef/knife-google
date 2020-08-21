@@ -4,28 +4,25 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.8 -->
-## [v5.0.8](https://github.com/chef/knife-google/tree/v5.0.8) (2020-08-21)
-
-#### Merged Pull Requests
-- Optimize our requires [#188](https://github.com/chef/knife-google/pull/188) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=5.0.5 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Optimize our requires [#188](https://github.com/chef/knife-google/pull/188) ([tas50](https://github.com/tas50)) <!-- 5.0.8 -->
-- Remove unused simplecov dev dep [#189](https://github.com/chef/knife-google/pull/189) ([tas50](https://github.com/tas50)) <!-- 5.0.7 -->
-- Fix minor typos [#186](https://github.com/chef/knife-google/pull/186) ([tas50](https://github.com/tas50)) <!-- 5.0.6 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v5.0.8](https://github.com/chef/knife-google/tree/v5.0.8) (2020-08-21)
+
+#### Merged Pull Requests
+- Fix minor typos [#186](https://github.com/chef/knife-google/pull/186) ([tas50](https://github.com/tas50))
+- Remove unused simplecov dev dep [#189](https://github.com/chef/knife-google/pull/189) ([tas50](https://github.com/tas50))
+- Optimize our requires [#188](https://github.com/chef/knife-google/pull/188) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v5.0.5](https://github.com/chef/knife-google/tree/v5.0.5) (2020-07-24)
 
 #### Merged Pull Requests
 - Remove unsupported platform images [#185](https://github.com/chef/knife-google/pull/185) ([vsingh-msys](https://github.com/vsingh-msys))
-<!-- latest_stable_release -->
 
 ## [v5.0.4](https://github.com/chef/knife-google/tree/v5.0.4) (2020-07-15)
 
