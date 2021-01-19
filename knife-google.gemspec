@@ -17,6 +17,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency "chef",              ">= 15.11"
   s.add_dependency "knife-cloud",       ">= 4.0.0"
-  s.add_dependency "google-api-client", ">= 0.23.9", "< 0.43.0" # each version introduces breaking changes which we need to validate
+  s.add_dependency "google-api-client", ">= 0.23.9", "< 0.54.0" # each version introduces breaking changes which we need to validate
   s.add_dependency "gcewinpass",        "~> 1.1"
 end
