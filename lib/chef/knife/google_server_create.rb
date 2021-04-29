@@ -225,7 +225,7 @@ class Chef::Knife::Cloud
     def before_bootstrap
       super
 
-      config[:chef_node_name] = config[:chef_node_name] ? config[:chef_node_name] : instance_name
+      config[:chef_node_name] = config[:chef_node_name] || instance_name
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
 
       if config[:image_os_type] == "windows"
