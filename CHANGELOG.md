@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.9 -->
-## [v5.0.9](https://github.com/chef/knife-google/tree/v5.0.9) (2021-04-29)
+<!-- latest_release 5.0.10 -->
+## [v5.0.10](https://github.com/chef/knife-google/tree/v5.0.10) (2021-04-29)
 
 #### Merged Pull Requests
-- Upgrade to GitHub-native Dependabot [#201](https://github.com/chef/knife-google/pull/201) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Chefstyle fixes for the latest release [#203](https://github.com/chef/knife-google/pull/203) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=5.0.8 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Chefstyle fixes for the latest release [#203](https://github.com/chef/knife-google/pull/203) ([tas50](https://github.com/tas50)) <!-- 5.0.10 -->
 - Upgrade to GitHub-native Dependabot [#201](https://github.com/chef/knife-google/pull/201) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 5.0.9 -->
 <!-- release_rollup -->
 
