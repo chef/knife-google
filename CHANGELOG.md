@@ -4,30 +4,27 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.11 -->
-## [v5.0.11](https://github.com/chef/knife-google/tree/v5.0.11) (2021-05-24)
-
-#### Merged Pull Requests
-- Bump google-api-client [#204](https://github.com/chef/knife-google/pull/204) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=5.0.8 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Bump google-api-client [#204](https://github.com/chef/knife-google/pull/204) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 5.0.11 -->
-- Chefstyle fixes for the latest release [#203](https://github.com/chef/knife-google/pull/203) ([tas50](https://github.com/tas50)) <!-- 5.0.10 -->
-- Upgrade to GitHub-native Dependabot [#201](https://github.com/chef/knife-google/pull/201) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 5.0.9 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v5.0.11](https://github.com/chef/knife-google/tree/v5.0.11) (2021-05-24)
+
+#### Merged Pull Requests
+- Upgrade to GitHub-native Dependabot [#201](https://github.com/chef/knife-google/pull/201) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Chefstyle fixes for the latest release [#203](https://github.com/chef/knife-google/pull/203) ([tas50](https://github.com/tas50))
+- Bump google-api-client [#204](https://github.com/chef/knife-google/pull/204) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_stable_release -->
+
 ## [v5.0.8](https://github.com/chef/knife-google/tree/v5.0.8) (2020-08-21)
 
 #### Merged Pull Requests
 - Fix minor typos [#186](https://github.com/chef/knife-google/pull/186) ([tas50](https://github.com/tas50))
 - Remove unused simplecov dev dep [#189](https://github.com/chef/knife-google/pull/189) ([tas50](https://github.com/tas50))
 - Optimize our requires [#188](https://github.com/chef/knife-google/pull/188) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v5.0.5](https://github.com/chef/knife-google/tree/v5.0.5) (2020-07-24)
 
