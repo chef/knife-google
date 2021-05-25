@@ -14,9 +14,9 @@ group :test do
   gem "rake"
   if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.7")
     gem "chef-zero", "~> 15"
-    gem "chef", "~> 15"
+    gem "chef", "~> 17"
   else
-    gem "chef", "~> 16"
+    gem "chef", "~> 17"
   end
 end
 
