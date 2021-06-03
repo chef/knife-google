@@ -13,7 +13,7 @@
 
 ## Overview
 
-This is the official Chef [Knife](http://docs.chef.io/knife.html) plugin for [Google Compute Engine](https://cloud.google.com/products/compute-engine). This plugin gives knife the ability to create, bootstrap, and manage Google Compute Engine (GCE) instances.
+This is the official Chef [Knife](https://docs.chef.io/workstation/knife/) plugin for [Google Compute Engine](https://cloud.google.com/compute). This plugin gives knife the ability to create, bootstrap, and manage Google Compute Engine (GCE) instances.
 
 ## Compatibility
 
