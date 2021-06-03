@@ -13,14 +13,11 @@
 
 ## Overview
 
-This is the official Chef [Knife](http://docs.chef.io/knife.html) plugin for
-[Google Compute Engine](https://cloud.google.com/products/compute-engine).
-This plugin gives knife the ability to create, bootstrap, and manage
-Google Compute Engine (GCE) instances.
+This is the official Chef [Knife](http://docs.chef.io/knife.html) plugin for [Google Compute Engine](https://cloud.google.com/products/compute-engine). This plugin gives knife the ability to create, bootstrap, and manage Google Compute Engine (GCE) instances.
 
 ## Compatibility
 
-This plugin has been tested with Chef 12.x and uses the [Google API Ruby Client](https://github.com/google/google-api-ruby-client).
+This plugin has been tested with Chef 17 and uses the [Google API Ruby Client](https://github.com/google/google-api-ruby-client).
 
 # Getting Started
 
@@ -30,12 +27,6 @@ Install the gem with:
 
 ```sh
 gem install knife-google
-```
-
-Or, even better, if you're using the ChefDK:
-
-```sh
-chef gem install knife-google
 ```
 
 If you're using Bundler, simply add it to your Gemfile:
@@ -70,7 +61,7 @@ The easiest way to create this is to download and install the [Google Cloud SDK]
 If you already have a file you'd like to use that is in a different location, set the
 `GOOGLE_APPLICATION_CREDENTIALS` environment variable with the full path to that file.
 
-##  Configuration
+## Configuration
 
 All knife-google commands require a project name, and most commands require zone name to be supplied.
 You can supply these on the command line:
@@ -284,7 +275,7 @@ WinRM is used by Chef to bootstrap Windows nodes. The default settings of the GC
 All documentation is written using YARD. You can generate a by running:
 
 ```
-rake docs
+yard
 ```
 
 ## Contributing
@@ -295,7 +286,7 @@ For information on contributing to this project please see our [Contributing Doc
 
 Version 3.0.0 of knife-google was rewritten by Chef Partner Engineering but is largely inspired by initial versions of knife-google, thanks to the work of the great folks at Google.
 
-- Copyright:: Copyright (c) 2016-2018 Chef Software, Inc.
+- Copyright:: Chef Software, Inc.
 - License:: Apache License, Version 2.0
 
 ```text
