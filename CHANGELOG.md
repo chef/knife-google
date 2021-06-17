@@ -4,10 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release -->
+<!-- latest_release 5.0.12 -->
+## [v5.0.12](https://github.com/chef/knife-google/tree/v5.0.12) (2021-06-17)
+
+#### Merged Pull Requests
+- Depend on knife instead of chef [#206](https://github.com/chef/knife-google/pull/206) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=5.0.11 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Depend on knife instead of chef [#206](https://github.com/chef/knife-google/pull/206) ([tas50](https://github.com/tas50)) <!-- 5.0.12 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
