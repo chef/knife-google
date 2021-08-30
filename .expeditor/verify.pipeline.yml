@@ -26,7 +26,8 @@ steps:
         image: ruby:3.0-buster
 - label: run-specs-windows
   command:
-    - bundle install --jobs=7 --retry=3 --without docs debug
+    - bundle config set --local without docs debug
+    - bundle install --jobs=7 --retry=3
     - bundle exec rake
   expeditor:
     executor:
