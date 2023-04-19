@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.files         = %w{LICENSE} + Dir.glob("lib/**/*")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.require_paths = ["lib"]
-  s.required_ruby_version = ">= 2.7"
+  s.required_ruby_version = ">= 3.1"
 
   s.add_dependency "knife"
   s.add_dependency "knife-cloud",       ">= 4.0.0"
