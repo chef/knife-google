@@ -1,6 +1,8 @@
 $:.push File.expand_path("lib", __dir__)
 require "knife-google/version"
 puts"git version----------"
+curret_path = `pwd`
+puts curret_path
 cmd = `git --version`
 puts cmd
 
