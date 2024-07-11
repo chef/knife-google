@@ -1,5 +1,8 @@
 $:.push File.expand_path("lib", __dir__)
 require "knife-google/version"
+puts"git version----------"
+cmd = `git --version`
+puts cmd
 
 Gem::Specification.new do |s|
   s.name = "knife-google"
