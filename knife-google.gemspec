@@ -1,8 +1,5 @@
 $:.push File.expand_path("lib", __dir__)
 require "knife-google/version"
-puts"git version----------"
-cmd = `git --version`
-puts cmd
 
 Gem::Specification.new do |s|
   s.name = "knife-google"
@@ -14,9 +11,9 @@ Gem::Specification.new do |s|
   s.description = s.summary
   s.homepage = "https://github.com/chef/knife-google"
   s.files         = %w{LICENSE} + Dir.glob("lib/**/*")
-  s.test_files    = `git ls-files -- spec/*`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.require_paths = ["lib"]
-  s.required_ruby_version = ">= 3.1"
+  s.required_ruby_version = ">= 3.3"
 
   s.add_dependency "knife"
   s.add_dependency "knife-cloud",       ">= 4.0.0"

@@ -10,13 +10,6 @@ expeditor:
       timeout_in_minutes: 30
 
 steps:
-- label: run-lint-and-specs-ruby-3.1
-  command:
-    - .expeditor/run_linux_tests.sh rake
-  expeditor:
-    executor:
-      docker:
-        image: ruby:3.1-buster
 - label: run-lint-and-specs-ruby-3.3
   command:
     - .expeditor/run_linux_tests.sh rake
@@ -24,16 +17,6 @@ steps:
     executor:
       docker:
         image: ruby:3.3
-- label: run-specs-windows-3.1
-  command:
-    - bundle config set --local without docs debug
-    - bundle install --jobs=7 --retry=3
-    - bundle exec rake
-  expeditor:
-    executor:
-      docker:
-        host_os: windows
-        image: rubydistros/windows-2019:3.1
 - label: run-specs-windows-3.3
   command:
     - bundle config set --local without docs debug
