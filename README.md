@@ -5,12 +5,6 @@
 
 **Umbrella Project: [Knife](https://github.com/chef/chef-oss-practices/blob/master/projects/knife.md)**
 
-**Project State: [Active](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md#active)**
-
-**Issues [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md): 14 days**
-
-**Pull Request [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md): 14 days**
-
 ## Overview
 
 This is the official Chef [Knife](https://docs.chef.io/workstation/knife/) plugin for [Google Compute Engine](https://cloud.google.com/compute). This plugin gives knife the ability to create, bootstrap, and manage Google Compute Engine (GCE) instances.
