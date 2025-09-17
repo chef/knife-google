@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.13 -->
-## [v5.0.13](https://github.com/chef/knife-google/tree/v5.0.13) (2023-04-19)
+<!-- latest_release 5.0.14 -->
+## [v5.0.14](https://github.com/chef/knife-google/tree/v5.0.14) (2025-09-17)
 
 #### Merged Pull Requests
-- CHEF-1920 Fixed the knife-google verify test failure [#210](https://github.com/chef/knife-google/pull/210) ([nikhil2611](https://github.com/nikhil2611))
+- verify pipeline for ruby 3.4 [#216](https://github.com/chef/knife-google/pull/216) ([sanjain-progress](https://github.com/sanjain-progress))
 <!-- latest_release -->
 
 <!-- release_rollup since=5.0.11 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- verify pipeline for ruby 3.4 [#216](https://github.com/chef/knife-google/pull/216) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 5.0.14 -->
 - CHEF-1920 Fixed the knife-google verify test failure [#210](https://github.com/chef/knife-google/pull/210) ([nikhil2611](https://github.com/nikhil2611)) <!-- 5.0.13 -->
 - Depend on knife instead of chef [#206](https://github.com/chef/knife-google/pull/206) ([tas50](https://github.com/tas50)) <!-- 5.0.12 -->
 <!-- release_rollup -->
