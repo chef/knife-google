@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 3.1"
 
-  s.add_dependency "knife"
-  s.add_dependency "knife-cloud",       ">= 4.0.0"
-  s.add_dependency "google-api-client", ">= 0.23.9", "< 0.53.0" # each version introduces breaking changes which we need to validate
+  s.add_dependency "knife", ">= 18.0"
+  # s.add_dependency "knife-cloud", ">= 4.0.0"
+  s.add_dependency "google-api-client", ">= 0.23.9", "<= 0.53.0" # each version introduces breaking changes which we need to validate
   s.add_dependency "gcewinpass",        "~> 1.1"
   s.add_dependency "syslog", "~> 0.3"
 end
