@@ -274,11 +274,10 @@ yard
 
 For information on contributing to this project please see our [Contributing Documentation](https://github.com/chef/chef/blob/master/CONTRIBUTING.md)
 
-## License & Copyright
+## License
 
 Version 3.0.0 of knife-google was rewritten by Chef Partner Engineering but is largely inspired by initial versions of knife-google, thanks to the work of the great folks at Google.
 
-- Copyright:: Chef Software, Inc.
 - License:: Apache License, Version 2.0
 
 ```text
@@ -294,3 +293,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+# Copyright
+See [COPYRIGHT.md](./COPYRIGHT.md).
