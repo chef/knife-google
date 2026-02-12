@@ -3,14 +3,6 @@
 [![Gem Version](https://badge.fury.io/rb/knife-google.svg)](http://badge.fury.io/rb/knife-google)
 [![Build status](https://badge.buildkite.com/61869012bf68c1cf24ffd63892e82972e378f0b40712a002b9.svg?branch=master)](https://buildkite.com/chef-oss/chef-knife-google-master-verify)
 
-**Umbrella Project: [Knife](https://github.com/chef/chef-oss-practices/blob/master/projects/knife.md)**
-
-**Project State: [Active](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md#active)**
-
-**Issues [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md): 14 days**
-
-**Pull Request [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md): 14 days**
-
 ## Overview
 
 This is the official Chef [Knife](https://docs.chef.io/workstation/knife/) plugin for [Google Compute Engine](https://cloud.google.com/compute). This plugin gives knife the ability to create, bootstrap, and manage Google Compute Engine (GCE) instances.
@@ -282,11 +274,10 @@ yard
 
 For information on contributing to this project please see our [Contributing Documentation](https://github.com/chef/chef/blob/master/CONTRIBUTING.md)
 
-## License & Copyright
+## License
 
 Version 3.0.0 of knife-google was rewritten by Chef Partner Engineering but is largely inspired by initial versions of knife-google, thanks to the work of the great folks at Google.
 
-- Copyright:: Chef Software, Inc.
 - License:: Apache License, Version 2.0
 
 ```text
@@ -302,3 +293,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+# Copyright
+See [COPYRIGHT.md](./COPYRIGHT.md).
