@@ -4,31 +4,28 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.15 -->
-## [v5.0.15](https://github.com/chef/knife-google/tree/v5.0.15) (2026-02-12)
-
-#### Merged Pull Requests
-- Update knife dependency to &gt;= 18.0 [#219](https://github.com/chef/knife-google/pull/219) ([sanjain-progress](https://github.com/sanjain-progress))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=5.0.11 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Update knife dependency to &gt;= 18.0 [#219](https://github.com/chef/knife-google/pull/219) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 5.0.15 -->
-- verify pipeline for ruby 3.4 [#216](https://github.com/chef/knife-google/pull/216) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 5.0.14 -->
-- CHEF-1920 Fixed the knife-google verify test failure [#210](https://github.com/chef/knife-google/pull/210) ([nikhil2611](https://github.com/nikhil2611)) <!-- 5.0.13 -->
-- Depend on knife instead of chef [#206](https://github.com/chef/knife-google/pull/206) ([tas50](https://github.com/tas50)) <!-- 5.0.12 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v5.0.15](https://github.com/chef/knife-google/tree/v5.0.15) (2026-02-16)
+
+#### Merged Pull Requests
+- Depend on knife instead of chef [#206](https://github.com/chef/knife-google/pull/206) ([tas50](https://github.com/tas50))
+- CHEF-1920 Fixed the knife-google verify test failure [#210](https://github.com/chef/knife-google/pull/210) ([nikhil2611](https://github.com/nikhil2611))
+- verify pipeline for ruby 3.4 [#216](https://github.com/chef/knife-google/pull/216) ([sanjain-progress](https://github.com/sanjain-progress))
+- Update knife dependency to &gt;= 18.0 [#219](https://github.com/chef/knife-google/pull/219) ([sanjain-progress](https://github.com/sanjain-progress))
+<!-- latest_stable_release -->
+
 ## [v5.0.11](https://github.com/chef/knife-google/tree/v5.0.11) (2021-05-24)
 
 #### Merged Pull Requests
 - Upgrade to GitHub-native Dependabot [#201](https://github.com/chef/knife-google/pull/201) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 - Chefstyle fixes for the latest release [#203](https://github.com/chef/knife-google/pull/203) ([tas50](https://github.com/tas50))
 - Bump google-api-client [#204](https://github.com/chef/knife-google/pull/204) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_stable_release -->
 
 ## [v5.0.8](https://github.com/chef/knife-google/tree/v5.0.8) (2020-08-21)
 
