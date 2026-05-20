@@ -249,6 +249,35 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       expect(GoogleComputeWindowsPassword).to receive(:new).and_return(winpass)
       expect(command.reset_windows_password).to eq("my_password")
     end
+
+    it "passes the winpass_timeout config to gcewinpass" do
+      command.config[:winpass_timeout] = 300
+      winpass = double("winpass", new_password: "my_password")
+      expect(GoogleComputeWindowsPassword).to receive(:new).with(
+        hash_including(timeout: 300)
+      ).and_return(winpass)
+      command.reset_windows_password
+    end
+
+    it "passes nil as timeout when winpass_timeout is not set in config" do
+      winpass = double("winpass", new_password: "my_password")
+      expect(GoogleComputeWindowsPassword).to receive(:new).with(
+        hash_including(timeout: nil)
+      ).and_return(winpass)
+      command.reset_windows_password
+    end
+
+    it "uses the default winpass_timeout of 120 defined in the option" do
+      expect(described_class.options[:winpass_timeout][:default]).to eq(120)
+    end
+  end
+
+  describe "winpass_timeout option is passed on CLI" do
+    let(:google_server_create) { Chef::Knife::Cloud::GoogleServerCreate.new(["--winpass-timeout", "300"]) }
+
+    it "sets winpass_timeout to the provided value as an integer" do
+      expect(google_server_create.config[:winpass_timeout]).to eq(300)
+    end
   end
 
   describe "local_ssd option is passed on CLI" do
