@@ -150,6 +150,18 @@ class Chef::Knife::Cloud
       long:        "--gce-email EMAIL_ADDRESS",
       description: "email address of the logged-in Google Cloud user; required for bootstrapping windows hosts"
 
+    option :windows_boot_delay,
+      long:        "--windows-boot-delay SECS",
+      description: "Number of seconds to wait after instance creation before resetting the Windows password, to allow the instance and password agent to fully boot. Defaults to 0.",
+      default:     0,
+      proc:        proc { |secs| secs.to_i }
+
+    option :winpass_timeout,
+      long:        "--winpass-timeout SECS",
+      description: "Timeout in seconds for the Windows password reset operation via gcewinpass. Defaults to 120.",
+      default:     120,
+      proc:        proc { |secs| secs.to_i }
+
     option :local_ssd,
       long:        "--gce-local-ssd",
       description: "Local SSDs are physically attached to the server that hosts your VM instance. Local SSDs have higher throughput and lower latency than standard persistent disks or SSD persistent disks.",
@@ -229,6 +241,10 @@ class Chef::Knife::Cloud
       config[:bootstrap_ip_address] = ip_address_for_bootstrap
 
       if config[:image_os_type] == "windows"
+        if config[:windows_boot_delay].to_i > 0
+          ui.msg("Waiting #{config[:windows_boot_delay]} seconds for the Windows instance to boot before resetting the password...")
+          sleep(config[:windows_boot_delay])
+        end
         ui.msg("Resetting the Windows login password so the bootstrap can continue...")
         config[:connection_password] = reset_windows_password
       end
@@ -302,7 +318,8 @@ class Chef::Knife::Cloud
         instance_name: instance_name,
         email:         email,
         username:      config[:connection_user],
-        debug:         gcewinpass_debug_mode
+        debug:         gcewinpass_debug_mode,
+        timeout:       config[:winpass_timeout]
       ).new_password
     end
 
