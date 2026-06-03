@@ -302,15 +302,16 @@ class Chef::Knife::Cloud
     end
 
     def reset_windows_password
-      GoogleComputeWindowsPassword.new(
+      opts = {
         project:       project,
         zone:          zone,
         instance_name: instance_name,
         email:         email,
         username:      config[:connection_user],
         debug:         gcewinpass_debug_mode,
-        timeout:       config[:winpass_timeout]
-      ).new_password
+      }
+      opts[:timeout] = config[:winpass_timeout] unless config[:winpass_timeout].nil?
+      GoogleComputeWindowsPassword.new(**opts).new_password
     end
 
     def gcewinpass_debug_mode
