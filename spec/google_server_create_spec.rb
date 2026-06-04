@@ -259,10 +259,10 @@ describe Chef::Knife::Cloud::GoogleServerCreate do
       command.reset_windows_password
     end
 
-    it "passes nil as timeout when winpass_timeout is not set in config" do
+    it "does not pass timeout when winpass_timeout is not set in config" do
       winpass = double("winpass", new_password: "my_password")
       expect(GoogleComputeWindowsPassword).to receive(:new).with(
-        hash_including(timeout: nil)
+        hash_not_including(:timeout)
       ).and_return(winpass)
       command.reset_windows_password
     end
