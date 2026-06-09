@@ -150,6 +150,12 @@ class Chef::Knife::Cloud
       long:        "--gce-email EMAIL_ADDRESS",
       description: "email address of the logged-in Google Cloud user; required for bootstrapping windows hosts"
 
+    option :winpass_timeout,
+      long:        "--winpass-timeout SECS",
+      description: "Timeout in seconds for the Windows password reset operation via gcewinpass. Defaults to 120.",
+      default:     120,
+      proc:        proc { |secs| secs.to_i }
+
     option :local_ssd,
       long:        "--gce-local-ssd",
       description: "Local SSDs are physically attached to the server that hosts your VM instance. Local SSDs have higher throughput and lower latency than standard persistent disks or SSD persistent disks.",
@@ -296,14 +302,16 @@ class Chef::Knife::Cloud
     end
 
     def reset_windows_password
-      GoogleComputeWindowsPassword.new(
+      opts = {
         project:       project,
         zone:          zone,
         instance_name: instance_name,
         email:         email,
         username:      config[:connection_user],
-        debug:         gcewinpass_debug_mode
-      ).new_password
+        debug:         gcewinpass_debug_mode,
+      }
+      opts[:timeout] = config[:winpass_timeout] unless config[:winpass_timeout].nil?
+      GoogleComputeWindowsPassword.new(**opts).new_password
     end
 
     def gcewinpass_debug_mode
