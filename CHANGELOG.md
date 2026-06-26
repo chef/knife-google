@@ -4,17 +4,18 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.16 -->
-## [v5.0.16](https://github.com/chef/knife-google/tree/v5.0.16) (2026-06-09)
+<!-- latest_release 5.0.17 -->
+## [v5.0.17](https://github.com/chef/knife-google/tree/v5.0.17) (2026-06-26)
 
 #### Merged Pull Requests
-- Add --winpass-timeout flag for gcewinpass password reset [#225](https://github.com/chef/knife-google/pull/225) ([sanjain-progress](https://github.com/sanjain-progress))
+- docs: explain --winpass-timeout  [#226](https://github.com/chef/knife-google/pull/226) ([sanjain-progress](https://github.com/sanjain-progress))
 <!-- latest_release -->
 
 <!-- release_rollup since=5.0.15 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- docs: explain --winpass-timeout  [#226](https://github.com/chef/knife-google/pull/226) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 5.0.17 -->
 - Add --winpass-timeout flag for gcewinpass password reset [#225](https://github.com/chef/knife-google/pull/225) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 5.0.16 -->
 <!-- release_rollup -->
 
