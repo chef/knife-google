@@ -197,6 +197,7 @@ See the [SSH Keys](#ssh-keys) section for more information.
  * **--gce-use-private-ip**: If true, Chef will attempt to bootstrap the device using the private IP rather than the public IP. Defaulst to false.
  * **--gce-public-ip**: The type of public IP to associate with this instance. If "ephemeral", an ephemeral IP will be assigned. If "none", no public IP will be assigned. If a specific IP address is provided, knife-google will attempt to attach that specific IP address to the instance. Default is "ephemeral".
  * **--gce-email**: required when creating and bootstrapping Microsoft Windows instances. The email address of the currently-logged-in Google Cloud user. This is required when resetting the Windows instance's password.
+ * **--winpass-timeout**: optional. How long (in seconds) knife waits for the Windows password reset step during bootstrap before timing out. Defaults to 120.
 
 Additionally, all the normal `knife bootstrap` flags are supported. See the output of `knife bootstrap --help` and `knife google server create --help` for additional information.
 
