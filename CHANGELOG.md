@@ -4,22 +4,20 @@ Note: this log contains only changes from knife-google release 1.1.0 and later
 -- it does not contain the changes from prior releases. To view change history
 prior to release 1.1.0, please visit the [source repository](https://github.com/chef/knife-google/commits).
 
-<!-- latest_release 5.0.17 -->
-## [v5.0.17](https://github.com/chef/knife-google/tree/v5.0.17) (2026-06-26)
-
-#### Merged Pull Requests
-- docs: explain --winpass-timeout  [#226](https://github.com/chef/knife-google/pull/226) ([sanjain-progress](https://github.com/sanjain-progress))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=5.0.15 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- docs: explain --winpass-timeout  [#226](https://github.com/chef/knife-google/pull/226) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 5.0.17 -->
-- Add --winpass-timeout flag for gcewinpass password reset [#225](https://github.com/chef/knife-google/pull/225) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 5.0.16 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v5.0.17](https://github.com/chef/knife-google/tree/v5.0.17) (2026-08-10)
+
+#### Merged Pull Requests
+- Add --winpass-timeout flag for gcewinpass password reset [#225](https://github.com/chef/knife-google/pull/225) ([sanjain-progress](https://github.com/sanjain-progress))
+- docs: explain --winpass-timeout  [#226](https://github.com/chef/knife-google/pull/226) ([sanjain-progress](https://github.com/sanjain-progress))
+<!-- latest_stable_release -->
+
 ## [v5.0.15](https://github.com/chef/knife-google/tree/v5.0.15) (2026-02-16)
 
 #### Merged Pull Requests
@@ -27,7 +25,6 @@ prior to release 1.1.0, please visit the [source repository](https://github.com/
 - CHEF-1920 Fixed the knife-google verify test failure [#210](https://github.com/chef/knife-google/pull/210) ([nikhil2611](https://github.com/nikhil2611))
 - verify pipeline for ruby 3.4 [#216](https://github.com/chef/knife-google/pull/216) ([sanjain-progress](https://github.com/sanjain-progress))
 - Update knife dependency to &gt;= 18.0 [#219](https://github.com/chef/knife-google/pull/219) ([sanjain-progress](https://github.com/sanjain-progress))
-<!-- latest_stable_release -->
 
 ## [v5.0.11](https://github.com/chef/knife-google/tree/v5.0.11) (2021-05-24)
 
